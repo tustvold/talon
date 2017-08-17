@@ -1,5 +1,5 @@
 
-set(SOURCE_FILES talon.h Greeter.cpp Greeter.h GameLoop.cpp GameLoop.h)
+set(SOURCE_FILES talon.h Greeter.cpp Greeter.h GameLoop.cpp GameLoop.h ApplicationDelegate.hpp Application.hpp Application.cpp vulkan_ext.cpp vulkan_ext.hpp Vertex.hpp)
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(talon ${SOURCE_FILES})
