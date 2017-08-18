@@ -1,6 +1,7 @@
 #include "Material.hpp"
 #include "Vertex.hpp"
 #include "fstream"
+#include "SystemTable.hpp"
 
 USING_TALON_NS;
 
@@ -22,11 +23,11 @@ static std::vector<char> readFile(const std::string &filename) {
     return buffer;
 }
 
-Material::Material(const SwapChain* swapChain, const RenderPass* renderPass, const std::shared_ptr<DeviceManager>& deviceManager) : deviceManager(deviceManager) {
-    createGraphicsPipeline(swapChain, renderPass);
+Material::Material(const SwapChain* swapChain, const RenderPass* renderPass, DeviceManager* deviceManager) {
+    createGraphicsPipeline(swapChain, renderPass, deviceManager);
 }
 
-vk::ShaderModule Material::createShaderModule(const std::vector<char> &code) {
+vk::ShaderModule Material::createShaderModule(std::vector<char> code, DeviceManager *deviceManager) {
     vk::ShaderModuleCreateInfo createInfo = {};
     createInfo.codeSize = code.size();
     createInfo.pCode = reinterpret_cast<const uint32_t *>(code.data());
@@ -34,12 +35,12 @@ vk::ShaderModule Material::createShaderModule(const std::vector<char> &code) {
     return deviceManager->getDevice().createShaderModule(createInfo);
 }
 
-void Material::createGraphicsPipeline(const SwapChain* swapChain, const RenderPass* renderPass) {
+void Material::createGraphicsPipeline(const SwapChain *swapChain, const RenderPass *renderPass, DeviceManager *deviceManager) {
     auto vertShaderCode = readFile("shaders/shader.vert.spv");
     auto fragShaderCode = readFile("shaders/shader.frag.spv");
 
-    auto vertShaderModule = createShaderModule(vertShaderCode);
-    auto fragShaderModule = createShaderModule(fragShaderCode);
+    auto vertShaderModule = createShaderModule(vertShaderCode, deviceManager);
+    auto fragShaderModule = createShaderModule(fragShaderCode, deviceManager);
 
     vk::PipelineShaderStageCreateInfo vertShaderStageInfo = {};
     vertShaderStageInfo.stage = vk::ShaderStageFlagBits::eVertex;
@@ -141,7 +142,8 @@ void Material::createGraphicsPipeline(const SwapChain* swapChain, const RenderPa
     deviceManager->getDevice().destroyShaderModule(fragShaderModule);
     deviceManager->getDevice().destroyShaderModule(vertShaderModule);
 }
+
 Material::~Material() {
-    deviceManager->getDevice().destroyPipeline(graphicsPipeline);
-    deviceManager->getDevice().destroyPipelineLayout(pipelineLayout);
+    SystemTable::deviceProvider->destroyPipeline(graphicsPipeline);
+    SystemTable::deviceProvider->destroyPipelineLayout(pipelineLayout);
 }

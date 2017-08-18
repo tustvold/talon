@@ -36,14 +36,14 @@ private:
 
     std::unique_ptr<ApplicationDelegate> applicationDelegate;
 
-    std::shared_ptr<WindowManager> windowManager;
-    std::shared_ptr<InstanceManager> instanceManager;
-    std::shared_ptr<SurfaceManager> surfaceManager;
-    std::shared_ptr<DeviceManager> deviceManager;
+    std::unique_ptr<WindowManager> windowManager;
+    std::unique_ptr<InstanceManager> instanceManager;
+    std::unique_ptr<SurfaceManager> surfaceManager;
+    std::unique_ptr<DeviceManager> deviceManager;
 
-    std::shared_ptr<SwapChain> swapChain;
-    std::shared_ptr<RenderPass> renderPass;
-    std::shared_ptr<Material> material;
+    std::unique_ptr<SwapChain> swapChain;
+    std::unique_ptr<RenderPass> renderPass;
+    std::unique_ptr<Material> material;
 
     vk::CommandPool commandPool;
     std::vector<vk::CommandBuffer> commandBuffers;
@@ -73,11 +73,6 @@ private:
     void createSemaphores();
 
     void drawFrame();
-
-    vk::ShaderModule createShaderModule(const std::vector<char> &code);
-
-
-    static std::vector<char> readFile(const std::string &filename);
 
     void onWindowResized(GLFWwindow *window, vk::Extent2D extent);
 

@@ -84,10 +84,10 @@ void Application::recreateSwapChain() {
 
     cleanupSwapChain();
 
-    swapChain = std::make_shared<SwapChain>(windowManager.get(), surfaceManager.get(), deviceManager);
-    renderPass = std::make_shared<RenderPass>(swapChain.get(), deviceManager);
+    swapChain = std::make_unique<SwapChain>(windowManager.get(), surfaceManager.get(), deviceManager.get());
+    renderPass = std::make_unique<RenderPass>(swapChain.get(), deviceManager.get());
 
-    material = std::make_shared<Material>(swapChain.get(), renderPass.get(), deviceManager);
+    material = std::make_unique<Material>(swapChain.get(), renderPass.get(), deviceManager.get());
     createCommandBuffers();
 }
 
@@ -280,17 +280,17 @@ Application::Application(std::unique_ptr<ApplicationDelegate> &&delegate, const 
 
        {
 
-    windowManager = std::make_shared<WindowManager>(initSettings);
-    instanceManager = std::make_shared<InstanceManager>(initSettings);
+    windowManager = std::make_unique<WindowManager>(initSettings);
+    instanceManager = std::make_unique<InstanceManager>(initSettings);
 
     setupDebugCallback(initSettings);
 
-    surfaceManager = std::make_shared<SurfaceManager>(instanceManager.get(), windowManager.get());
-    deviceManager = std::make_shared<DeviceManager>(initSettings, instanceManager.get(), surfaceManager.get());
+    surfaceManager = std::make_unique<SurfaceManager>(instanceManager.get(), windowManager.get());
+    deviceManager = std::make_unique<DeviceManager>(initSettings, instanceManager.get(), surfaceManager.get());
 
-    swapChain = std::make_shared<SwapChain>(windowManager.get(), surfaceManager.get(), deviceManager);
-    renderPass = std::make_shared<RenderPass>(swapChain.get(), deviceManager);
-    material = std::make_shared<Material>(swapChain.get(), renderPass.get(), deviceManager);
+    swapChain = std::make_unique<SwapChain>(windowManager.get(), surfaceManager.get(), deviceManager.get());
+    renderPass = std::make_unique<RenderPass>(swapChain.get(), deviceManager.get());
+    material = std::make_unique<Material>(swapChain.get(), renderPass.get(), deviceManager.get());
     createCommandPool();
     createVertexBuffer();
     createCommandBuffers();

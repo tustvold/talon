@@ -10,7 +10,7 @@ TALON_NS_BEGIN
 class Material {
 public:
 
-    Material(const SwapChain* swapChain, const RenderPass* renderPass, const std::shared_ptr<DeviceManager>& deviceManager);
+    Material(const SwapChain* swapChain, const RenderPass* renderPass, DeviceManager* deviceManager);
 
     ~Material();
 
@@ -22,10 +22,8 @@ private:
     vk::PipelineLayout pipelineLayout;
     vk::Pipeline graphicsPipeline;
 
-    std::shared_ptr<DeviceManager> deviceManager;
-
-    void createGraphicsPipeline(const SwapChain* swapChain, const RenderPass* renderPass);
-    vk::ShaderModule createShaderModule(const std::vector<char> &code);
+    void createGraphicsPipeline(const SwapChain *swapChain, const RenderPass *renderPass, DeviceManager *pManager);
+    vk::ShaderModule createShaderModule(std::vector<char> code, DeviceManager *pManager);
 };
 
 TALON_NS_END

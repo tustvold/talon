@@ -8,7 +8,7 @@ TALON_NS_BEGIN
 
 class SwapChain {
 public:
-    SwapChain(WindowManager* windowManager, SurfaceManager* surfaceManager, const std::shared_ptr<DeviceManager>& deviceManager);
+    SwapChain(WindowManager* windowManager, SurfaceManager* surfaceManager, DeviceManager* deviceManager);
     ~SwapChain();
 
     const vk::SwapchainKHR &getSwapChain() const {
@@ -38,10 +38,8 @@ private:
     vk::Extent2D extents;
     std::vector<vk::ImageView> imageViews;
 
-    std::shared_ptr<DeviceManager> deviceManager;
-
-    void createSwapChain(WindowManager* windowManager, SurfaceManager* surfaceManager);
-    void createImageViews();
+    void createSwapChain(WindowManager *windowManager, SurfaceManager *surfaceManager, DeviceManager *pManager);
+    void createImageViews(DeviceManager *pManager);
 
     static vk::SurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR> &availableFormats);
     static vk::PresentModeKHR chooseSwapPresentMode(const std::vector<vk::PresentModeKHR> &availablePresentModes);

@@ -1,4 +1,5 @@
 #include "SwapChain.hpp"
+#include "SystemTable.hpp"
 
 USING_TALON_NS;
 
@@ -48,20 +49,20 @@ vk::Extent2D SwapChain::chooseSwapExtent(WindowManager *windowManager, const vk:
 
 SwapChain::SwapChain(WindowManager *windowManager,
                      SurfaceManager *surfaceManager,
-                     const std::shared_ptr<talon::DeviceManager> &deviceManager)
-    : imageFormat(vk::Format::eUndefined), deviceManager(deviceManager) {
-    createSwapChain(windowManager, surfaceManager);
-    createImageViews();
+                     DeviceManager* deviceManager)
+    : imageFormat(vk::Format::eUndefined) {
+    createSwapChain(windowManager, surfaceManager, deviceManager);
+    createImageViews(deviceManager);
 }
 
 SwapChain::~SwapChain() {
     for (auto &imageView : imageViews) {
-        deviceManager->getDevice().destroyImageView(imageView);
+        SystemTable::deviceProvider->destroyImageView(imageView);
     }
-    deviceManager->getDevice().destroySwapchainKHR(swapChain);
+    SystemTable::deviceProvider->destroySwapchainKHR(swapChain);
 }
 
-void SwapChain::createSwapChain(WindowManager *windowManager, SurfaceManager *surfaceManager) {
+void SwapChain::createSwapChain(WindowManager *windowManager, SurfaceManager *surfaceManager, DeviceManager *deviceManager) {
     SwapChainSupportDetails swapChainSupport = deviceManager->getSwapChainSupportDetails(surfaceManager);
 
     auto surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
@@ -107,7 +108,7 @@ void SwapChain::createSwapChain(WindowManager *windowManager, SurfaceManager *su
     extents = extent;
 }
 
-void SwapChain::createImageViews() {
+void SwapChain::createImageViews(DeviceManager *deviceManager) {
     imageViews.resize(images.size());
 
     for (size_t i = 0; i < images.size(); i++) {

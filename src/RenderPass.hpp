@@ -7,7 +7,7 @@ TALON_NS_BEGIN
 
 class RenderPass {
 public:
-    RenderPass(const SwapChain* swapChain, const std::shared_ptr<DeviceManager>& deviceManager);
+    RenderPass(const SwapChain* swapChain, DeviceManager* deviceManager);
 
     ~RenderPass();
 
@@ -23,10 +23,8 @@ private:
     vk::RenderPass renderPass;
     std::vector<vk::Framebuffer> framebuffers;
 
-    std::shared_ptr<DeviceManager> deviceManager;
-
-    void createRenderPass(const SwapChain* swapChain);
-    void createFrameBuffers(const SwapChain* swapChain);
+    void createRenderPass(const SwapChain *swapChain, DeviceManager *pManager);
+    void createFrameBuffers(const SwapChain *swapChain, DeviceManager *pManager);
 
 };
 

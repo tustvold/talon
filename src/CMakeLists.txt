@@ -1,8 +1,8 @@
 
 set(SOURCE_FILES talon.hpp ApplicationDelegate.hpp Application.hpp
-        Application.cpp vulkan_ext.cpp vulkan_ext.hpp Vertex.hpp Shader.cpp Shader.hpp DeviceManager.cpp
+        Application.cpp vulkan_ext.cpp vulkan_ext.hpp Vertex.hpp DeviceManager.cpp
         DeviceManager.hpp InstanceManager.cpp InstanceManager.hpp WindowManager.cpp WindowManager.hpp
-        SurfaceManager.cpp SurfaceManager.hpp ApplicationInitSettings.hpp SwapChain.cpp SwapChain.hpp RenderPass.cpp RenderPass.hpp Material.cpp Material.hpp)
+        SurfaceManager.cpp SurfaceManager.hpp ApplicationInitSettings.hpp SwapChain.cpp SwapChain.hpp RenderPass.cpp RenderPass.hpp Material.cpp Material.hpp DeviceProvider.hpp SystemTable.hpp ServiceProvider.hpp SystemTable.cpp)
 
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 

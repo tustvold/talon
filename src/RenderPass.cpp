@@ -1,21 +1,21 @@
 #include "RenderPass.hpp"
+#include "SystemTable.hpp"
 USING_TALON_NS;
 
 RenderPass::RenderPass(const SwapChain *swapChain,
-                              const std::shared_ptr<DeviceManager> &deviceManager) : deviceManager(deviceManager) {
-    createRenderPass(swapChain);
-    createFrameBuffers(swapChain);
+                              DeviceManager* deviceManager) {
+    createRenderPass(swapChain, deviceManager);
+    createFrameBuffers(swapChain, deviceManager);
 }
 
 RenderPass::~RenderPass() {
     for (auto &frameBuffer : framebuffers) {
-        deviceManager->getDevice().destroyFramebuffer(frameBuffer, nullptr);
+        SystemTable::deviceProvider->destroyFramebuffer(frameBuffer);
     }
-
-    deviceManager->getDevice().destroyRenderPass(renderPass);
+    SystemTable::deviceProvider->destroyRenderPass(renderPass);
 }
 
-void RenderPass::createRenderPass(const SwapChain* swapChain) {
+void RenderPass::createRenderPass(const SwapChain *swapChain, DeviceManager *deviceManager) {
     vk::AttachmentDescription colorAttachment = {};
     colorAttachment.format = swapChain->getImageFormat();
     colorAttachment.samples = vk::SampleCountFlagBits::e1;
@@ -55,7 +55,7 @@ void RenderPass::createRenderPass(const SwapChain* swapChain) {
     renderPass = deviceManager->getDevice().createRenderPass(renderPassInfo);
 }
 
-void RenderPass::createFrameBuffers(const SwapChain *swapChain) {
+void RenderPass::createFrameBuffers(const SwapChain *swapChain, DeviceManager *deviceManager) {
     auto &swapChainImageViews = swapChain->getImageViews();
     auto swapChainExtent = swapChain->getExtents();
 
