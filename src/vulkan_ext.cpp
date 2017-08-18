@@ -1,4 +1,4 @@
-#include <talon.h>
+#include <talon.hpp>
 #include "vulkan_ext.hpp"
 
 static PFN_vkCreateDebugReportCallbackEXT __vkCreateDebugReportCallbackEXT;
@@ -19,7 +19,7 @@ VKAPI_ATTR VkResult VKAPI_CALL vkCreateDebugReportCallbackEXT(
     const VkDebugReportCallbackCreateInfoEXT *pCreateInfo,
     const VkAllocationCallbacks *pAllocator,
     VkDebugReportCallbackEXT *pCallback) {
-    __vkCreateDebugReportCallbackEXT(instance, pCreateInfo, pAllocator, pCallback);
+    return __vkCreateDebugReportCallbackEXT(instance, pCreateInfo, pAllocator, pCallback);
 }
 
 VKAPI_ATTR void VKAPI_CALL vkDestroyDebugReportCallbackEXT(
