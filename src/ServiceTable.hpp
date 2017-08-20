@@ -6,10 +6,10 @@
 
 TALON_NS_BEGIN
 
-struct SystemTable {
+struct ServiceTable {
 public:
-    SystemTable() = delete;
-    ~SystemTable() = delete;
+    ServiceTable() = delete;
+    ~ServiceTable() = delete;
 
     static ServiceProvider<DeviceProvider, NullDeviceProvider> deviceProvider;
 };

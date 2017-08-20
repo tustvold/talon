@@ -1,5 +1,5 @@
 #include "RenderPass.hpp"
-#include "SystemTable.hpp"
+#include "ServiceTable.hpp"
 USING_TALON_NS;
 
 RenderPass::RenderPass(const SwapChain *swapChain,
@@ -10,9 +10,9 @@ RenderPass::RenderPass(const SwapChain *swapChain,
 
 RenderPass::~RenderPass() {
     for (auto &frameBuffer : framebuffers) {
-        SystemTable::deviceProvider->destroyFramebuffer(frameBuffer);
+        ServiceTable::deviceProvider->destroyFramebuffer(frameBuffer);
     }
-    SystemTable::deviceProvider->destroyRenderPass(renderPass);
+    ServiceTable::deviceProvider->destroyRenderPass(renderPass);
 }
 
 void RenderPass::createRenderPass(const SwapChain *swapChain, DeviceManager *deviceManager) {

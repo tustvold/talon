@@ -1,5 +1,5 @@
 #include "SwapChain.hpp"
-#include "SystemTable.hpp"
+#include "ServiceTable.hpp"
 
 USING_TALON_NS;
 
@@ -57,9 +57,9 @@ SwapChain::SwapChain(WindowManager *windowManager,
 
 SwapChain::~SwapChain() {
     for (auto &imageView : imageViews) {
-        SystemTable::deviceProvider->destroyImageView(imageView);
+        ServiceTable::deviceProvider->destroyImageView(imageView);
     }
-    SystemTable::deviceProvider->destroySwapchainKHR(swapChain);
+    ServiceTable::deviceProvider->destroySwapchainKHR(swapChain);
 }
 
 void SwapChain::createSwapChain(WindowManager *windowManager, SurfaceManager *surfaceManager, DeviceManager *deviceManager) {

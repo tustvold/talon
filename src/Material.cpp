@@ -1,7 +1,7 @@
 #include "Material.hpp"
 #include "Vertex.hpp"
 #include "fstream"
-#include "SystemTable.hpp"
+#include "ServiceTable.hpp"
 
 USING_TALON_NS;
 
@@ -144,6 +144,6 @@ void Material::createGraphicsPipeline(const SwapChain *swapChain, const RenderPa
 }
 
 Material::~Material() {
-    SystemTable::deviceProvider->destroyPipeline(graphicsPipeline);
-    SystemTable::deviceProvider->destroyPipelineLayout(pipelineLayout);
+    ServiceTable::deviceProvider->destroyPipeline(graphicsPipeline);
+    ServiceTable::deviceProvider->destroyPipelineLayout(pipelineLayout);
 }

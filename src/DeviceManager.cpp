@@ -1,5 +1,5 @@
 #include <set>
-#include <SystemTable.hpp>
+#include <ServiceTable.hpp>
 #include "DeviceManager.hpp"
 #include "InstanceManager.hpp"
 #include "SurfaceManager.hpp"
@@ -63,11 +63,11 @@ DeviceManager::DeviceManager(const ApplicationInitSettings &initSettings, Instan
     pickPhysicalDevice(initSettings, instanceManager, surfaceManager);
     createLogicalDevice(initSettings, surfaceManager);
 
-    SystemTable::deviceProvider.set(this);
+    ServiceTable::deviceProvider.set(this);
 }
 
 DeviceManager::~DeviceManager() {
-    SystemTable::deviceProvider.clear(this);
+    ServiceTable::deviceProvider.clear(this);
     device_.destroy();
 }
 

@@ -33,10 +33,20 @@ endif()
 find_package(GLFW3 REQUIRED)
 find_package(TBB REQUIRED)
 find_package(Vulkan REQUIRED)
+find_package(Boost REQUIRED)
 
 add_subdirectory(external/signals)
 
 add_subdirectory(src)
 add_subdirectory(example)
+
+find_package(GTest)
+find_package(GMock)
+
+
+
+if (${GTEST_FOUND} AND ${GMOCK_FOUND})
+    add_subdirectory(test)
+endif(${GTEST_FOUND} AND ${GMOCK_FOUND})
 
 

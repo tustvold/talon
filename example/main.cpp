@@ -13,8 +13,7 @@ public:
                                  int32_t messageCode,
                                  const char *pLayerPrefix,
                                  const char *pMessage) override {
-        std::cerr << "validation layer: " << pMessage << std::endl;
-
+        TLOGERROR("Validation Layer - %s\n", pMessage);
         return VK_FALSE;
     }
 
@@ -25,7 +24,7 @@ int main() {
     talon::ApplicationInitSettings settings;
     settings.windowWidth = 800;
     settings.windowHeight = 600;
-    settings.windowName = "Hello World";
+    settings.windowName = "Simple Triangle";
     settings.deviceExtensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 #ifndef NDEBUG
     settings.validationLayers.push_back("VK_LAYER_LUNARG_standard_validation");
