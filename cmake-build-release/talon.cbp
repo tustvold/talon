@@ -250,9 +250,6 @@
 		<Unit filename="/home/tustvold/Repos/talon/src/ApplicationInitSettings.hpp">
 			<Option target="talon"/>
 		</Unit>
-		<Unit filename="/home/tustvold/Repos/talon/src/Component.hpp">
-			<Option target="talon"/>
-		</Unit>
 		<Unit filename="/home/tustvold/Repos/talon/src/DeviceManager.cpp">
 			<Option target="talon"/>
 		</Unit>
@@ -308,6 +305,24 @@
 			<Option target="talon"/>
 		</Unit>
 		<Unit filename="/home/tustvold/Repos/talon/src/WindowManager.hpp">
+			<Option target="talon"/>
+		</Unit>
+		<Unit filename="/home/tustvold/Repos/talon/src/ecs/ComponentArrayStorage.hpp">
+			<Option target="talon"/>
+		</Unit>
+		<Unit filename="/home/tustvold/Repos/talon/src/ecs/ComponentMapStorage.hpp">
+			<Option target="talon"/>
+		</Unit>
+		<Unit filename="/home/tustvold/Repos/talon/src/ecs/ComponentStorage.hpp">
+			<Option target="talon"/>
+		</Unit>
+		<Unit filename="/home/tustvold/Repos/talon/src/ecs/IdentifierPool.hpp">
+			<Option target="talon"/>
+		</Unit>
+		<Unit filename="/home/tustvold/Repos/talon/src/ecs/World.hpp">
+			<Option target="talon"/>
+		</Unit>
+		<Unit filename="/home/tustvold/Repos/talon/src/ecs/ecs.hpp">
 			<Option target="talon"/>
 		</Unit>
 		<Unit filename="/home/tustvold/Repos/talon/src/talon.hpp">

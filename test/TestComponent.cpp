@@ -1,8 +1,9 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include "Component.hpp"
+#include <ecs/ComponentArrayStorage.hpp>
+#include <ecs/ComponentMapStorage.hpp>
+#include "ecs/World.hpp"
 
-#include <boost/timer/timer.hpp>
 
 USING_TALON_NS;
 
@@ -51,7 +52,7 @@ TALON_NS_BEGIN
 template<>
 struct ComponentStorage<TestComponentTransform> : ComponentArrayStorage<TestComponentTransform> {};
 template<>
-struct ComponentStorage<TestComponentMeshFilter> : ComponentDictStorage<TestComponentMeshFilter> {};
+struct ComponentStorage<TestComponentMeshFilter> : ComponentMapStorage<TestComponentMeshFilter> {};
 
 TALON_NS_END
 
