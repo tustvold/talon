@@ -5,14 +5,14 @@
 
 TALON_NS_BEGIN
 
-template<typename TWorld, typename... Components>
+template<typename TWorld, typename Predicate, typename... Components>
 class View {
 public:
-    explicit View(TWorld& world) : generations({}) {
+    explicit View(TWorld &world, Predicate predicate) : predicate(predicate), generations({}) {
     }
 
     template<class UnaryFunction>
-    void for_each(TWorld& world, UnaryFunction f) {
+    void for_each(TWorld &world, UnaryFunction f) {
         int i = 0;
         bool dirty = false;
         boost::hana::for_each(boost::hana::tuple_t<Components...>, [&](auto t) {
@@ -29,27 +29,36 @@ public:
             auto beginLocal = world.template begin<Components...>();
             auto endLocal = world.template end<Components...>();
             for (auto it = beginLocal; it != endLocal; ++it) {
+                if (!predicate(*it))
+                    continue;
                 f(*it);
                 view.push_back(*it);
             }
             return;
         }
 
-        auto beginLocal = world.template begin<Components...>();
-        auto endLocal = world.template end<Components...>();
+        auto beginLocal = view.begin();
+        auto endLocal = view.end();
         for (auto it = beginLocal; it != endLocal; ++it) {
             f(*it);
         }
     }
 
 private:
+    Predicate predicate;
     std::array<GenerationID, sizeof...(Components)> generations;
     std::vector<boost::hana::tuple<EntityID, boost::hana::tuple<typename std::add_pointer<Components>::type...>>> view;
 };
 
-template <typename... Components, typename TWorld>
-auto makeView(TWorld& world) {
-    return View<TWorld, Components...>(world);
+template<typename... Components, typename TWorld>
+auto makeView(TWorld &world) {
+    auto always_true = [](auto a) { return true; };
+    return View<TWorld, decltype(always_true), Components...>(world, always_true);
+}
+
+template<typename... Components, typename TWorld, typename Predicate>
+auto makeView(TWorld &world, Predicate predicate) {
+    return View<TWorld, Predicate, Components...>(world, predicate);
 }
 
 TALON_NS_END

@@ -19,6 +19,8 @@ struct TestComponentTransform {
         return "TestComponentTransform";
     }
 
+    int idx = 0;
+
     MOCK_METHOD0(testTransform, void());
 };
 
@@ -32,7 +34,6 @@ struct TestComponentMeshFilter {
     static constexpr const char *string() {
         return "TestComponentMeshFilter";
     }
-
     MOCK_METHOD0(testMeshFilter, void());
 };
 
@@ -232,6 +233,39 @@ TEST(TestComponent, TestViewMultiple) {
     });
 
     auto view1 = makeView<TestComponentMeshFilter, TestComponentTransform>(world);
+
+    for (int i = 0; i < 100; i++)
+        view1.for_each(world, increment);
+}
+
+
+
+TEST(TestComponent, TestViewPredicate) {
+    TestWorldType world;
+
+    std::vector<EntityID> ids;
+
+    for (int i = 0; i < 50; i++) {
+        ids.push_back(world.createEntity<TestComponentTransform, TestComponentMeshFilter>());
+    }
+
+    auto target_id = ids[23];
+
+    for (auto id : ids) {
+        TestComponentTransform& component = world.getComponentStorage<TestComponentTransform>().get(id);
+        if (id == target_id)
+            EXPECT_CALL(component, testTransform()).Times(100);
+        else
+            EXPECT_CALL(component, testTransform()).Times(0);
+    }
+
+    auto increment = boost::hana::fuse([target_id](auto entityID, boost::hana::tuple<TestComponentTransform*> components) {
+        components[0_c]->testTransform();
+    });
+
+    auto view1 = makeView<TestComponentTransform>(world, boost::hana::fuse([target_id](auto id,  boost::hana::tuple<TestComponentTransform*> components){
+        return id == target_id;
+    }));
 
     for (int i = 0; i < 100; i++)
         view1.for_each(world, increment);
