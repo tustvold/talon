@@ -1,7 +1,7 @@
-#include "talon.hpp"
+#include "Talon.hpp"
 
 #include "Application.hpp"
-#include "vulkan_ext.hpp"
+#include "VulkanLoader.hpp"
 #include "Vertex.hpp"
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>

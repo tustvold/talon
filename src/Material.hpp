@@ -1,5 +1,5 @@
 #pragma once
-#include "talon.hpp"
+#include "Talon.hpp"
 #include "DeviceManager.hpp"
 #include "SwapChain.hpp"
 #include "RenderPass.hpp"

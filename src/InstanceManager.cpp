@@ -1,6 +1,6 @@
 #include <GLFW/glfw3.h>
 #include "InstanceManager.hpp"
-#include "vulkan_ext.hpp"
+#include "VulkanLoader.hpp"
 
 static bool checkValidationLayerSupport(const talon::ApplicationInitSettings& initSettings) {
     auto availableLayers = vk::enumerateInstanceLayerProperties();

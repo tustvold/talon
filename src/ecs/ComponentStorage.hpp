@@ -1,6 +1,6 @@
 #pragma once
-#include "talon.hpp"
-#include "ecs.hpp"
+#include "Talon.hpp"
+#include "Entity.hpp"
 
 TALON_NS_BEGIN
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "talon.hpp"
+#include "Talon.hpp"
 #include "ServiceProvider.hpp"
 #include "DeviceProvider.hpp"
 

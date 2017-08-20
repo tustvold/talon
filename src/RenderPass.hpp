@@ -1,6 +1,6 @@
 #pragma once
 #include <vulkan/vulkan.hpp>
-#include "talon.hpp"
+#include "Talon.hpp"
 #include "SwapChain.hpp"
 
 TALON_NS_BEGIN

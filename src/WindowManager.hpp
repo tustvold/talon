@@ -1,6 +1,6 @@
 #pragma once
 #include <Signal.hpp>
-#include "talon.hpp"
+#include "Talon.hpp"
 #include "InstanceManager.hpp"
 #include "Signal.hpp"
 

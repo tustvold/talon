@@ -1,5 +1,5 @@
 #pragma once
-#include "talon.hpp"
+#include "Talon.hpp"
 #include "WindowManager.hpp"
 
 TALON_NS_BEGIN

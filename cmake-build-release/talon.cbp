@@ -231,11 +231,11 @@
 		<Unit filename="/home/tustvold/Repos/talon/example/main.cpp">
 			<Option target="imgui_glfw_test"/>
 		</Unit>
-		<Unit filename="/home/tustvold/Repos/talon/external/signals/Signal.hpp">
+		<Unit filename="/home/tustvold/Repos/talon/external/signals/Dummy.cpp">
+			<Option target="signals"/>
 			<Option target="imgui_glfw_test"/>
 		</Unit>
-		<Unit filename="/home/tustvold/Repos/talon/external/signals/dummy.cpp">
-			<Option target="signals"/>
+		<Unit filename="/home/tustvold/Repos/talon/external/signals/Signal.hpp">
 			<Option target="imgui_glfw_test"/>
 		</Unit>
 		<Unit filename="/home/tustvold/Repos/talon/src/Application.cpp">
@@ -298,7 +298,16 @@
 		<Unit filename="/home/tustvold/Repos/talon/src/SwapChain.hpp">
 			<Option target="talon"/>
 		</Unit>
+		<Unit filename="/home/tustvold/Repos/talon/src/Talon.hpp">
+			<Option target="talon"/>
+		</Unit>
 		<Unit filename="/home/tustvold/Repos/talon/src/Vertex.hpp">
+			<Option target="talon"/>
+		</Unit>
+		<Unit filename="/home/tustvold/Repos/talon/src/VulkanLoader.cpp">
+			<Option target="talon"/>
+		</Unit>
+		<Unit filename="/home/tustvold/Repos/talon/src/VulkanLoader.hpp">
 			<Option target="talon"/>
 		</Unit>
 		<Unit filename="/home/tustvold/Repos/talon/src/WindowManager.cpp">
@@ -316,22 +325,13 @@
 		<Unit filename="/home/tustvold/Repos/talon/src/ecs/ComponentStorage.hpp">
 			<Option target="talon"/>
 		</Unit>
+		<Unit filename="/home/tustvold/Repos/talon/src/ecs/Entity.hpp">
+			<Option target="talon"/>
+		</Unit>
 		<Unit filename="/home/tustvold/Repos/talon/src/ecs/IdentifierPool.hpp">
 			<Option target="talon"/>
 		</Unit>
 		<Unit filename="/home/tustvold/Repos/talon/src/ecs/World.hpp">
-			<Option target="talon"/>
-		</Unit>
-		<Unit filename="/home/tustvold/Repos/talon/src/ecs/ecs.hpp">
-			<Option target="talon"/>
-		</Unit>
-		<Unit filename="/home/tustvold/Repos/talon/src/talon.hpp">
-			<Option target="talon"/>
-		</Unit>
-		<Unit filename="/home/tustvold/Repos/talon/src/vulkan_ext.cpp">
-			<Option target="talon"/>
-		</Unit>
-		<Unit filename="/home/tustvold/Repos/talon/src/vulkan_ext.hpp">
 			<Option target="talon"/>
 		</Unit>
 		<Unit filename="/home/tustvold/Repos/talon/test/TestComponent.cpp">

@@ -1,5 +1,5 @@
 #pragma once
-#include "talon.hpp"
+#include "Talon.hpp"
 #include <boost/hana.hpp>
 
 using namespace boost::hana::literals;
