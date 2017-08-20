@@ -5,7 +5,7 @@
 		<Option title="talon"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="gcc"/>
-		<Option virtualFolders="CMake Files\;CMake Files\cmake\;CMake Files\external\;CMake Files\external\signals\;CMake Files\src\;CMake Files\example\;CMake Files\test\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\config\;CMake Files\cmake\;CMake Files\external\;CMake Files\external\signals\;CMake Files\src\;CMake Files\example\;CMake Files\test\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="/home/tustvold/Repos/talon/cmake-build-release"/>
@@ -92,6 +92,7 @@
 				<Compiler>
 					<Add directory="/home/tustvold/Repos/talon/src"/>
 					<Add directory="/usr/local/include"/>
+					<Add directory="/home/tustvold/Repos/talon/config/default"/>
 					<Add directory="/home/tustvold/Repos/talon/external/signals"/>
 					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../include/c++/7.1.1"/>
 					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../include/c++/7.1.1/x86_64-pc-linux-gnu"/>
@@ -116,6 +117,7 @@
 				<Compiler>
 					<Add directory="/home/tustvold/Repos/talon/src"/>
 					<Add directory="/usr/local/include"/>
+					<Add directory="/home/tustvold/Repos/talon/config/default"/>
 					<Add directory="/home/tustvold/Repos/talon/external/signals"/>
 					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../include/c++/7.1.1"/>
 					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../include/c++/7.1.1/x86_64-pc-linux-gnu"/>
@@ -140,6 +142,7 @@
 				<Compiler>
 					<Add directory="/home/tustvold/Repos/talon/src"/>
 					<Add directory="/usr/local/include"/>
+					<Add directory="/home/tustvold/Repos/talon/config/default"/>
 					<Add directory="/home/tustvold/Repos/talon/external/signals"/>
 					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../include/c++/7.1.1"/>
 					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../include/c++/7.1.1/x86_64-pc-linux-gnu"/>
@@ -164,6 +167,7 @@
 				<Compiler>
 					<Add directory="/home/tustvold/Repos/talon/src"/>
 					<Add directory="/usr/local/include"/>
+					<Add directory="/home/tustvold/Repos/talon/config/default"/>
 					<Add directory="/home/tustvold/Repos/talon/external/signals"/>
 					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../include/c++/7.1.1"/>
 					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../include/c++/7.1.1/x86_64-pc-linux-gnu"/>
@@ -188,6 +192,7 @@
 				<Compiler>
 					<Add directory="/home/tustvold/Repos/talon/src"/>
 					<Add directory="/usr/local/include"/>
+					<Add directory="/home/tustvold/Repos/talon/config/default"/>
 					<Add directory="/home/tustvold/Repos/talon/external/signals"/>
 					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../include/c++/7.1.1"/>
 					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../include/c++/7.1.1/x86_64-pc-linux-gnu"/>
@@ -212,6 +217,7 @@
 				<Compiler>
 					<Add directory="/home/tustvold/Repos/talon/src"/>
 					<Add directory="/usr/local/include"/>
+					<Add directory="/home/tustvold/Repos/talon/config/default"/>
 					<Add directory="/home/tustvold/Repos/talon/external/signals"/>
 					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../include/c++/7.1.1"/>
 					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/7.1.1/../../../../include/c++/7.1.1/x86_64-pc-linux-gnu"/>
@@ -228,6 +234,9 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/tustvold/Repos/talon/config/default/TalonConfig.hpp">
+			<Option target="talon"/>
+		</Unit>
 		<Unit filename="/home/tustvold/Repos/talon/example/main.cpp">
 			<Option target="imgui_glfw_test"/>
 		</Unit>
@@ -265,6 +274,9 @@
 		<Unit filename="/home/tustvold/Repos/talon/src/InstanceManager.hpp">
 			<Option target="talon"/>
 		</Unit>
+		<Unit filename="/home/tustvold/Repos/talon/src/Logging.hpp">
+			<Option target="talon"/>
+		</Unit>
 		<Unit filename="/home/tustvold/Repos/talon/src/Material.cpp">
 			<Option target="talon"/>
 		</Unit>
@@ -296,9 +308,6 @@
 			<Option target="talon"/>
 		</Unit>
 		<Unit filename="/home/tustvold/Repos/talon/src/SwapChain.hpp">
-			<Option target="talon"/>
-		</Unit>
-		<Unit filename="/home/tustvold/Repos/talon/src/Talon.hpp">
 			<Option target="talon"/>
 		</Unit>
 		<Unit filename="/home/tustvold/Repos/talon/src/Vertex.hpp">
@@ -342,6 +351,9 @@
 		</Unit>
 		<Unit filename="/home/tustvold/Repos/talon/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/tustvold/Repos/talon/config/default.cmake">
+			<Option virtualFolder="CMake Files\config\"/>
 		</Unit>
 		<Unit filename="/home/tustvold/Repos/talon/cmake/FindGLFW3.cmake">
 			<Option virtualFolder="CMake Files\cmake\"/>

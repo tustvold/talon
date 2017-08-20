@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vulkan/vulkan.hpp>
+#include "Logging.hpp"
 class DeviceProvider {
 public:
     void destroyImageView(vk::ImageView imageView) const {

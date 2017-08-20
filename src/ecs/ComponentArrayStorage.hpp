@@ -1,8 +1,9 @@
 #pragma once
-#include "Talon.hpp"
+#include "TalonConfig.hpp"
 #include "Entity.hpp"
 #include <array>
 #include <optional>
+#include <Logging.hpp>
 
 TALON_NS_BEGIN
 template<typename Component>

@@ -1,4 +1,4 @@
-#include "Talon.hpp"
+#include "TalonConfig.hpp"
 
 #include "Application.hpp"
 #include "VulkanLoader.hpp"

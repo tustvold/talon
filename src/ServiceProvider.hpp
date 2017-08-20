@@ -1,5 +1,6 @@
 #pragma once
-#include "Talon.hpp"
+#include "TalonConfig.hpp"
+#include "Logging.hpp"
 
 TALON_NS_BEGIN
 

@@ -1,5 +1,6 @@
-#include <Talon.hpp>
+#include <TalonConfig.hpp>
 #include "VulkanLoader.hpp"
+#include "Logging.hpp"
 
 static PFN_vkCreateDebugReportCallbackEXT __vkCreateDebugReportCallbackEXT;
 static PFN_vkDestroyDebugReportCallbackEXT __vkDestroyDebugReportCallbackEXT;

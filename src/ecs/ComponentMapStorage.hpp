@@ -1,5 +1,5 @@
 #pragma once
-#include "Talon.hpp"
+#include "TalonConfig.hpp"
 #include "Entity.hpp"
 #include <map>
 

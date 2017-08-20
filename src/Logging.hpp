@@ -1,11 +1,6 @@
 #pragma once
-
+#include "TalonConfig.hpp"
 #include <stdexcept>
-
-#define TALON_NS talon
-#define TALON_NS_BEGIN namespace TALON_NS {
-#define TALON_NS_END }
-#define USING_TALON_NS using namespace TALON_NS
 
 // Stringified version of __LINE__ macro
 

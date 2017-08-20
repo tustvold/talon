@@ -1,5 +1,5 @@
 #pragma once
-#include "Talon.hpp"
+#include "TalonConfig.hpp"
 #include <vector>
 
 TALON_NS_BEGIN

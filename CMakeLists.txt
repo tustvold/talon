@@ -1,7 +1,14 @@
-
-
 cmake_minimum_required(VERSION 3.8)
 project(talon)
+
+if (NOT DEFINED TALON_CONFIG_FILE)
+    message(FATAL_ERROR "Must specify TALON_CONFIG_FILE")
+else()
+    message(STATUS "Using TALON_CONFIG_FILE: ${TALON_CONFIG_FILE}")
+    include(${TALON_CONFIG_FILE})
+endif()
+
+message(STATUS "Using Configuration Directory: ${TALON_CONFIG_DIR}")
 
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)

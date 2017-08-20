@@ -1,5 +1,5 @@
 #pragma once
-#include "Talon.hpp"
+#include "TalonConfig.hpp"
 #include "vulkan/vulkan.hpp"
 #include "ApplicationDelegate.hpp"
 #include "InstanceManager.hpp"
