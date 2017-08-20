@@ -132,7 +132,7 @@ dkms.conf
 out
 gen
 .idea/
-cmake-build-debug/
+cmake-build-*/
 
 # Compiled Shaders
 *.spv
