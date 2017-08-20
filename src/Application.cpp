@@ -62,9 +62,8 @@ void Application::cleanupSwapChain() {
 
 void Application::cleanup() {
     cleanupSwapChain();
-
-    deviceManager->getDevice().destroyBuffer(vertexBuffer);
-    deviceManager->getDevice().freeMemory(vertexBufferMemory);
+    vertexBuffer.reset();
+    memoryAllocator.reset();
 
     deviceManager->getDevice().destroySemaphore(renderFinishedSemaphore);
     deviceManager->getDevice().destroySemaphore(imageAvailableSemaphore);
@@ -119,23 +118,13 @@ void Application::createVertexBuffer() {
     bufferInfo.usage = vk::BufferUsageFlagBits::eVertexBuffer;
     bufferInfo.sharingMode = vk::SharingMode::eExclusive;
 
-    vertexBuffer = deviceManager->getDevice().createBuffer(bufferInfo);
+    VmaMemoryRequirements requirements = {};
+    requirements.requiredFlags = VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+    vertexBuffer = std::make_unique<Buffer>(memoryAllocator.get(), &bufferInfo, &requirements);
 
-    vk::MemoryRequirements memRequirements = deviceManager->getDevice().getBufferMemoryRequirements(vertexBuffer);
 
-    vk::MemoryAllocateInfo allocInfo = {};
-    allocInfo.allocationSize = memRequirements.size;
-    allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits,
-                                               vk::Flags(vk::MemoryPropertyFlagBits::eHostVisible)
-                                                   | vk::MemoryPropertyFlagBits::eHostCoherent);
-    vertexBufferMemory = deviceManager->getDevice().allocateMemory(allocInfo);
-
-    deviceManager->getDevice().bindBufferMemory(vertexBuffer, vertexBufferMemory, 0);
-
-    void *data;
-    deviceManager->getDevice().mapMemory(vertexBufferMemory, 0, bufferInfo.size, vk::MemoryMapFlags(), &data);
-    memcpy(data, vertices.data(), (size_t) bufferInfo.size);
-    deviceManager->getDevice().unmapMemory(vertexBufferMemory);
+    auto handle = vertexBuffer->map();
+    handle.copy(vertices);
 }
 
 uint32_t Application::findMemoryType(uint32_t typeFilter, const vk::MemoryPropertyFlags &properties) {
@@ -165,7 +154,9 @@ void Application::drawFrame() {
     if (delta > 5) {
         updateStartInterval = current;
 
-        TLOGINFO("Average time is %f ms, framerate is %f", 1000 * delta / (double)updateCount, (double)updateCount / delta);
+        TLOGINFO("Average time is %f ms, framerate is %f",
+                 1000 * delta / (double) updateCount,
+                 (double) updateCount / delta);
 
         updateCount = 0;
     }
@@ -264,7 +255,7 @@ void Application::recordCommandBuffer(int index) {
 
     commandBuffer->bindPipeline(vk::PipelineBindPoint::eGraphics, material->getGraphicsPipeline());
 
-    vk::Buffer vertexBuffers[] = {vertexBuffer};
+    vk::Buffer vertexBuffers[] = {vertexBuffer->data};
     vk::DeviceSize offsets[] = {0};
 
     commandBuffer->bindVertexBuffers(0, 1, vertexBuffers, offsets);
@@ -276,9 +267,7 @@ void Application::recordCommandBuffer(int index) {
 }
 
 Application::Application(std::unique_ptr<ApplicationDelegate> &&delegate, const ApplicationInitSettings &initSettings)
-    : applicationDelegate(std::move(delegate)), updateCount(0), updateStartInterval(glfwGetTime())
-
-       {
+    : applicationDelegate(std::move(delegate)), updateCount(0), updateStartInterval(glfwGetTime()) {
 
     windowManager = std::make_unique<WindowManager>(initSettings);
     instanceManager = std::make_unique<InstanceManager>(initSettings);
@@ -287,7 +276,7 @@ Application::Application(std::unique_ptr<ApplicationDelegate> &&delegate, const 
 
     surfaceManager = std::make_unique<SurfaceManager>(instanceManager.get(), windowManager.get());
     deviceManager = std::make_unique<DeviceManager>(initSettings, instanceManager.get(), surfaceManager.get());
-
+    memoryAllocator = std::make_unique<MemoryAllocator>(deviceManager.get());
     swapChain = std::make_unique<SwapChain>(windowManager.get(), surfaceManager.get(), deviceManager.get());
     renderPass = std::make_unique<RenderPass>(swapChain.get(), deviceManager.get());
     material = std::make_unique<Material>(swapChain.get(), renderPass.get(), deviceManager.get());

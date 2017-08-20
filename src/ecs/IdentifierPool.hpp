@@ -1,6 +1,5 @@
 #pragma once
 #include "TalonConfig.hpp"
-#include "Entity.hpp"
 #include <stack>
 
 TALON_NS_BEGIN

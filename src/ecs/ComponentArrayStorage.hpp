@@ -1,9 +1,11 @@
 #pragma once
 #include "TalonConfig.hpp"
-#include "Entity.hpp"
 #include <array>
 #include <optional>
 #include <Logging.hpp>
+
+#include <boost/hana.hpp>
+using namespace boost::hana::literals;
 
 TALON_NS_BEGIN
 template<typename Component>

@@ -1,7 +1,9 @@
 #pragma once
 #include "TalonConfig.hpp"
-#include "Entity.hpp"
+#include <boost/hana.hpp>
 #include <map>
+
+using namespace boost::hana::literals;
 
 TALON_NS_BEGIN
 

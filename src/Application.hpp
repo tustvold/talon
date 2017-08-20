@@ -9,6 +9,7 @@
 #include "SwapChain.hpp"
 #include "RenderPass.hpp"
 #include "Material.hpp"
+#include "MemoryAllocator.hpp"
 
 struct GLFWwindow;
 
@@ -28,8 +29,7 @@ public:
 private:
     vk::DebugReportCallbackEXT callback;
 
-    vk::Buffer vertexBuffer;
-    vk::DeviceMemory vertexBufferMemory;
+    std::unique_ptr<Buffer> vertexBuffer;
 
     vk::Semaphore imageAvailableSemaphore;
     vk::Semaphore renderFinishedSemaphore;
@@ -40,6 +40,7 @@ private:
     std::unique_ptr<InstanceManager> instanceManager;
     std::unique_ptr<SurfaceManager> surfaceManager;
     std::unique_ptr<DeviceManager> deviceManager;
+    std::unique_ptr<MemoryAllocator> memoryAllocator;
 
     std::unique_ptr<SwapChain> swapChain;
     std::unique_ptr<RenderPass> renderPass;

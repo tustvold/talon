@@ -2,7 +2,7 @@
 #include <gmock/gmock.h>
 #include <ecs/ComponentArrayStorage.hpp>
 #include <ecs/ComponentMapStorage.hpp>
-#include "ecs/World.hpp"
+#include "ecs/TWorld.hpp"
 
 
 USING_TALON_NS;
@@ -56,8 +56,10 @@ struct ComponentStorage<TestComponentMeshFilter> : ComponentMapStorage<TestCompo
 
 TALON_NS_END
 
+using TestWorldType = TWorld<TestComponentTransform, TestComponentMeshFilter>;
+
 TEST(TestComponent, TestTransform) {
-    World<TestComponentTransform, TestComponentMeshFilter> world;
+    TestWorldType world;
 
     std::vector<EntityID> ids;
 
@@ -79,7 +81,7 @@ TEST(TestComponent, TestTransform) {
 }
 
 TEST(TestComponent, TestMeshFilter) {
-    World<TestComponentTransform, TestComponentMeshFilter> world;
+    TestWorldType world;
 
     std::vector<EntityID> ids;
 
@@ -101,7 +103,7 @@ TEST(TestComponent, TestMeshFilter) {
 }
 
 TEST(TestComponent, TestMultiple) {
-    World<TestComponentTransform, TestComponentMeshFilter> world;
+    TestWorldType world;
 
     std::vector<EntityID> ids;
 

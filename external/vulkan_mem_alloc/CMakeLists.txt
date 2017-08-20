@@ -1,0 +1,2 @@
+add_library(vulkan_mem_alloc vulkan_mem_alloc.cpp)
+target_include_directories(vulkan_mem_alloc PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

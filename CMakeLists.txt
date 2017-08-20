@@ -43,6 +43,7 @@ find_package(Vulkan REQUIRED)
 find_package(Boost REQUIRED)
 
 add_subdirectory(external/signals)
+add_subdirectory(external/vulkan_mem_alloc)
 
 add_subdirectory(src)
 add_subdirectory(example)

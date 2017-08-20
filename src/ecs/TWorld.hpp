@@ -1,6 +1,5 @@
 #pragma once
 #include "TalonConfig.hpp"
-#include "Entity.hpp"
 #include "ComponentStorage.hpp"
 #include "IdentifierPool.hpp"
 
@@ -111,13 +110,13 @@ struct ForEachUtil<Component, Others...> {
 }
 
 template<typename... SystemComponents>
-class World {
+class TWorld {
 public:
-    World() = default;
-    World(const World &) = delete;
-    World(World &&) = delete;
-    World &operator=(const World &) = delete;
-    World &operator=(World &&) = delete;
+    TWorld() = default;
+    TWorld(const TWorld &) = delete;
+    TWorld(TWorld &&) = delete;
+    TWorld &operator=(const TWorld &) = delete;
+    TWorld &operator=(TWorld &&) = delete;
 
     template<typename... EntityComponents>
     EntityID createEntity() {
