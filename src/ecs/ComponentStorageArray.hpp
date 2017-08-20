@@ -70,8 +70,8 @@ public:
         incrementGeneration();
     }
 
-    auto& get(EntityID id) {
-        return data[id].value();
+    Component* get(EntityID id) {
+        return data[id].has_value() ? &data[id].value() : nullptr;
     }
 
     Iterator begin() {

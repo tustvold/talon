@@ -57,8 +57,9 @@ public:
         incrementGeneration();
     }
 
-    auto& get(EntityID id) {
-        return data[id];
+    Component* get(EntityID id) {
+        auto it = data.find(id);
+        return it == data.end() ? nullptr : &it->second;
     }
 
     Iterator begin() {
