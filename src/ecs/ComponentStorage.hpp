@@ -5,6 +5,28 @@ using namespace boost::hana::literals;
 
 TALON_NS_BEGIN
 
+using GenerationID = uint64_t;
+
+struct ComponentStorageBase {
+public:
+    // We initialize generation to 1, so that 0 corresponds to uninitialized for Views
+    ComponentStorageBase() : generation(1) {}
+
+    GenerationID getGeneration() const {
+        return generation;
+    }
+
+protected:
+
+    void incrementGeneration() {
+        generation++;
+    }
+
+private:
+
+    GenerationID generation;
+};
+
 template<typename Component>
 struct ComponentStorage;
 

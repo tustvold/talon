@@ -389,19 +389,22 @@
 		<Unit filename="/home/tustvold/Repos/talon/src/WindowManager.hpp">
 			<Option target="talon"/>
 		</Unit>
-		<Unit filename="/home/tustvold/Repos/talon/src/ecs/ComponentArrayStorage.hpp">
-			<Option target="talon"/>
-		</Unit>
-		<Unit filename="/home/tustvold/Repos/talon/src/ecs/ComponentMapStorage.hpp">
-			<Option target="talon"/>
-		</Unit>
 		<Unit filename="/home/tustvold/Repos/talon/src/ecs/ComponentStorage.hpp">
+			<Option target="talon"/>
+		</Unit>
+		<Unit filename="/home/tustvold/Repos/talon/src/ecs/ComponentStorageArray.hpp">
+			<Option target="talon"/>
+		</Unit>
+		<Unit filename="/home/tustvold/Repos/talon/src/ecs/ComponentStorageMap.hpp">
 			<Option target="talon"/>
 		</Unit>
 		<Unit filename="/home/tustvold/Repos/talon/src/ecs/IdentifierPool.hpp">
 			<Option target="talon"/>
 		</Unit>
 		<Unit filename="/home/tustvold/Repos/talon/src/ecs/TWorld.hpp">
+			<Option target="talon"/>
+		</Unit>
+		<Unit filename="/home/tustvold/Repos/talon/src/ecs/View.hpp">
 			<Option target="talon"/>
 		</Unit>
 		<Unit filename="/home/tustvold/Repos/talon/test/TestComponent.cpp">

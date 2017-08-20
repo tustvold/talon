@@ -1,5 +1,6 @@
 #pragma once
 #include "TalonConfig.hpp"
+#include "ComponentStorage.hpp"
 #include <boost/hana.hpp>
 #include <map>
 
@@ -8,7 +9,7 @@ using namespace boost::hana::literals;
 TALON_NS_BEGIN
 
 template<typename Component>
-struct ComponentMapStorage {
+struct ComponentStorageMap : ComponentStorageBase {
 public:
     struct Iterator {
         using InputIterator = typename std::map<EntityID, Component>::iterator;
@@ -44,15 +45,16 @@ public:
 
     };
 
-    ComponentMapStorage() = default;
-    ComponentMapStorage(const ComponentMapStorage &) = delete;
-    ComponentMapStorage(ComponentMapStorage &&other) noexcept = delete;
-    ComponentMapStorage &operator=(const ComponentMapStorage &) = delete;
-    ComponentMapStorage &operator=(ComponentMapStorage &&) = delete;
+    ComponentStorageMap() = default;
+    ComponentStorageMap(const ComponentStorageMap &) = delete;
+    ComponentStorageMap(ComponentStorageMap &&other) noexcept = delete;
+    ComponentStorageMap &operator=(const ComponentStorageMap &) = delete;
+    ComponentStorageMap &operator=(ComponentStorageMap &&) = delete;
 
     void add(EntityID id) {
         TASSERT(id < MaxEntityID);
         data[id];
+        incrementGeneration();
     }
 
     auto& get(EntityID id) {

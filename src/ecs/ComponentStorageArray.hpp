@@ -1,5 +1,6 @@
 #pragma once
 #include "TalonConfig.hpp"
+#include "ComponentStorage.hpp"
 #include <array>
 #include <optional>
 #include <Logging.hpp>
@@ -9,7 +10,7 @@ using namespace boost::hana::literals;
 
 TALON_NS_BEGIN
 template<typename Component>
-struct ComponentArrayStorage {
+struct ComponentStorageArray : ComponentStorageBase {
 public:
     struct Iterator {
         using InputIterator = typename std::array<std::optional<Component>, MaxEntityID>::iterator;
@@ -57,15 +58,16 @@ public:
         }
     };
 
-    ComponentArrayStorage() = default;
-    ComponentArrayStorage(const ComponentArrayStorage &) = delete;
-    ComponentArrayStorage(ComponentArrayStorage &&other) noexcept = delete;
-    ComponentArrayStorage &operator=(const ComponentArrayStorage &) = delete;
-    ComponentArrayStorage &operator=(ComponentArrayStorage &&) = delete;
+    ComponentStorageArray() = default;
+    ComponentStorageArray(const ComponentStorageArray &) = delete;
+    ComponentStorageArray(ComponentStorageArray &&other) noexcept = delete;
+    ComponentStorageArray &operator=(const ComponentStorageArray &) = delete;
+    ComponentStorageArray &operator=(ComponentStorageArray &&) = delete;
 
     void add(EntityID id) {
         TASSERT(id < MaxEntityID);
         data[id].emplace();
+        incrementGeneration();
     }
 
     auto& get(EntityID id) {

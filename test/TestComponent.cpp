@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include <ecs/ComponentArrayStorage.hpp>
-#include <ecs/ComponentMapStorage.hpp>
+#include <ecs/ComponentStorageArray.hpp>
+#include <ecs/ComponentStorageMap.hpp>
+#include <ecs/View.hpp>
 #include "ecs/TWorld.hpp"
 
 
@@ -50,9 +51,9 @@ struct TestComponentMeshFilter2 {
 TALON_NS_BEGIN
 
 template<>
-struct ComponentStorage<TestComponentTransform> : ComponentArrayStorage<TestComponentTransform> {};
+struct ComponentStorage<TestComponentTransform> : ComponentStorageArray<TestComponentTransform> {};
 template<>
-struct ComponentStorage<TestComponentMeshFilter> : ComponentMapStorage<TestComponentMeshFilter> {};
+struct ComponentStorage<TestComponentMeshFilter> : ComponentStorageMap<TestComponentMeshFilter> {};
 
 TALON_NS_END
 
@@ -107,7 +108,19 @@ TEST(TestComponent, TestMultiple) {
 
     std::vector<EntityID> ids;
 
-    for (int i = 0; i < 50; i++) {
+    for (int i = 0; i < 25; i++) {
+        ids.push_back(world.createEntity<TestComponentTransform, TestComponentMeshFilter>());
+    }
+
+    for (int i = 0; i < 100; i++) {
+        world.createEntity<TestComponentTransform>();
+    }
+
+    for (int i = 0; i < 100; i++) {
+        world.createEntity<TestComponentMeshFilter>();
+    }
+
+    for (int i = 0; i < 25; i++) {
         ids.push_back(world.createEntity<TestComponentTransform, TestComponentMeshFilter>());
     }
 
@@ -126,4 +139,100 @@ TEST(TestComponent, TestMultiple) {
 
     for (int i = 0; i < 100; i++)
         world.for_each<TestComponentMeshFilter, TestComponentTransform>(increment);
+}
+
+
+
+TEST(TestComponent, TestView) {
+    TestWorldType world;
+
+    std::vector<EntityID> ids;
+
+    for (int i = 0; i < 50; i++) {
+        ids.push_back(world.createEntity<TestComponentTransform, TestComponentMeshFilter>());
+    }
+
+    for (auto id : ids) {
+        TestComponentTransform& component = world.getComponentStorage<TestComponentTransform>().get(id);
+        EXPECT_CALL(component, testTransform()).Times(100);
+    }
+
+    auto increment = boost::hana::fuse([](auto entityID, boost::hana::tuple<TestComponentTransform*> components) {
+        components[0_c]->testTransform();
+    });
+
+    auto view1 = makeView<TestComponentTransform>(world);
+
+    for (int i = 0; i < 100; i++)
+        view1.for_each(world, increment);
+}
+
+
+TEST(TestComponent, TestViewMutate) {
+    TestWorldType world;
+
+    std::vector<EntityID> ids;
+
+    for (int i = 0; i < 50; i++) {
+        ids.push_back(world.createEntity<TestComponentTransform, TestComponentMeshFilter>());
+    }
+
+    for (auto id : ids) {
+        TestComponentTransform& component = world.getComponentStorage<TestComponentTransform>().get(id);
+        EXPECT_CALL(component, testTransform()).Times(2);
+    }
+
+    auto increment = boost::hana::fuse([](auto entityID, boost::hana::tuple<TestComponentTransform*> components) {
+        components[0_c]->testTransform();
+    });
+
+    auto view1 = makeView<TestComponentTransform>(world);
+    view1.for_each(world, increment);
+
+    auto new_id = world.createEntity<TestComponentTransform, TestComponentMeshFilter>();
+    TestComponentTransform& component = world.getComponentStorage<TestComponentTransform>().get(new_id);
+    EXPECT_CALL(component, testTransform()).Times(1);
+
+    view1.for_each(world, increment);
+}
+
+
+TEST(TestComponent, TestViewMultiple) {
+    TestWorldType world;
+
+    std::vector<EntityID> ids;
+
+    for (int i = 0; i < 25; i++) {
+        ids.push_back(world.createEntity<TestComponentTransform, TestComponentMeshFilter>());
+    }
+
+    for (int i = 0; i < 100; i++) {
+        world.createEntity<TestComponentTransform>();
+    }
+
+    for (int i = 0; i < 100; i++) {
+        world.createEntity<TestComponentMeshFilter>();
+    }
+
+    for (int i = 0; i < 25; i++) {
+        ids.push_back(world.createEntity<TestComponentTransform, TestComponentMeshFilter>());
+    }
+
+    for (auto id : ids) {
+        TestComponentMeshFilter& componentMeshFilter = world.getComponentStorage<TestComponentMeshFilter>().get(id);
+        EXPECT_CALL(componentMeshFilter, testMeshFilter()).Times(100);
+
+        TestComponentTransform& componentTransform = world.getComponentStorage<TestComponentTransform>().get(id);
+        EXPECT_CALL(componentTransform, testTransform()).Times(100);
+    }
+
+    auto increment = boost::hana::fuse([](auto entityID, boost::hana::tuple<TestComponentMeshFilter*, TestComponentTransform*> components) {
+        components[0_c]->testMeshFilter();
+        components[1_c]->testTransform();
+    });
+
+    auto view1 = makeView<TestComponentMeshFilter, TestComponentTransform>(world);
+
+    for (int i = 0; i < 100; i++)
+        view1.for_each(world, increment);
 }

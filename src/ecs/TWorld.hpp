@@ -5,6 +5,9 @@
 
 TALON_NS_BEGIN
 
+template<typename... SystemComponents>
+class TWorld;
+
 namespace detail {
 template<typename Iter1, typename Iter2>
 struct ForEachUtilIter {
@@ -107,10 +110,12 @@ struct ForEachUtil<Component, Others...> {
         return ForEachUtilIter(myEnd, myEnd, otherEnd, otherEnd);
     }
 };
+
 }
 
 template<typename... SystemComponents>
 class TWorld {
+    using self_type = TWorld<SystemComponents...>;
 public:
     TWorld() = default;
     TWorld(const TWorld &) = delete;
@@ -131,12 +136,22 @@ public:
         return id;
     }
 
+    template<typename... Components>
+    auto begin() {
+        return detail::ForEachUtil<Components...>::begin(storage);
+    }
+
+    template<typename... Components>
+    auto end() {
+        return detail::ForEachUtil<Components...>::end(storage);
+    }
+
     template<typename... Components, class UnaryFunction>
     void for_each(UnaryFunction f) {
-        auto begin = detail::ForEachUtil<Components...>::begin(storage);
-        auto end = detail::ForEachUtil<Components...>::end(storage);
+        auto beginLocal = begin<Components...>();
+        auto endLocal = end<Components...>();
 
-        for (auto it = begin; it != end; ++it) {
+        for (auto it = beginLocal; it != endLocal; ++it) {
             f(*it);
         }
     }
