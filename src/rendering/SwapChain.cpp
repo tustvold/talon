@@ -1,5 +1,8 @@
 #include "SwapChain.hpp"
 #include "ServiceTable.hpp"
+#include "WindowManager.hpp"
+#include "SurfaceManager.hpp"
+#include "DeviceManager.hpp"
 
 USING_TALON_NS;
 

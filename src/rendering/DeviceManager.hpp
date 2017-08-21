@@ -1,10 +1,12 @@
 #pragma once
 #include "TalonConfig.hpp"
-#include "ApplicationInitSettings.hpp"
-#include "SurfaceManager.hpp"
 #include <vulkan/vulkan.hpp>
 
 TALON_NS_BEGIN
+struct ApplicationInitSettings;
+class InstanceManager;
+class SurfaceManager;
+
 struct QueueFamilyIndices {
     int graphicsFamily = -1;
     int presentFamily = -1;

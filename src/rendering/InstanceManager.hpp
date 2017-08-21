@@ -1,9 +1,10 @@
 #pragma once
 #include "TalonConfig.hpp"
 #include <vulkan/vulkan.hpp>
-#include "ApplicationInitSettings.hpp"
 
 TALON_NS_BEGIN
+
+struct ApplicationInitSettings;
 
 class InstanceManager {
 public:

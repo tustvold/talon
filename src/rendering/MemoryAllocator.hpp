@@ -1,10 +1,12 @@
 #pragma once
 #include "TalonConfig.hpp"
+#include <vulkan/vulkan.hpp>
 #include "vulkan_mem_alloc.hpp"
-#include "DeviceManager.hpp"
 #include "Logging.hpp"
 
 TALON_NS_BEGIN
+
+class DeviceManager;
 
 namespace detail {
 template<typename T>

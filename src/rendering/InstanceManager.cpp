@@ -2,6 +2,7 @@
 #include "InstanceManager.hpp"
 #include "VulkanLoader.hpp"
 #include "ServiceTable.hpp"
+#include "ApplicationInitSettings.hpp"
 
 static bool checkValidationLayerSupport(const talon::ApplicationInitSettings& initSettings) {
     auto availableLayers = vk::enumerateInstanceLayerProperties();

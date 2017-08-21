@@ -1,10 +1,12 @@
 #pragma once
 #include "TalonConfig.hpp"
-#include "DeviceManager.hpp"
-#include "WindowManager.hpp"
-#include "SurfaceManager.hpp"
+#include <vulkan/vulkan.hpp>
 
 TALON_NS_BEGIN
+
+class WindowManager;
+class SurfaceManager;
+class DeviceManager;
 
 class SwapChain {
 public:

@@ -1,15 +1,13 @@
 #include "vulkan/vulkan.hpp"
-#include <iostream>
-#include <fstream>
-#include <set>
-#include <Application.hpp>
+#include "Logging.hpp"
+#include "Application.hpp"
+#include "ApplicationInitSettings.hpp"
 
 struct MyApplicationDelegate : public talon::ApplicationDelegate {
 public:
     void vulkanDebugCallback(const talon::VDebugCallbackArgs& args) override {
         TLOGERROR("Validation Layer - %s\n", args.pMessage);
     }
-
 };
 
 int main() {
@@ -32,7 +30,7 @@ int main() {
 
         app->run();
     } catch (const std::runtime_error &e) {
-        std::cerr << e.what() << std::endl;
+        TLOGERROR("Runtime Error - %s", e.what());
         return EXIT_FAILURE;
     }
 

@@ -1,7 +1,11 @@
 #include "CommandPool.hpp"
+#include "DeviceManager.hpp"
+#include "SurfaceManager.hpp"
 #include "ServiceTable.hpp"
 
-talon::CommandPool::CommandPool(talon::DeviceManager *deviceManager, SurfaceManager* surfaceManager) {
+USING_TALON_NS;
+
+CommandPool::CommandPool(DeviceManager *deviceManager, SurfaceManager* surfaceManager) {
     QueueFamilyIndices queueFamilyIndices = deviceManager->getQueueFamilyIndices(surfaceManager);
 
     vk::CommandPoolCreateInfo poolInfo = {};
@@ -13,12 +17,12 @@ talon::CommandPool::CommandPool(talon::DeviceManager *deviceManager, SurfaceMana
     ServiceTable::commandPool.set(this);
 }
 
-talon::CommandPool::~CommandPool() {
+CommandPool::~CommandPool() {
     ServiceTable::commandPool.clear(this);
     ServiceTable::deviceManager->getDevice().destroyCommandPool(commandPool);
 }
 
-std::vector<vk::CommandBuffer> talon::CommandPool::createCommandBuffers(uint32_t count, vk::CommandBufferLevel level) const {
+std::vector<vk::CommandBuffer> CommandPool::createCommandBuffers(uint32_t count, vk::CommandBufferLevel level) const {
     vk::CommandBufferAllocateInfo allocInfo = {};
     allocInfo.commandPool = commandPool;
     allocInfo.level = level;
@@ -26,6 +30,6 @@ std::vector<vk::CommandBuffer> talon::CommandPool::createCommandBuffers(uint32_t
     return ServiceTable::deviceManager->getDevice().allocateCommandBuffers(allocInfo);
 }
 
-void talon::CommandPool::destroyCommandBuffers(const std::vector<vk::CommandBuffer> &commandBuffers) const {
+void CommandPool::destroyCommandBuffers(const std::vector<vk::CommandBuffer> &commandBuffers) const {
     ServiceTable::deviceManager->getDevice().freeCommandBuffers(commandPool, commandBuffers);
 }

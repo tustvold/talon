@@ -1,17 +1,17 @@
 #pragma once
 #include "TalonConfig.hpp"
-#include "DeviceManager.hpp"
-#include "SwapChain.hpp"
-#include "RenderPass.hpp"
 #include <vulkan/vulkan.hpp>
 
 TALON_NS_BEGIN
+
+class SwapChain;
+class RenderPass;
+class DeviceManager;
 
 class Material {
 public:
 
     Material(const SwapChain* swapChain, const RenderPass* renderPass, DeviceManager* deviceManager);
-
     ~Material();
 
     vk::Pipeline getGraphicsPipeline() const {

@@ -2,23 +2,17 @@
 #include "TalonConfig.hpp"
 #include "vulkan/vulkan.hpp"
 #include "ApplicationDelegate.hpp"
-#include "InstanceManager.hpp"
-#include "DeviceManager.hpp"
-#include "WindowManager.hpp"
-#include "SurfaceManager.hpp"
-#include "SwapChain.hpp"
-#include "RenderPass.hpp"
-#include "Material.hpp"
-#include "MemoryAllocator.hpp"
-#include "CommandPool.hpp"
-#include "Mesh.hpp"
-#include "GameLoop.hpp"
-#include "DebugCallback.hpp"
-
-struct GLFWwindow;
-
 
 TALON_NS_BEGIN
+struct ApplicationInitSettings;
+
+class WindowManager;
+class InstanceManager;
+class SurfaceManager;
+class DeviceManager;
+class MemoryAllocator;
+class CommandPool;
+class GameLoop;
 
 class Application {
 public:
@@ -44,7 +38,7 @@ private:
 
     void recreateSwapChain();
 
-    void onWindowResized(GLFWwindow *window, vk::Extent2D extent);
+    void onWindowResized(vk::Extent2D extent);
 };
 
 TALON_NS_END

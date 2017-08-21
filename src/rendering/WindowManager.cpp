@@ -1,7 +1,9 @@
 #include <GLFW/glfw3.h>
 #include "WindowManager.hpp"
 
-talon::WindowManager::WindowManager(const ApplicationInitSettings &initSettings) {
+USING_TALON_NS;
+
+WindowManager::WindowManager(const ApplicationInitSettings &initSettings) {
     glfwInit();
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -16,22 +18,21 @@ talon::WindowManager::WindowManager(const ApplicationInitSettings &initSettings)
     glfwSetWindowSizeCallback(window, WindowManager::onWindowResizedStatic);
 }
 
-talon::WindowManager::~WindowManager() {
+WindowManager::~WindowManager() {
     glfwDestroyWindow(window);
     glfwTerminate();
 }
 
-void talon::WindowManager::onWindowResizedStatic(GLFWwindow *window, int width, int height) {
+void WindowManager::onWindowResizedStatic(GLFWwindow *window, int width, int height) {
     auto *manager = reinterpret_cast<WindowManager *>(glfwGetWindowUserPointer(window));
     manager->onWindowResized(window, width, height);
 }
 
-void talon::WindowManager::onWindowResized(GLFWwindow *window, int width, int height) {
-
-    windowResizeEvent(window, vk::Extent2D(static_cast<uint32_t>(width), static_cast<uint32_t>(height)));
+void WindowManager::onWindowResized(GLFWwindow *window, int width, int height) {
+    windowResizeEvent(vk::Extent2D(static_cast<uint32_t>(width), static_cast<uint32_t>(height)));
 }
 
-vk::Extent2D talon::WindowManager::getWindowExtents() {
+vk::Extent2D WindowManager::getWindowExtents() {
     int width, height;
     glfwGetWindowSize(window, &width, &height);
 
@@ -41,7 +42,7 @@ vk::Extent2D talon::WindowManager::getWindowExtents() {
     };
     return extent;
 }
-bool talon::WindowManager::poll() {
+bool WindowManager::poll() {
     if (glfwWindowShouldClose(window))
         return false;
     glfwPollEvents();

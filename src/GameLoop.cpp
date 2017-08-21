@@ -1,11 +1,11 @@
 #include <GLFW/glfw3.h>
 #include "GameLoop.hpp"
 #include "ServiceTable.hpp"
-#include "Vertex.hpp"
-#include "Mesh.hpp"
-#include "SwapChain.hpp"
-#include "Material.hpp"
-#include "RenderPass.hpp"
+#include "rendering/Vertex.hpp"
+#include "rendering/Mesh.hpp"
+#include "rendering/SwapChain.hpp"
+#include "rendering/Material.hpp"
+#include "rendering/RenderPass.hpp"
 
 USING_TALON_NS;
 
@@ -24,6 +24,8 @@ GameLoop::GameLoop(DeviceManager *deviceManager, SurfaceManager *surfaceManager,
     auto meshData = makeMeshData(test_vertices);
     testMesh = std::make_unique<Mesh>(meshData);
 }
+
+GameLoop::~GameLoop() = default;
 
 bool GameLoop::renderFrame(DeviceManager *deviceManager, SurfaceManager *surfaceManager) {
     auto current = glfwGetTime();
@@ -127,5 +129,4 @@ void GameLoop::recordCommandBuffer(int index) {
     commandBuffer.endRenderPass();
     commandBuffer.end();
 }
-
 

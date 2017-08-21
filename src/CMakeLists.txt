@@ -1,11 +1,11 @@
 
 set(SOURCE_FILES ApplicationDelegate.hpp Application.hpp
-        Application.cpp VulkanLoader.cpp VulkanLoader.hpp Vertex.hpp DeviceManager.cpp
-        DeviceManager.hpp InstanceManager.cpp InstanceManager.hpp WindowManager.cpp WindowManager.hpp
-        SurfaceManager.cpp SurfaceManager.hpp ApplicationInitSettings.hpp SwapChain.cpp SwapChain.hpp
-        RenderPass.cpp RenderPass.hpp Material.cpp Material.hpp ServiceTable.hpp
+        Application.cpp rendering/VulkanLoader.cpp rendering/VulkanLoader.hpp rendering/Vertex.hpp rendering/DeviceManager.cpp
+        rendering/DeviceManager.hpp rendering/InstanceManager.cpp rendering/InstanceManager.hpp rendering/WindowManager.cpp rendering/WindowManager.hpp
+        rendering/SurfaceManager.cpp rendering/SurfaceManager.hpp ApplicationInitSettings.hpp rendering/SwapChain.cpp rendering/SwapChain.hpp
+        rendering/RenderPass.cpp rendering/RenderPass.hpp rendering/Material.cpp rendering/Material.hpp ServiceTable.hpp
         ServiceProvider.hpp ServiceTable.cpp ecs/TWorld.hpp ecs/ComponentStorageArray.hpp ecs/ComponentStorageMap.hpp
-        ecs/ComponentStorage.hpp ecs/IdentifierPool.hpp Logging.hpp ${TALON_CONFIG_DIR}/TalonConfig.hpp MemoryAllocator.cpp MemoryAllocator.hpp ecs/View.hpp Mesh.cpp Mesh.hpp CommandPool.cpp CommandPool.hpp GameLoop.cpp GameLoop.hpp VSemaphore.hpp VSemaphore.cpp CommandBufferCollection.cpp CommandBufferCollection.hpp Util.cpp Util.hpp DebugCallback.cpp DebugCallback.hpp)
+        ecs/ComponentStorage.hpp ecs/IdentifierPool.hpp Logging.hpp ${TALON_CONFIG_DIR}/TalonConfig.hpp rendering/MemoryAllocator.cpp rendering/MemoryAllocator.hpp ecs/View.hpp rendering/Mesh.cpp rendering/Mesh.hpp rendering/CommandPool.cpp rendering/CommandPool.hpp GameLoop.cpp GameLoop.hpp rendering/VSemaphore.hpp rendering/VSemaphore.cpp rendering/CommandBufferCollection.cpp rendering/CommandBufferCollection.hpp rendering/DebugCallback.cpp rendering/DebugCallback.hpp)
 
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 

@@ -1,11 +1,13 @@
 #include "VSemaphore.hpp"
 #include "ServiceTable.hpp"
 
-talon::VSemaphore::VSemaphore() {
+USING_TALON_NS;
+
+VSemaphore::VSemaphore() {
     vk::SemaphoreCreateInfo semaphoreInfo = {};
     semaphore = ServiceTable::deviceManager->getDevice().createSemaphore(semaphoreInfo);
 }
 
-talon::VSemaphore::~VSemaphore() {
+VSemaphore::~VSemaphore() {
     ServiceTable::deviceManager->getDevice().destroySemaphore(semaphore);
 }

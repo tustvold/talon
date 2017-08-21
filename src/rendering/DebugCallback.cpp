@@ -1,5 +1,7 @@
 #include "DebugCallback.hpp"
 #include "ServiceTable.hpp"
+#include "InstanceManager.hpp"
+
 USING_TALON_NS;
 
 VDebugCallbackArgs::VDebugCallbackArgs(VkDebugReportFlagsEXT flags,

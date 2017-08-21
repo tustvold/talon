@@ -1,17 +1,17 @@
-#include "TalonConfig.hpp"
-
 #include "Application.hpp"
-#include "VulkanLoader.hpp"
-#include "Vertex.hpp"
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
+#include "GameLoop.hpp"
 
-#include <fstream>
-#include <set>
+#include "rendering/DeviceManager.hpp"
+#include "rendering/InstanceManager.hpp"
+#include "rendering/WindowManager.hpp"
+#include "rendering/SurfaceManager.hpp"
+#include "rendering/CommandPool.hpp"
+#include "rendering/MemoryAllocator.hpp"
+
 
 USING_TALON_NS;
 
-void Application::onWindowResized(GLFWwindow *window, vk::Extent2D extent2D) {
+void Application::onWindowResized(vk::Extent2D extent2D) {
     recreateSwapChain();
 }
 

@@ -2,6 +2,9 @@
 #include "Vertex.hpp"
 #include "fstream"
 #include "ServiceTable.hpp"
+#include "DeviceManager.hpp"
+#include "RenderPass.hpp"
+#include "SwapChain.hpp"
 
 USING_TALON_NS;
 

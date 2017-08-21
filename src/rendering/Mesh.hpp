@@ -1,9 +1,11 @@
 #pragma once
 #include "TalonConfig.hpp"
-#include "MemoryAllocator.hpp"
 #include <vector>
+#include <vulkan/vulkan.hpp>
 
 TALON_NS_BEGIN
+
+class Buffer;
 
 template<typename Vertex>
 struct MeshData {

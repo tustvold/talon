@@ -1,6 +1,6 @@
 #pragma once
 #include "TalonConfig.hpp"
-#include "DebugCallback.hpp"
+#include "rendering/DebugCallback.hpp"
 #include <vulkan/vulkan.hpp>
 
 TALON_NS_BEGIN

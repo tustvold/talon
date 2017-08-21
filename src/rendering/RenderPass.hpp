@@ -1,14 +1,15 @@
 #pragma once
 #include <vulkan/vulkan.hpp>
 #include "TalonConfig.hpp"
-#include "SwapChain.hpp"
 
 TALON_NS_BEGIN
+
+class SwapChain;
+class DeviceManager;
 
 class RenderPass {
 public:
     RenderPass(const SwapChain* swapChain, DeviceManager* deviceManager);
-
     ~RenderPass();
 
     vk::RenderPass getRenderPass() const {

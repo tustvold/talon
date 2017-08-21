@@ -1,7 +1,7 @@
 #pragma once
-#include <Signal.hpp>
+#include <vulkan/vulkan.hpp>
+#include "ApplicationInitSettings.hpp"
 #include "TalonConfig.hpp"
-#include "InstanceManager.hpp"
 #include "Signal.hpp"
 
 struct GLFWwindow;
@@ -30,7 +30,7 @@ public:
 private:
     GLFWwindow* window;
 
-    Gallant::Signal2<GLFWwindow*, vk::Extent2D> windowResizeEvent;
+    Gallant::Signal1<vk::Extent2D> windowResizeEvent;
 
     static void onWindowResizedStatic(GLFWwindow *window, int width, int height);
     void onWindowResized(GLFWwindow *window, int width, int height);

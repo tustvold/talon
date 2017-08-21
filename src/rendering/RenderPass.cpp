@@ -1,5 +1,7 @@
 #include "RenderPass.hpp"
 #include "ServiceTable.hpp"
+#include "SwapChain.hpp"
+
 USING_TALON_NS;
 
 RenderPass::RenderPass(const SwapChain *swapChain,

@@ -1,8 +1,11 @@
 #pragma once
 #include "TalonConfig.hpp"
-#include "WindowManager.hpp"
+#include <vulkan/vulkan.hpp>
 
 TALON_NS_BEGIN
+
+class InstanceManager;
+class WindowManager;
 
 class SurfaceManager {
 public:

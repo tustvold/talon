@@ -1,8 +1,11 @@
 #pragma once
 #include "TalonConfig.hpp"
-#include "DeviceManager.hpp"
+#include <vulkan/vulkan.hpp
 
 TALON_NS_BEGIN
+
+class DeviceManager;
+class SurfaceManager;
 
 class CommandPool {
 public:

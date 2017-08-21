@@ -2,9 +2,9 @@
 
 #include "TalonConfig.hpp"
 #include "ServiceProvider.hpp"
-#include "DeviceManager.hpp"
-#include "MemoryAllocator.hpp"
-#include "CommandPool.hpp"
+#include "rendering/DeviceManager.hpp"
+#include "rendering/MemoryAllocator.hpp"
+#include "rendering/CommandPool.hpp"
 
 TALON_NS_BEGIN
 
