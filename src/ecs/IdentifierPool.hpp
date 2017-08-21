@@ -4,13 +4,14 @@
 
 TALON_NS_BEGIN
 
+template <typename T>
 class IdentifierPool {
 public:
     IdentifierPool() : next(0) {
 
     }
 
-    EntityID get() {
+    T get() {
         if (!reserve.empty()) {
             auto ret = reserve.top();
             reserve.pop();
@@ -21,8 +22,8 @@ public:
     }
 
 private:
-    std::stack<EntityID> reserve;
-    EntityID next;
+    std::stack<T> reserve;
+    T next;
 };
 
 TALON_NS_END

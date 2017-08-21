@@ -1,4 +1,5 @@
 #include "MemoryAllocator.hpp"
+#include "ServiceTable.hpp"
 
 USING_TALON_NS;
 
@@ -8,8 +9,11 @@ MemoryAllocator::MemoryAllocator(DeviceManager *deviceManager) {
     allocatorInfo.device = deviceManager->getDevice();
 
     vmaCreateAllocator(&allocatorInfo, &allocator);
+
+    ServiceTable::memoryAllocator.set(this);
 }
 
 MemoryAllocator::~MemoryAllocator() {
+    ServiceTable::memoryAllocator.clear(this);
     vmaDestroyAllocator(allocator);
 }

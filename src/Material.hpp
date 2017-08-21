@@ -21,6 +21,7 @@ public:
 private:
     vk::PipelineLayout pipelineLayout;
     vk::Pipeline graphicsPipeline;
+    vk::PipelineBindPoint bindPoint;
 
     void createGraphicsPipeline(const SwapChain *swapChain, const RenderPass *renderPass, DeviceManager *pManager);
     vk::ShaderModule createShaderModule(std::vector<char> code, DeviceManager *pManager);

@@ -12,10 +12,14 @@ TALON_NS_BEGIN
 template <typename... Components>
 class TWorld;
 
+template <typename TWorld>
+class TSystem;
+
 struct ComponentMeshFilter;
 struct ComponentTransform;
 
 using World = TWorld<ComponentTransform, ComponentMeshFilter>;
+using System = TSystem<World>;
 
 using EntityID = unsigned int;
 static const EntityID MaxEntityID = 1024;

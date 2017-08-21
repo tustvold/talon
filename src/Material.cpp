@@ -52,6 +52,8 @@ void Material::createGraphicsPipeline(const SwapChain *swapChain, const RenderPa
     fragShaderStageInfo.module = fragShaderModule;
     fragShaderStageInfo.pName = "main";
 
+    bindPoint = vk::PipelineBindPoint::eGraphics;
+
     vk::PipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo, fragShaderStageInfo};
 
     vk::PipelineVertexInputStateCreateInfo vertexInputInfo = {};

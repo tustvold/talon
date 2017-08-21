@@ -34,4 +34,33 @@ private:
     Default defaultInstance;
 };
 
+template <typename Service>
+class ServiceProvider<Service, nullptr_t> {
+public:
+    ServiceProvider() : current(nullptr) {
+
+    }
+
+    const Service* get() const noexcept {
+        return current;
+    }
+
+    const Service* operator->() const noexcept {
+        return get();
+    }
+
+    void set(Service *service) {
+        TASSERT(current == nullptr);
+        current = service;
+    }
+
+    void clear(Service *service) {
+        TASSERT(current == service);
+        current = nullptr;
+    }
+
+private:
+    Service* current;
+};
+
 TALON_NS_END

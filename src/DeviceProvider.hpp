@@ -28,18 +28,24 @@ public:
         getDevice().destroyPipelineLayout(pipelineLayout);
     }
 
+    void destroyCommandPool(vk::CommandPool commandPool) const {
+        getDevice().destroyCommandPool(commandPool);
+    }
+
+    void destroySemaphore(vk::Semaphore semaphore) const {
+        getDevice().destroySemaphore(semaphore);
+    }
+
+    void freeCommandBuffers(vk::CommandPool commandPool, vk::ArrayProxy<const vk::CommandBuffer> buffers) const {
+        getDevice().freeCommandBuffers(commandPool, buffers);
+    }
+
+    std::vector<vk::CommandBuffer> allocateCommandBuffers(const vk::CommandBufferAllocateInfo& info) const {
+        return getDevice().allocateCommandBuffers(info);
+    }
+
 protected:
     virtual ~DeviceProvider() = default;
 
     virtual vk::Device getDevice() const = 0;
-};
-
-class NullDeviceProvider : public DeviceProvider {
-public:
-    ~NullDeviceProvider() final = default;
-
-    vk::Device getDevice() const final {
-        TASSERT(false);
-        return vk::Device();
-    }
 };

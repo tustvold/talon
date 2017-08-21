@@ -167,7 +167,7 @@ public:
     }
 
 private:
-    IdentifierPool pool;
+    IdentifierPool<EntityID> pool;
     ComponentStorageTuple<SystemComponents...> storage;
 };
 

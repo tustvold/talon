@@ -5,7 +5,7 @@ set(SOURCE_FILES ApplicationDelegate.hpp Application.hpp
         SurfaceManager.cpp SurfaceManager.hpp ApplicationInitSettings.hpp SwapChain.cpp SwapChain.hpp
         RenderPass.cpp RenderPass.hpp Material.cpp Material.hpp DeviceProvider.hpp ServiceTable.hpp
         ServiceProvider.hpp ServiceTable.cpp ecs/TWorld.hpp ecs/ComponentStorageArray.hpp ecs/ComponentStorageMap.hpp
-        ecs/ComponentStorage.hpp ecs/IdentifierPool.hpp Logging.hpp ${TALON_CONFIG_DIR}/TalonConfig.hpp MemoryAllocator.cpp MemoryAllocator.hpp ecs/View.hpp)
+        ecs/ComponentStorage.hpp ecs/IdentifierPool.hpp Logging.hpp ${TALON_CONFIG_DIR}/TalonConfig.hpp MemoryAllocator.cpp MemoryAllocator.hpp ecs/View.hpp Mesh.cpp Mesh.hpp CommandPool.cpp CommandPool.hpp RenderLoop.cpp RenderLoop.hpp)
 
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 

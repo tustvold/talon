@@ -20,11 +20,15 @@ struct AllocatedDataMapHandle {
         vmaUnmapMemory(ref->allocator, ref->allocation);
     }
 
+    void copy(const void* data, size_t size) {
+        TASSERT(ref->requestedSize >= size);
+        memcpy(ptr, data, size);
+    }
+
     template<typename T>
     void copy(const std::vector<T> &proxy) {
         auto size = proxy.size() * sizeof(T);
-        TASSERT(ref->requestedSize >= size);
-        memcpy(ptr, proxy.data(), size);
+        copy(proxy.data(), size);
     }
 
 private:
@@ -58,7 +62,7 @@ public:
     explicit MemoryAllocator(DeviceManager *deviceManager);
     ~MemoryAllocator();
 
-    VmaAllocator getAllocator() {
+    VmaAllocator getAllocator() const {
         return allocator;
     }
 
@@ -67,7 +71,7 @@ private:
 };
 
 struct Buffer : public detail::AllocatedData<vk::Buffer> {
-    Buffer(MemoryAllocator *memoryAllocator, const vk::BufferCreateInfo *pCreateInfo,
+    Buffer(const MemoryAllocator *memoryAllocator, const vk::BufferCreateInfo *pCreateInfo,
            const VmaMemoryRequirements *pMemoryRequirements) {
         requestedSize = pCreateInfo->size;
         allocator = memoryAllocator->getAllocator();
