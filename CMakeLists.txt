@@ -38,9 +38,9 @@ endif()
 
 
 find_package(GLFW3 REQUIRED)
-find_package(TBB REQUIRED)
 find_package(Vulkan REQUIRED)
 find_package(Boost REQUIRED)
+find_package(Eigen3 REQUIRED)
 
 add_subdirectory(external/signals)
 add_subdirectory(external/vulkan_mem_alloc)
