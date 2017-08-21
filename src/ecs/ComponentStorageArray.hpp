@@ -13,8 +13,9 @@ template<typename Component>
 struct ComponentStorageArray : ComponentStorageBase {
 public:
     struct Iterator {
-        using InputIterator = typename std::array<std::optional<Component>, MaxEntityID>::iterator;
     public:
+        using InputIterator = typename std::array<std::optional<Component>, MaxEntityID>::iterator;
+
         Iterator(InputIterator begin, InputIterator end) : begin(begin), current(begin), end(end) {
             if (!isValid())
                 increment();
