@@ -2,7 +2,7 @@
 
 #include "TalonConfig.hpp"
 #include "ServiceProvider.hpp"
-#include "DeviceProvider.hpp"
+#include "DeviceManager.hpp"
 #include "MemoryAllocator.hpp"
 #include "CommandPool.hpp"
 
@@ -13,7 +13,7 @@ public:
     ServiceTable() = delete;
     ~ServiceTable() = delete;
 
-    static ServiceProvider<DeviceProvider, nullptr_t> deviceProvider;
+    static ServiceProvider<DeviceManager, nullptr_t> deviceProvider;
     static ServiceProvider<MemoryAllocator, nullptr_t> memoryAllocator;
     static ServiceProvider<CommandPool, nullptr_t> commandPool;
 };

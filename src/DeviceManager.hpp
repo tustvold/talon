@@ -3,7 +3,6 @@
 #include "ApplicationInitSettings.hpp"
 #include "SurfaceManager.hpp"
 #include <vulkan/vulkan.hpp>
-#include <DeviceProvider.hpp>
 
 TALON_NS_BEGIN
 struct QueueFamilyIndices {
@@ -21,14 +20,14 @@ struct SwapChainSupportDetails {
     std::vector<vk::PresentModeKHR> presentModes;
 };
 
-class DeviceManager : public DeviceProvider {
+class DeviceManager {
 public:
     explicit DeviceManager(const ApplicationInitSettings& initSettings, InstanceManager* instanceManager,
                            SurfaceManager* surfaceManager);
 
-    ~DeviceManager() final;
+    ~DeviceManager();
 
-    vk::Device getDevice() const final {
+    vk::Device getDevice() const {
         return device_;
     }
 

@@ -10,9 +10,9 @@ RenderPass::RenderPass(const SwapChain *swapChain,
 
 RenderPass::~RenderPass() {
     for (auto &frameBuffer : framebuffers) {
-        ServiceTable::deviceProvider->destroyFramebuffer(frameBuffer);
+        ServiceTable::deviceProvider->getDevice().destroyFramebuffer(frameBuffer);
     }
-    ServiceTable::deviceProvider->destroyRenderPass(renderPass);
+    ServiceTable::deviceProvider->getDevice().destroyRenderPass(renderPass);
 }
 
 void RenderPass::createRenderPass(const SwapChain *swapChain, DeviceManager *deviceManager) {

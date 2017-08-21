@@ -2,6 +2,8 @@
 #include "TalonConfig.hpp"
 #include "SurfaceManager.hpp"
 #include "DeviceManager.hpp"
+#include "VSemaphore.hpp"
+#include "CommandBufferCollection.hpp"
 
 TALON_NS_BEGIN
 
@@ -13,20 +15,19 @@ class Mesh;
 class RenderLoop {
 public:
     RenderLoop(DeviceManager* deviceManger, SurfaceManager* surfaceManager, WindowManager* windowManager);
-    ~RenderLoop();
-
     bool renderFrame(DeviceManager* deviceManger, SurfaceManager* surfaceManager);
 
 private:
     std::unique_ptr<SwapChain> swapChain;
     std::unique_ptr<RenderPass> renderPass;
-    std::unique_ptr<Material> material;
 
-    std::vector<vk::CommandBuffer> commandBuffers;
+    CommandBufferCollection commandBuffers;
+
     std::unique_ptr<Mesh> testMesh;
+    std::unique_ptr<Material> testMaterial;
 
-    vk::Semaphore imageAvailableSemaphore;
-    vk::Semaphore renderFinishedSemaphore;
+    VSemaphore imageAvailableSemaphore;
+    VSemaphore renderFinishedSemaphore;
 
     uint32_t updateCount;
     double updateStartInterval;

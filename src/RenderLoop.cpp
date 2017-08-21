@@ -15,25 +15,14 @@ const std::vector<Vertex> test_vertices = {
     {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
 };
 
-RenderLoop::RenderLoop(DeviceManager *deviceManager, SurfaceManager* surfaceManager, WindowManager* windowManager) : updateCount(0), updateStartInterval(glfwGetTime()) {
+RenderLoop::RenderLoop(DeviceManager *deviceManager, SurfaceManager *surfaceManager, WindowManager *windowManager)
+    : commandBuffers(1), updateCount(0), updateStartInterval(glfwGetTime()) {
     swapChain = std::make_unique<SwapChain>(windowManager, surfaceManager, deviceManager);
     renderPass = std::make_unique<RenderPass>(swapChain.get(), deviceManager);
-    material = std::make_unique<Material>(swapChain.get(), renderPass.get(), deviceManager);
-
-    vk::SemaphoreCreateInfo semaphoreInfo = {};
-    imageAvailableSemaphore = deviceManager->getDevice().createSemaphore(semaphoreInfo);
-    renderFinishedSemaphore = deviceManager->getDevice().createSemaphore(semaphoreInfo);
-
-    commandBuffers = ServiceTable::commandPool->createCommandBuffers(1);
+    testMaterial = std::make_unique<Material>(swapChain.get(), renderPass.get(), deviceManager);
 
     auto meshData = makeMeshData(test_vertices);
     testMesh = std::make_unique<Mesh>(meshData);
-}
-
-RenderLoop::~RenderLoop() {
-    ServiceTable::commandPool->destroyCommandBuffers(commandBuffers);
-    ServiceTable::deviceProvider->destroySemaphore(renderFinishedSemaphore);
-    ServiceTable::deviceProvider->destroySemaphore(imageAvailableSemaphore);
 }
 
 bool RenderLoop::renderFrame(DeviceManager *deviceManager, SurfaceManager *surfaceManager) {
@@ -56,7 +45,7 @@ bool RenderLoop::renderFrame(DeviceManager *deviceManager, SurfaceManager *surfa
 
     vk::Result result = deviceManager->getDevice().acquireNextImageKHR(swapChain->getSwapChain(),
                                                                        std::numeric_limits<uint64_t>::max(),
-                                                                       imageAvailableSemaphore,
+                                                                       imageAvailableSemaphore.get(),
                                                                        vk::Fence(),
                                                                        &imageIndex);
 
@@ -70,25 +59,26 @@ bool RenderLoop::renderFrame(DeviceManager *deviceManager, SurfaceManager *surfa
 
     vk::SubmitInfo submitInfo = {};
 
-    vk::Semaphore waitSemaphores[] = {imageAvailableSemaphore};
+    vk::Semaphore renderStartSemaphores[] = {imageAvailableSemaphore.get()};
     vk::PipelineStageFlags waitStages[] = {vk::PipelineStageFlagBits::eColorAttachmentOutput};
     submitInfo.waitSemaphoreCount = 1;
 
-    submitInfo.setPWaitSemaphores(waitSemaphores);
+    submitInfo.setPWaitSemaphores(renderStartSemaphores);
     submitInfo.setPWaitDstStageMask(waitStages);
 
     submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = &commandBuffers[0];
+    submitInfo.pCommandBuffers = commandBuffers.data();
 
+    vk::Semaphore renderFinishedSemaphores[] = {renderFinishedSemaphore.get()};
     submitInfo.signalSemaphoreCount = 1;
-    submitInfo.setPSignalSemaphores(&renderFinishedSemaphore);
+    submitInfo.setPSignalSemaphores(renderFinishedSemaphores);
 
     deviceManager->getGraphicsQueue().submit(1, &submitInfo, vk::Fence());
 
     vk::PresentInfoKHR presentInfo = {};
 
     presentInfo.waitSemaphoreCount = 1;
-    presentInfo.setPWaitSemaphores(&renderFinishedSemaphore);
+    presentInfo.setPWaitSemaphores(renderFinishedSemaphores);
 
     vk::SwapchainKHR swapChains[] = {swapChain->getSwapChain()};
     presentInfo.swapchainCount = 1;
@@ -110,7 +100,6 @@ void RenderLoop::recordCommandBuffer(int index) {
     auto commandBuffer = commandBuffers[0];
 
     vk::CommandBufferBeginInfo beginInfo = {};
-    //beginInfo.flags = vk::CommandBufferUsageFlagBits::eSimultaneousUse;
 
     commandBuffer.reset(vk::CommandBufferResetFlags());
 
@@ -129,7 +118,7 @@ void RenderLoop::recordCommandBuffer(int index) {
 
     commandBuffer.beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
 
-    commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, material->getGraphicsPipeline());
+    commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, testMaterial->getGraphicsPipeline());
 
     testMesh->bind(commandBuffer);
 

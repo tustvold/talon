@@ -3,9 +3,9 @@ set(SOURCE_FILES ApplicationDelegate.hpp Application.hpp
         Application.cpp VulkanLoader.cpp VulkanLoader.hpp Vertex.hpp DeviceManager.cpp
         DeviceManager.hpp InstanceManager.cpp InstanceManager.hpp WindowManager.cpp WindowManager.hpp
         SurfaceManager.cpp SurfaceManager.hpp ApplicationInitSettings.hpp SwapChain.cpp SwapChain.hpp
-        RenderPass.cpp RenderPass.hpp Material.cpp Material.hpp DeviceProvider.hpp ServiceTable.hpp
+        RenderPass.cpp RenderPass.hpp Material.cpp Material.hpp ServiceTable.hpp
         ServiceProvider.hpp ServiceTable.cpp ecs/TWorld.hpp ecs/ComponentStorageArray.hpp ecs/ComponentStorageMap.hpp
-        ecs/ComponentStorage.hpp ecs/IdentifierPool.hpp Logging.hpp ${TALON_CONFIG_DIR}/TalonConfig.hpp MemoryAllocator.cpp MemoryAllocator.hpp ecs/View.hpp Mesh.cpp Mesh.hpp CommandPool.cpp CommandPool.hpp RenderLoop.cpp RenderLoop.hpp)
+        ecs/ComponentStorage.hpp ecs/IdentifierPool.hpp Logging.hpp ${TALON_CONFIG_DIR}/TalonConfig.hpp MemoryAllocator.cpp MemoryAllocator.hpp ecs/View.hpp Mesh.cpp Mesh.hpp CommandPool.cpp CommandPool.hpp RenderLoop.cpp RenderLoop.hpp VSemaphore.hpp VSemaphore.cpp CommandBufferCollection.cpp CommandBufferCollection.hpp)
 
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 

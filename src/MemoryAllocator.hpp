@@ -2,6 +2,7 @@
 #include "TalonConfig.hpp"
 #include "vulkan_mem_alloc.hpp"
 #include "DeviceManager.hpp"
+#include "Logging.hpp"
 
 TALON_NS_BEGIN
 
