@@ -1,5 +1,6 @@
 #include "Mesh.hpp"
 #include "ServiceTable.hpp"
+#include "MemoryAllocator.hpp"
 
 USING_TALON_NS;
 

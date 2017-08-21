@@ -6,6 +6,8 @@
 #include "rendering/SwapChain.hpp"
 #include "rendering/Material.hpp"
 #include "rendering/RenderPass.hpp"
+#include "rendering/DeviceManager.hpp"
+#include "rendering/MemoryAllocator.hpp"
 
 USING_TALON_NS;
 

@@ -1,5 +1,6 @@
 #include "VSemaphore.hpp"
 #include "ServiceTable.hpp"
+#include "DeviceManager.hpp"
 
 USING_TALON_NS;
 

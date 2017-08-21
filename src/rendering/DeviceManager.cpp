@@ -1,5 +1,6 @@
 #include <set>
 #include <ServiceTable.hpp>
+#include "DeviceManager.hpp"
 #include "InstanceManager.hpp"
 #include "SurfaceManager.hpp"
 #include "ApplicationInitSettings.hpp"

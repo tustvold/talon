@@ -1,6 +1,7 @@
 #include "RenderPass.hpp"
 #include "ServiceTable.hpp"
 #include "SwapChain.hpp"
+#include "DeviceManager.hpp"
 
 USING_TALON_NS;
 
