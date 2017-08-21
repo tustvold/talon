@@ -4,17 +4,10 @@
 #include <set>
 #include <Application.hpp>
 
-struct MyApplicationDelegate : public ApplicationDelegate {
+struct MyApplicationDelegate : public talon::ApplicationDelegate {
 public:
-    VkBool32 vulkanDebugCallback(VkDebugReportFlagsEXT flags,
-                                 VkDebugReportObjectTypeEXT objectType,
-                                 uint64_t object,
-                                 size_t location,
-                                 int32_t messageCode,
-                                 const char *pLayerPrefix,
-                                 const char *pMessage) override {
-        TLOGERROR("Validation Layer - %s\n", pMessage);
-        return VK_FALSE;
+    void vulkanDebugCallback(const talon::VDebugCallbackArgs& args) override {
+        TLOGERROR("Validation Layer - %s\n", args.pMessage);
     }
 
 };

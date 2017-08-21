@@ -10,7 +10,7 @@ public:
     explicit InstanceManager(const ApplicationInitSettings& initSettings);
     ~InstanceManager();
 
-    vk::Instance getInstance() {
+    vk::Instance getInstance() const {
         return instance;
     }
 

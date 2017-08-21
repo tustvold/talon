@@ -7,7 +7,7 @@ TALON_NS_BEGIN
 template <typename Service, typename Default>
 class ServiceProvider {
 public:
-    ServiceProvider() : current(&defaultInstance) {
+    ServiceProvider() noexcept : current(&defaultInstance) {
 
     }
 
@@ -37,7 +37,7 @@ private:
 template <typename Service>
 class ServiceProvider<Service, nullptr_t> {
 public:
-    ServiceProvider() : current(nullptr) {
+    ServiceProvider() noexcept : current(nullptr) {
 
     }
 

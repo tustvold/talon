@@ -1,5 +1,5 @@
 #include <GLFW/glfw3.h>
-#include "RenderLoop.hpp"
+#include "GameLoop.hpp"
 #include "ServiceTable.hpp"
 #include "Vertex.hpp"
 #include "Mesh.hpp"
@@ -15,7 +15,7 @@ const std::vector<Vertex> test_vertices = {
     {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
 };
 
-RenderLoop::RenderLoop(DeviceManager *deviceManager, SurfaceManager *surfaceManager, WindowManager *windowManager)
+GameLoop::GameLoop(DeviceManager *deviceManager, SurfaceManager *surfaceManager, WindowManager *windowManager)
     : commandBuffers(1), updateCount(0), updateStartInterval(glfwGetTime()) {
     swapChain = std::make_unique<SwapChain>(windowManager, surfaceManager, deviceManager);
     renderPass = std::make_unique<RenderPass>(swapChain.get(), deviceManager);
@@ -25,7 +25,7 @@ RenderLoop::RenderLoop(DeviceManager *deviceManager, SurfaceManager *surfaceMana
     testMesh = std::make_unique<Mesh>(meshData);
 }
 
-bool RenderLoop::renderFrame(DeviceManager *deviceManager, SurfaceManager *surfaceManager) {
+bool GameLoop::renderFrame(DeviceManager *deviceManager, SurfaceManager *surfaceManager) {
     auto current = glfwGetTime();
     auto delta = current - updateStartInterval;
     if (delta > 5) {
@@ -96,7 +96,7 @@ bool RenderLoop::renderFrame(DeviceManager *deviceManager, SurfaceManager *surfa
     return true;
 }
 
-void RenderLoop::recordCommandBuffer(int index) {
+void GameLoop::recordCommandBuffer(int index) {
     auto commandBuffer = commandBuffers[0];
 
     vk::CommandBufferBeginInfo beginInfo = {};

@@ -10,9 +10,6 @@ void ::vke::InitInstance(vk::Instance instance) {
         (PFN_vkCreateDebugReportCallbackEXT) instance.getProcAddr("vkCreateDebugReportCallbackEXT");
     __vkDestroyDebugReportCallbackEXT =
         (PFN_vkDestroyDebugReportCallbackEXT) instance.getProcAddr("vkDestroyDebugReportCallbackEXT");
-
-    TASSERT(__vkCreateDebugReportCallbackEXT);
-    TASSERT(__vkDestroyDebugReportCallbackEXT);
 }
 
 VKAPI_ATTR VkResult VKAPI_CALL vkCreateDebugReportCallbackEXT(

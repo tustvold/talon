@@ -146,6 +146,6 @@ void Material::createGraphicsPipeline(const SwapChain *swapChain, const RenderPa
 }
 
 Material::~Material() {
-    ServiceTable::deviceProvider->getDevice().destroyPipeline(graphicsPipeline);
-    ServiceTable::deviceProvider->getDevice().destroyPipelineLayout(pipelineLayout);
+    ServiceTable::deviceManager->getDevice().destroyPipeline(graphicsPipeline);
+    ServiceTable::deviceManager->getDevice().destroyPipelineLayout(pipelineLayout);
 }

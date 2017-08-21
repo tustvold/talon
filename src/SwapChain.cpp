@@ -57,9 +57,9 @@ SwapChain::SwapChain(WindowManager *windowManager,
 
 SwapChain::~SwapChain() {
     for (auto &imageView : imageViews) {
-        ServiceTable::deviceProvider->getDevice().destroyImageView(imageView);
+        ServiceTable::deviceManager->getDevice().destroyImageView(imageView);
     }
-    ServiceTable::deviceProvider->getDevice().destroySwapchainKHR(swapChain);
+    ServiceTable::deviceManager->getDevice().destroySwapchainKHR(swapChain);
 }
 
 void SwapChain::createSwapChain(WindowManager *windowManager, SurfaceManager *surfaceManager, DeviceManager *deviceManager) {

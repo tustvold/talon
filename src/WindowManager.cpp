@@ -41,4 +41,10 @@ vk::Extent2D talon::WindowManager::getWindowExtents() {
     };
     return extent;
 }
+bool talon::WindowManager::poll() {
+    if (glfwWindowShouldClose(window))
+        return false;
+    glfwPollEvents();
+    return true;
+}
 

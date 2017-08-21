@@ -21,6 +21,8 @@ public:
 
     vk::Extent2D getWindowExtents();
 
+    bool poll();
+
     auto& getWindowResizeEvent() {
         return windowResizeEvent;
     }

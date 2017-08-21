@@ -63,11 +63,11 @@ DeviceManager::DeviceManager(const ApplicationInitSettings &initSettings, Instan
     pickPhysicalDevice(initSettings, instanceManager, surfaceManager);
     createLogicalDevice(initSettings, surfaceManager);
 
-    ServiceTable::deviceProvider.set(this);
+    ServiceTable::deviceManager.set(this);
 }
 
 DeviceManager::~DeviceManager() {
-    ServiceTable::deviceProvider.clear(this);
+    ServiceTable::deviceManager.clear(this);
     device_.destroy();
 }
 

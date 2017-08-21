@@ -13,7 +13,8 @@ public:
     ServiceTable() = delete;
     ~ServiceTable() = delete;
 
-    static ServiceProvider<DeviceManager, nullptr_t> deviceProvider;
+    static ServiceProvider<InstanceManager, nullptr_t> instanceManager;
+    static ServiceProvider<DeviceManager, nullptr_t> deviceManager;
     static ServiceProvider<MemoryAllocator, nullptr_t> memoryAllocator;
     static ServiceProvider<CommandPool, nullptr_t> commandPool;
 };

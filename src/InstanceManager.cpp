@@ -1,6 +1,7 @@
 #include <GLFW/glfw3.h>
 #include "InstanceManager.hpp"
 #include "VulkanLoader.hpp"
+#include "ServiceTable.hpp"
 
 static bool checkValidationLayerSupport(const talon::ApplicationInitSettings& initSettings) {
     auto availableLayers = vk::enumerateInstanceLayerProperties();
@@ -64,8 +65,11 @@ talon::InstanceManager::InstanceManager(const ApplicationInitSettings& initSetti
     }
     instance = vk::createInstance(createInfo);
     vke::InitInstance(instance);
+
+    ServiceTable::instanceManager.set(this);
 }
 
 talon::InstanceManager::~InstanceManager() {
+    ServiceTable::instanceManager.clear(this);
     instance.destroy();
 }

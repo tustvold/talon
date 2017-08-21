@@ -1,13 +1,13 @@
 #pragma once
+#include "TalonConfig.hpp"
+#include "DebugCallback.hpp"
 #include <vulkan/vulkan.hpp>
+
+TALON_NS_BEGIN
 
 class ApplicationDelegate {
 public:
-    virtual VkBool32 vulkanDebugCallback(VkDebugReportFlagsEXT flags,
-                             VkDebugReportObjectTypeEXT objectType,
-                             uint64_t object,
-                             size_t location,
-                             int32_t messageCode,
-                             const char *pLayerPrefix,
-                             const char *pMessage) = 0;
+    virtual void vulkanDebugCallback(const VDebugCallbackArgs&) = 0;
 };
+
+TALON_NS_END

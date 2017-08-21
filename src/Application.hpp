@@ -12,7 +12,8 @@
 #include "MemoryAllocator.hpp"
 #include "CommandPool.hpp"
 #include "Mesh.hpp"
-#include "RenderLoop.hpp"
+#include "GameLoop.hpp"
+#include "DebugCallback.hpp"
 
 struct GLFWwindow;
 
@@ -28,8 +29,7 @@ public:
     ~Application();
 
 private:
-    vk::DebugReportCallbackEXT callback;
-
+    std::unique_ptr<DebugCallback> debugCallback;
     std::unique_ptr<ApplicationDelegate> applicationDelegate;
 
     std::unique_ptr<WindowManager> windowManager;
@@ -40,22 +40,11 @@ private:
 
     std::unique_ptr<CommandPool> commandPool;
 
-    std::unique_ptr<RenderLoop> renderLoop;
+    std::unique_ptr<GameLoop> gameLoop;
 
     void recreateSwapChain();
 
-    void setupDebugCallback(const ApplicationInitSettings& initSettings);
-
     void onWindowResized(GLFWwindow *window, vk::Extent2D extent);
-
-    static VKAPI_ATTR VkBool32 VKAPI_CALL vulkanDebugCallback(VkDebugReportFlagsEXT flags,
-                                                              VkDebugReportObjectTypeEXT objectType,
-                                                              uint64_t object,
-                                                              size_t location,
-                                                              int32_t messageCode,
-                                                              const char *pLayerPrefix,
-                                                              const char *pMessage,
-                                                              void *pUserData);
 };
 
 TALON_NS_END

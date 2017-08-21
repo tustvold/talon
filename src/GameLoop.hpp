@@ -12,9 +12,9 @@ class RenderPass;
 class Material;
 class Mesh;
 
-class RenderLoop {
+class GameLoop {
 public:
-    RenderLoop(DeviceManager* deviceManger, SurfaceManager* surfaceManager, WindowManager* windowManager);
+    GameLoop(DeviceManager* deviceManger, SurfaceManager* surfaceManager, WindowManager* windowManager);
     bool renderFrame(DeviceManager* deviceManger, SurfaceManager* surfaceManager);
 
 private:

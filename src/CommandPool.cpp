@@ -15,7 +15,7 @@ talon::CommandPool::CommandPool(talon::DeviceManager *deviceManager, SurfaceMana
 
 talon::CommandPool::~CommandPool() {
     ServiceTable::commandPool.clear(this);
-    ServiceTable::deviceProvider->getDevice().destroyCommandPool(commandPool);
+    ServiceTable::deviceManager->getDevice().destroyCommandPool(commandPool);
 }
 
 std::vector<vk::CommandBuffer> talon::CommandPool::createCommandBuffers(uint32_t count, vk::CommandBufferLevel level) const {
@@ -23,9 +23,9 @@ std::vector<vk::CommandBuffer> talon::CommandPool::createCommandBuffers(uint32_t
     allocInfo.commandPool = commandPool;
     allocInfo.level = level;
     allocInfo.commandBufferCount = count;
-    return ServiceTable::deviceProvider->getDevice().allocateCommandBuffers(allocInfo);
+    return ServiceTable::deviceManager->getDevice().allocateCommandBuffers(allocInfo);
 }
 
 void talon::CommandPool::destroyCommandBuffers(const std::vector<vk::CommandBuffer> &commandBuffers) const {
-    ServiceTable::deviceProvider->getDevice().freeCommandBuffers(commandPool, commandBuffers);
+    ServiceTable::deviceManager->getDevice().freeCommandBuffers(commandPool, commandBuffers);
 }
