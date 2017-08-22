@@ -1,4 +1,5 @@
 #pragma once
+#include <WorldConfig.hpp>
 #include "TalonConfig.hpp"
 #include "rendering/VSemaphore.hpp"
 #include "rendering/CommandBufferCollection.hpp"
@@ -28,6 +29,8 @@ private:
 
     std::unique_ptr<Mesh> testMesh;
     std::unique_ptr<Material> testMaterial;
+
+    World world;
 
     VSemaphore imageAvailableSemaphore;
     VSemaphore renderFinishedSemaphore;

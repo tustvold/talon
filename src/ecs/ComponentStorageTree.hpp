@@ -1,6 +1,7 @@
 #pragma once
 #include "TalonConfig.hpp"
 #include "ComponentStorage.hpp"
+#include <vector>
 
 TALON_NS_BEGIN
 
@@ -12,9 +13,9 @@ private:
         std::vector<EntityID> children;
         EntityID parent;
 
-        TreeElement() : parent(EntityIDInvalid) {
-
-        }
+        TreeElement() : parent(EntityIDInvalid) {}
+        explicit TreeElement(const Component& component) : component(component), parent(EntityIDInvalid) {}
+        explicit TreeElement(Component&& component) : component(std::move(component)), parent(EntityIDInvalid) {}
     };
 
 public:
@@ -60,10 +61,17 @@ public:
         wrapped.add(child_id);
     }
 
-    void add(EntityID child_id, EntityID parent_id) {
+    template <typename... Args>
+    void add(EntityID child_id, Args&&... args) {
+        wrapped.add(child_id, std::forward<Args>(args)...);
+    }
+
+    void addWithParent(EntityID child_id, EntityID parent_id) {
         wrapped.add(child_id);
         wrapped.get(child_id)->parent = parent_id;
         wrapped.get(parent_id)->children.push_back(child_id);
+
+        incrementGeneration();
     }
 
     Component *get(EntityID id) {
@@ -71,11 +79,11 @@ public:
     }
 
     auto begin() {
-        return wrapped.begin();
+        return Iterator(wrapped.begin());
     }
 
     auto end() {
-        return wrapped.end();
+        return Iterator(wrapped.end());
     }
 
     template<class UnaryFunction>

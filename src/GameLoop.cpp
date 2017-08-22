@@ -1,6 +1,8 @@
 #include <GLFW/glfw3.h>
+#include <system/SystemUpdateTransforms.hpp>
+#include <system/SystemRenderMeshFilter.hpp>
 #include "GameLoop.hpp"
-#include "ServiceTable.hpp"
+#include "ApplicationServiceTable.hpp"
 #include "rendering/Vertex.hpp"
 #include "rendering/Mesh.hpp"
 #include "rendering/SwapChain.hpp"
@@ -25,6 +27,13 @@ GameLoop::GameLoop(DeviceManager *deviceManager, SurfaceManager *surfaceManager,
 
     auto meshData = makeMeshData(test_vertices);
     testMesh = std::make_unique<Mesh>(meshData);
+
+    ComponentMeshFilter filter;
+    filter.mesh = testMesh.get();
+    filter.material = testMaterial.get();
+
+    ComponentTransform transform;
+    world.createEntity(transform, filter);
 }
 
 GameLoop::~GameLoop() = default;
@@ -42,6 +51,9 @@ bool GameLoop::renderFrame(DeviceManager *deviceManager, SurfaceManager *surface
         updateCount = 0;
     }
     updateCount++;
+
+    SystemUpdateTransforms updateTransforms;
+    updateTransforms.update(world);
 
     deviceManager->getGraphicsQueue().waitIdle();
 
@@ -122,11 +134,14 @@ void GameLoop::recordCommandBuffer(int index) {
 
     commandBuffer.beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
 
-    commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, testMaterial->getGraphicsPipeline());
+    SystemRenderMeshFilter renderMeshFilter;
+    renderMeshFilter.update(world, commandBuffer);
 
-    testMesh->bind(commandBuffer);
-
-    commandBuffer.draw(testMesh->getNumVertices(), 1, 0, 0);
+//    commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, testMaterial->getGraphicsPipeline());
+//
+//    testMesh->bind(commandBuffer);
+//
+//    commandBuffer.draw(testMesh->getNumVertices(), 1, 0, 0);
 
     commandBuffer.endRenderPass();
     commandBuffer.end();

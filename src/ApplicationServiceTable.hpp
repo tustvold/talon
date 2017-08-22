@@ -8,10 +8,10 @@ class DeviceManager;
 class MemoryAllocator;
 class CommandPool;
 
-struct ServiceTable {
+struct ApplicationServiceTable {
 public:
-    ServiceTable() = delete;
-    ~ServiceTable() = delete;
+    ApplicationServiceTable() = delete;
+    ~ApplicationServiceTable() = delete;
 
     static ServiceProvider<InstanceManager, nullptr_t> instanceManager;
     static ServiceProvider<DeviceManager, nullptr_t> deviceManager;

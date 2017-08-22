@@ -1,5 +1,5 @@
 #include "DebugCallback.hpp"
-#include "ServiceTable.hpp"
+#include "ApplicationServiceTable.hpp"
 #include "InstanceManager.hpp"
 
 USING_TALON_NS;
@@ -42,10 +42,10 @@ DebugCallback::DebugCallback(const Gallant::Delegate1<const VDebugCallbackArgs&>
     createInfo.setPfnCallback(vulkanDebugCallback);
     createInfo.pUserData = this;
 
-    callback = ServiceTable::instanceManager->getInstance().createDebugReportCallbackEXT(createInfo);
+    callback = ApplicationServiceTable::instanceManager->getInstance().createDebugReportCallbackEXT(createInfo);
 }
 
 DebugCallback::~DebugCallback() {
-    ServiceTable::instanceManager->getInstance().destroyDebugReportCallbackEXT(callback);
+    ApplicationServiceTable::instanceManager->getInstance().destroyDebugReportCallbackEXT(callback);
 }
 

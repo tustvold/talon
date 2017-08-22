@@ -1,7 +1,7 @@
 #include "Material.hpp"
 #include "Vertex.hpp"
 #include "fstream"
-#include "ServiceTable.hpp"
+#include "ApplicationServiceTable.hpp"
 #include "DeviceManager.hpp"
 #include "RenderPass.hpp"
 #include "SwapChain.hpp"
@@ -142,13 +142,13 @@ void Material::createGraphicsPipeline(const SwapChain *swapChain, const RenderPa
     pipelineInfo.subpass = 0;
     pipelineInfo.basePipelineHandle = vk::Pipeline();
 
-    graphicsPipeline = deviceManager->getDevice().createGraphicsPipeline(vk::PipelineCache(), pipelineInfo);
+    pipeline = deviceManager->getDevice().createGraphicsPipeline(vk::PipelineCache(), pipelineInfo);
 
     deviceManager->getDevice().destroyShaderModule(fragShaderModule);
     deviceManager->getDevice().destroyShaderModule(vertShaderModule);
 }
 
 Material::~Material() {
-    ServiceTable::deviceManager->getDevice().destroyPipeline(graphicsPipeline);
-    ServiceTable::deviceManager->getDevice().destroyPipelineLayout(pipelineLayout);
+    ApplicationServiceTable::deviceManager->getDevice().destroyPipeline(pipeline);
+    ApplicationServiceTable::deviceManager->getDevice().destroyPipelineLayout(pipelineLayout);
 }

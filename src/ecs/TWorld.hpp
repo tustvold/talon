@@ -2,6 +2,7 @@
 #include "TalonConfig.hpp"
 #include "ComponentStorage.hpp"
 #include "IdentifierPool.hpp"
+#include <functional>
 
 TALON_NS_BEGIN
 
@@ -113,9 +114,33 @@ struct ForEachUtil<Component, Others...> {
 
 }
 
+
+namespace detail {
+template <typename World, typename... Components> struct CreateEntityUtil;
+
+template <typename World, typename Component>
+struct CreateEntityUtil<World, Component> {
+    static void addEntity(World& world, EntityID id, Component&& component) {
+        world.template getComponentStorage<typename std::remove_reference<Component>::type>().template add(id, std::forward<Component>(component));
+    }
+};
+
+template <typename World, typename Component, typename... Components>
+struct CreateEntityUtil<World, Component, Components...> {
+    static void addEntity(World& world, EntityID id, Component&& component, Components&&... components) {
+        world.template getComponentStorage<typename std::remove_reference<Component>::type>().template add<Component>(id, std::forward<Component>(component));
+        CreateEntityUtil<World, Components...>::addEntity(world, id, std::forward<Components>(components)...);
+    }
+};
+
+}
+
 template<typename... SystemComponents>
 class TWorld {
     using self_type = TWorld<SystemComponents...>;
+
+
+
 public:
     TWorld() = default;
     TWorld(const TWorld &) = delete;
@@ -132,6 +157,15 @@ public:
             using unwrapped = typename decltype(t)::type;
             getComponentStorage<unwrapped>().add(id);
         });
+
+        return id;
+    }
+
+    template<typename... EntityComponents>
+    EntityID createEntity(EntityComponents&&... args) {
+        auto id = pool.get();
+
+        detail::CreateEntityUtil<self_type, EntityComponents...>::addEntity(*this, id, std::forward<EntityComponents>(args)...);
 
         return id;
     }

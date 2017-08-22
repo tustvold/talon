@@ -14,13 +14,13 @@ public:
     Material(const SwapChain* swapChain, const RenderPass* renderPass, DeviceManager* deviceManager);
     ~Material();
 
-    vk::Pipeline getGraphicsPipeline() const {
-        return graphicsPipeline;
+    void bind(vk::CommandBuffer commandBuffer) {
+        commandBuffer.bindPipeline(bindPoint, pipeline);
     }
 
 private:
     vk::PipelineLayout pipelineLayout;
-    vk::Pipeline graphicsPipeline;
+    vk::Pipeline pipeline;
     vk::PipelineBindPoint bindPoint;
 
     void createGraphicsPipeline(const SwapChain *swapChain, const RenderPass *renderPass, DeviceManager *pManager);

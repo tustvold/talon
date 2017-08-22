@@ -42,6 +42,8 @@ public:
 
     void bind(vk::CommandBuffer commandBuffer);
 
+    void draw(vk::CommandBuffer commandBuffer);
+
     uint32_t getNumVertices() const {
         return num_vertices;
     }

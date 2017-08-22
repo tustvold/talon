@@ -1,6 +1,8 @@
 #pragma once
 #include "TalonConfig.hpp"
 #include <stack>
+#include <ECSConfig.hpp>
+#include <Logging.hpp>
 
 TALON_NS_BEGIN
 

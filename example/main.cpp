@@ -23,7 +23,6 @@ int main() {
 #else
     settings.validationLayersEnabled = false;
 #endif
-
     try {
         auto delegate = std::make_unique<MyApplicationDelegate>();
         auto app = std::make_unique<TALON_NS::Application>(std::move(delegate), settings);

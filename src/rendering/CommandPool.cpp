@@ -1,7 +1,7 @@
 #include "CommandPool.hpp"
 #include "DeviceManager.hpp"
 #include "SurfaceManager.hpp"
-#include "ServiceTable.hpp"
+#include "ApplicationServiceTable.hpp"
 
 USING_TALON_NS;
 
@@ -14,12 +14,12 @@ CommandPool::CommandPool(DeviceManager *deviceManager, SurfaceManager* surfaceMa
 
     commandPool = deviceManager->getDevice().createCommandPool(poolInfo);
 
-    ServiceTable::commandPool.set(this);
+    ApplicationServiceTable::commandPool.set(this);
 }
 
 CommandPool::~CommandPool() {
-    ServiceTable::commandPool.clear(this);
-    ServiceTable::deviceManager->getDevice().destroyCommandPool(commandPool);
+    ApplicationServiceTable::commandPool.clear(this);
+    ApplicationServiceTable::deviceManager->getDevice().destroyCommandPool(commandPool);
 }
 
 std::vector<vk::CommandBuffer> CommandPool::createCommandBuffers(uint32_t count, vk::CommandBufferLevel level) const {
@@ -27,9 +27,9 @@ std::vector<vk::CommandBuffer> CommandPool::createCommandBuffers(uint32_t count,
     allocInfo.commandPool = commandPool;
     allocInfo.level = level;
     allocInfo.commandBufferCount = count;
-    return ServiceTable::deviceManager->getDevice().allocateCommandBuffers(allocInfo);
+    return ApplicationServiceTable::deviceManager->getDevice().allocateCommandBuffers(allocInfo);
 }
 
 void CommandPool::destroyCommandBuffers(const std::vector<vk::CommandBuffer> &commandBuffers) const {
-    ServiceTable::deviceManager->getDevice().freeCommandBuffers(commandPool, commandBuffers);
+    ApplicationServiceTable::deviceManager->getDevice().freeCommandBuffers(commandPool, commandBuffers);
 }

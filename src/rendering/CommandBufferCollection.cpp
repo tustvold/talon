@@ -1,10 +1,10 @@
 #include "CommandBufferCollection.hpp"
-#include "ServiceTable.hpp"
+#include "ApplicationServiceTable.hpp"
 #include "CommandPool.hpp"
 
 talon::CommandBufferCollection::CommandBufferCollection(uint32_t size, vk::CommandBufferLevel level) {
-    collection = ServiceTable::commandPool->createCommandBuffers(size, level);
+    collection = ApplicationServiceTable::commandPool->createCommandBuffers(size, level);
 }
 talon::CommandBufferCollection::~CommandBufferCollection() {
-    ServiceTable::commandPool->destroyCommandBuffers(collection);
+    ApplicationServiceTable::commandPool->destroyCommandBuffers(collection);
 }

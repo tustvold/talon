@@ -1,17 +1,20 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <ECSConfig.hpp>
 #include <ecs/ComponentStorageArray.hpp>
 #include <ecs/ComponentStorageMap.hpp>
 #include <ecs/ComponentStorageTree.hpp>
 #include <ecs/View.hpp>
 #include "ecs/TWorld.hpp"
 
-
 USING_TALON_NS;
 
 struct TestComponentTransform {
     TestComponentTransform() = default;
-    TestComponentTransform(const TestComponentTransform &) = delete;
+    TestComponentTransform(const TestComponentTransform &other) {
+        idx = other.idx;
+        other.testTransform();
+    }
     TestComponentTransform(TestComponentTransform &&) = delete;
     TestComponentTransform &operator=(const TestComponentTransform &) = delete;
     TestComponentTransform &operator=(TestComponentTransform &&) = delete;
@@ -22,35 +25,44 @@ struct TestComponentTransform {
 
     int idx = 0;
 
-    EntityID parent_id;
-    TestComponentTransform* parent_ptr;
-
-    MOCK_METHOD0(testTransform, void());
+    MOCK_CONST_METHOD0(testTransform, void());
 };
 
 struct TestComponentMeshFilter {
     TestComponentMeshFilter() = default;
     TestComponentMeshFilter(const TestComponentMeshFilter &) = delete;
-    TestComponentMeshFilter(TestComponentMeshFilter &&) = delete;
+    TestComponentMeshFilter(TestComponentMeshFilter &&other) {
+        idx = other.idx;
+        other.testMeshFilter();
+    }
     TestComponentMeshFilter &operator=(const TestComponentMeshFilter &) = delete;
     TestComponentMeshFilter &operator=(TestComponentMeshFilter &&) = delete;
+
+    int idx = 0;
 
     static constexpr const char *string() {
         return "TestComponentMeshFilter";
     }
-    MOCK_METHOD0(testMeshFilter, void());
+    MOCK_CONST_METHOD0(testMeshFilter, void());
 };
 
 struct TestComponentMeshFilter2 {
     TestComponentMeshFilter2() = default;
-    TestComponentMeshFilter2(const TestComponentMeshFilter2 &) = delete;
+    TestComponentMeshFilter2(const TestComponentMeshFilter2 &other) {
+        idx = other.idx;
+        other.testMeshFilter2();
+    }
     TestComponentMeshFilter2(TestComponentMeshFilter2 &&) = delete;
     TestComponentMeshFilter2 &operator=(const TestComponentMeshFilter2 &) = delete;
     TestComponentMeshFilter2 &operator=(TestComponentMeshFilter2 &&) = delete;
 
+    int idx = 0;
+
     static constexpr const char *string() {
         return "TestComponentMeshFilter2";
     }
+
+    MOCK_CONST_METHOD0(testMeshFilter2, void());
 };
 
 TALON_NS_BEGIN
@@ -60,9 +72,12 @@ struct ComponentStorage<TestComponentTransform> : ComponentStorageArray<TestComp
 template<>
 struct ComponentStorage<TestComponentMeshFilter> : ComponentStorageMap<TestComponentMeshFilter> {};
 
+template <>
+struct ComponentStorage<TestComponentMeshFilter2> : ComponentStorageTree<TestComponentMeshFilter2, ComponentStorageArray> {};
+
 TALON_NS_END
 
-using TestWorldType = TWorld<TestComponentTransform, TestComponentMeshFilter>;
+using TestWorldType = TWorld<TestComponentTransform, TestComponentMeshFilter, TestComponentMeshFilter2>;
 
 TEST(TestComponent, TestTransform) {
     TestWorldType world;
@@ -74,11 +89,11 @@ TEST(TestComponent, TestTransform) {
     }
 
     for (auto id : ids) {
-        TestComponentTransform* component = world.getComponentStorage<TestComponentTransform>().get(id);
+        TestComponentTransform *component = world.getComponentStorage<TestComponentTransform>().get(id);
         EXPECT_CALL(*component, testTransform()).Times(100);
     }
 
-    auto increment = boost::hana::fuse([](auto entityID, boost::hana::tuple<TestComponentTransform*> components) {
+    auto increment = boost::hana::fuse([](auto entityID, boost::hana::tuple<TestComponentTransform *> components) {
         components[0_c]->testTransform();
     });
 
@@ -96,11 +111,11 @@ TEST(TestComponent, TestMeshFilter) {
     }
 
     for (auto id : ids) {
-        TestComponentMeshFilter* component = world.getComponentStorage<TestComponentMeshFilter>().get(id);
+        TestComponentMeshFilter *component = world.getComponentStorage<TestComponentMeshFilter>().get(id);
         EXPECT_CALL(*component, testMeshFilter()).Times(100);
     }
 
-    auto increment = boost::hana::fuse([](auto entityID, boost::hana::tuple<TestComponentMeshFilter*> components) {
+    auto increment = boost::hana::fuse([](auto entityID, boost::hana::tuple<TestComponentMeshFilter *> components) {
         components[0_c]->testMeshFilter();
     });
 
@@ -130,14 +145,16 @@ TEST(TestComponent, TestMultiple) {
     }
 
     for (auto id : ids) {
-        TestComponentMeshFilter* componentMeshFilter = world.getComponentStorage<TestComponentMeshFilter>().get(id);
+        TestComponentMeshFilter *componentMeshFilter = world.getComponentStorage<TestComponentMeshFilter>().get(id);
         EXPECT_CALL(*componentMeshFilter, testMeshFilter()).Times(100);
 
-        TestComponentTransform* componentTransform = world.getComponentStorage<TestComponentTransform>().get(id);
+        TestComponentTransform *componentTransform = world.getComponentStorage<TestComponentTransform>().get(id);
         EXPECT_CALL(*componentTransform, testTransform()).Times(100);
     }
 
-    auto increment = boost::hana::fuse([](auto entityID, boost::hana::tuple<TestComponentMeshFilter*, TestComponentTransform*> components) {
+    auto increment = boost::hana::fuse([](auto entityID,
+                                          boost::hana::tuple<TestComponentMeshFilter *,
+                                                             TestComponentTransform *> components) {
         components[0_c]->testMeshFilter();
         components[1_c]->testTransform();
     });
@@ -145,8 +162,6 @@ TEST(TestComponent, TestMultiple) {
     for (int i = 0; i < 100; i++)
         world.for_each<TestComponentMeshFilter, TestComponentTransform>(increment);
 }
-
-
 
 TEST(TestComponent, TestView) {
     TestWorldType world;
@@ -158,11 +173,11 @@ TEST(TestComponent, TestView) {
     }
 
     for (auto id : ids) {
-        TestComponentTransform* component = world.getComponentStorage<TestComponentTransform>().get(id);
+        TestComponentTransform *component = world.getComponentStorage<TestComponentTransform>().get(id);
         EXPECT_CALL(*component, testTransform()).Times(100);
     }
 
-    auto increment = boost::hana::fuse([](auto entityID, boost::hana::tuple<TestComponentTransform*> components) {
+    auto increment = boost::hana::fuse([](auto entityID, boost::hana::tuple<TestComponentTransform *> components) {
         components[0_c]->testTransform();
     });
 
@@ -171,7 +186,6 @@ TEST(TestComponent, TestView) {
     for (int i = 0; i < 100; i++)
         view1.for_each(world, increment);
 }
-
 
 TEST(TestComponent, TestViewMutate) {
     TestWorldType world;
@@ -183,11 +197,11 @@ TEST(TestComponent, TestViewMutate) {
     }
 
     for (auto id : ids) {
-        TestComponentTransform* component = world.getComponentStorage<TestComponentTransform>().get(id);
+        TestComponentTransform *component = world.getComponentStorage<TestComponentTransform>().get(id);
         EXPECT_CALL(*component, testTransform()).Times(2);
     }
 
-    auto increment = boost::hana::fuse([](auto entityID, boost::hana::tuple<TestComponentTransform*> components) {
+    auto increment = boost::hana::fuse([](auto entityID, boost::hana::tuple<TestComponentTransform *> components) {
         components[0_c]->testTransform();
     });
 
@@ -195,12 +209,11 @@ TEST(TestComponent, TestViewMutate) {
     view1.for_each(world, increment);
 
     auto new_id = world.createEntity<TestComponentTransform, TestComponentMeshFilter>();
-    TestComponentTransform* component = world.getComponentStorage<TestComponentTransform>().get(new_id);
+    TestComponentTransform *component = world.getComponentStorage<TestComponentTransform>().get(new_id);
     EXPECT_CALL(*component, testTransform()).Times(1);
 
     view1.for_each(world, increment);
 }
-
 
 TEST(TestComponent, TestViewMultiple) {
     TestWorldType world;
@@ -224,14 +237,16 @@ TEST(TestComponent, TestViewMultiple) {
     }
 
     for (auto id : ids) {
-        TestComponentMeshFilter* componentMeshFilter = world.getComponentStorage<TestComponentMeshFilter>().get(id);
+        TestComponentMeshFilter *componentMeshFilter = world.getComponentStorage<TestComponentMeshFilter>().get(id);
         EXPECT_CALL(*componentMeshFilter, testMeshFilter()).Times(100);
 
-        TestComponentTransform* componentTransform = world.getComponentStorage<TestComponentTransform>().get(id);
+        TestComponentTransform *componentTransform = world.getComponentStorage<TestComponentTransform>().get(id);
         EXPECT_CALL(*componentTransform, testTransform()).Times(100);
     }
 
-    auto increment = boost::hana::fuse([](auto entityID, boost::hana::tuple<TestComponentMeshFilter*, TestComponentTransform*> components) {
+    auto increment = boost::hana::fuse([](auto entityID,
+                                          boost::hana::tuple<TestComponentMeshFilter *,
+                                                             TestComponentTransform *> components) {
         components[0_c]->testMeshFilter();
         components[1_c]->testTransform();
     });
@@ -241,8 +256,6 @@ TEST(TestComponent, TestViewMultiple) {
     for (int i = 0; i < 100; i++)
         view1.for_each(world, increment);
 }
-
-
 
 TEST(TestComponent, TestViewPredicate) {
     TestWorldType world;
@@ -256,20 +269,24 @@ TEST(TestComponent, TestViewPredicate) {
     auto target_id = ids[23];
 
     for (auto id : ids) {
-        TestComponentTransform* component = world.getComponentStorage<TestComponentTransform>().get(id);
+        TestComponentTransform *component = world.getComponentStorage<TestComponentTransform>().get(id);
         if (id == target_id)
             EXPECT_CALL(*component, testTransform()).Times(100);
         else
             EXPECT_CALL(*component, testTransform()).Times(0);
     }
 
-    auto increment = boost::hana::fuse([target_id](auto entityID, boost::hana::tuple<TestComponentTransform*> components) {
-        components[0_c]->testTransform();
-    });
+    auto increment =
+        boost::hana::fuse([target_id](auto entityID, boost::hana::tuple<TestComponentTransform *> components) {
+            components[0_c]->testTransform();
+        });
 
-    auto view1 = makeView<TestComponentTransform>(world, boost::hana::fuse([target_id](auto id,  boost::hana::tuple<TestComponentTransform*> components){
-        return id == target_id;
-    }));
+    auto view1 = makeView<TestComponentTransform>(world,
+                                                  boost::hana::fuse([target_id](auto id,
+                                                                                boost::hana::tuple<
+                                                                                    TestComponentTransform *> components) {
+                                                      return id == target_id;
+                                                  }));
 
     for (int i = 0; i < 100; i++)
         view1.for_each(world, increment);
@@ -280,9 +297,9 @@ TEST(TestComponent, TestComponentStorageTreeMap) {
 
     storage.add(1);
     storage.add(5);
-    storage.add(2, 5);
+    storage.addWithParent(2, 5);
     storage.add(3);
-    storage.add(4, 5);
+    storage.addWithParent(4, 5);
 
     std::vector<EntityID> normalIterate;
     std::vector<EntityID> normalIterate_expected = {1, 2, 3, 4, 5};
@@ -312,9 +329,9 @@ TEST(TestComponent, TestComponentStorageTreeArray) {
 
     storage.add(1);
     storage.add(5);
-    storage.add(2, 5);
+    storage.addWithParent(2, 5);
     storage.add(3);
-    storage.add(4, 5);
+    storage.addWithParent(4, 5);
 
     std::vector<EntityID> normalIterate;
     std::vector<EntityID> normalIterate_expected = {1, 2, 3, 4, 5};
@@ -337,4 +354,44 @@ TEST(TestComponent, TestComponentStorageTreeArray) {
     EXPECT_EQ(normalIterate, normalIterate_expected);
     EXPECT_EQ(treeIterate, treeIterate_expected);
     EXPECT_EQ(parents, parents_expected);
+}
+
+TEST(TestComponent, TestComponentConstruct) {
+    TestWorldType world;
+
+    TestComponentTransform transform;
+    transform.idx = 4;
+    TestComponentMeshFilter meshFilter;
+    meshFilter.idx = 7;
+
+    EXPECT_CALL(transform, testTransform()).Times(1);
+    EXPECT_CALL(meshFilter, testMeshFilter()).Times(1);
+
+    auto id = world.createEntity(transform, std::move(meshFilter));
+
+    TestComponentTransform *transform2 = world.getComponentStorage<TestComponentTransform>().get(id);
+    TestComponentMeshFilter *meshFilter2 = world.getComponentStorage<TestComponentMeshFilter>().get(id);
+
+    EXPECT_EQ(transform2->idx, transform.idx);
+    EXPECT_EQ(meshFilter2->idx, meshFilter.idx);
+}
+
+TEST(TestComponent, TestComponentConstructTree) {
+    TestWorldType world;
+
+    TestComponentTransform transform;
+    transform.idx = 4;
+    TestComponentMeshFilter2 meshFilter;
+    meshFilter.idx = 7;
+
+    EXPECT_CALL(transform, testTransform()).Times(1);
+    EXPECT_CALL(meshFilter, testMeshFilter2()).Times(1);
+
+    auto id = world.createEntity(transform, meshFilter);
+
+    TestComponentTransform *transform2 = world.getComponentStorage<TestComponentTransform>().get(id);
+    TestComponentMeshFilter2 *meshFilter2 = world.getComponentStorage<TestComponentMeshFilter2>().get(id);
+
+    EXPECT_EQ(transform2->idx, transform.idx);
+    EXPECT_EQ(meshFilter2->idx, meshFilter.idx);
 }

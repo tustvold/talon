@@ -71,6 +71,13 @@ public:
         incrementGeneration();
     }
 
+    template <typename... Args>
+    void add(EntityID id, Args&&... args) {
+        TASSERT(id < MaxEntityID);
+        data[id].emplace(std::forward<Args>(args)...);
+        incrementGeneration();
+    }
+
     Component* get(EntityID id) {
         return data[id].has_value() ? &data[id].value() : nullptr;
     }

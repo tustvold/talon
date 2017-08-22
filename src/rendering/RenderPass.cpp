@@ -1,5 +1,5 @@
 #include "RenderPass.hpp"
-#include "ServiceTable.hpp"
+#include "ApplicationServiceTable.hpp"
 #include "SwapChain.hpp"
 #include "DeviceManager.hpp"
 
@@ -13,9 +13,9 @@ RenderPass::RenderPass(const SwapChain *swapChain,
 
 RenderPass::~RenderPass() {
     for (auto &frameBuffer : framebuffers) {
-        ServiceTable::deviceManager->getDevice().destroyFramebuffer(frameBuffer);
+        ApplicationServiceTable::deviceManager->getDevice().destroyFramebuffer(frameBuffer);
     }
-    ServiceTable::deviceManager->getDevice().destroyRenderPass(renderPass);
+    ApplicationServiceTable::deviceManager->getDevice().destroyRenderPass(renderPass);
 }
 
 void RenderPass::createRenderPass(const SwapChain *swapChain, DeviceManager *deviceManager) {

@@ -57,6 +57,13 @@ public:
         incrementGeneration();
     }
 
+    template <typename Arg>
+    void add(EntityID id, Arg&& arg) {
+        TASSERT(id < MaxEntityID);
+        data.emplace(std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple(std::forward<Arg>(arg)));
+        incrementGeneration();
+    }
+
     Component* get(EntityID id) {
         auto it = data.find(id);
         return it == data.end() ? nullptr : &it->second;

@@ -5,7 +5,12 @@ using namespace boost::hana::literals;
 
 TALON_NS_BEGIN
 
-using GenerationID = uint64_t;
+#define COMPONENT_STORAGE_DEF(Component, StorageType) \
+    template <> struct ComponentStorage<Component> : StorageType<Component> {}
+
+#define COMPONENT_STORAGE_DEF_TREE(Component, StorageType) \
+    template <> struct ComponentStorage<Component> : ComponentStorageTree<Component, StorageType> {}
+
 
 struct ComponentStorageBase {
 public:

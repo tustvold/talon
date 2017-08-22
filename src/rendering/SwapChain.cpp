@@ -1,5 +1,5 @@
 #include "SwapChain.hpp"
-#include "ServiceTable.hpp"
+#include "ApplicationServiceTable.hpp"
 #include "WindowManager.hpp"
 #include "SurfaceManager.hpp"
 #include "DeviceManager.hpp"
@@ -60,9 +60,9 @@ SwapChain::SwapChain(WindowManager *windowManager,
 
 SwapChain::~SwapChain() {
     for (auto &imageView : imageViews) {
-        ServiceTable::deviceManager->getDevice().destroyImageView(imageView);
+        ApplicationServiceTable::deviceManager->getDevice().destroyImageView(imageView);
     }
-    ServiceTable::deviceManager->getDevice().destroySwapchainKHR(swapChain);
+    ApplicationServiceTable::deviceManager->getDevice().destroySwapchainKHR(swapChain);
 }
 
 void SwapChain::createSwapChain(WindowManager *windowManager, SurfaceManager *surfaceManager, DeviceManager *deviceManager) {
