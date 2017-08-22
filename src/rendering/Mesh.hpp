@@ -40,6 +40,8 @@ public:
         GenericMeshData(meshData.vertices.data(), static_cast<uint32_t>(meshData.vertices.size()), sizeof(Vertex))
     ) {}
 
+    ~Mesh();
+
     void bind(vk::CommandBuffer commandBuffer);
 
     void draw(vk::CommandBuffer commandBuffer);

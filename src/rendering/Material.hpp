@@ -1,30 +1,26 @@
 #pragma once
 #include "TalonConfig.hpp"
+#include "TalonTypes.hpp"
 #include <vulkan/vulkan.hpp>
+#include "ecs/IdentifierPool.hpp"
 
 TALON_NS_BEGIN
 
-class SwapChain;
-class RenderPass;
 class DeviceManager;
 
 class Material {
 public:
-
-    Material(const SwapChain* swapChain, const RenderPass* renderPass, DeviceManager* deviceManager);
+    Material();
     ~Material();
 
-    void bind(vk::CommandBuffer commandBuffer) {
-        commandBuffer.bindPipeline(bindPoint, pipeline);
+    auto getMaterialID() const {
+        return materialID;
     }
 
 private:
-    vk::PipelineLayout pipelineLayout;
-    vk::Pipeline pipeline;
-    vk::PipelineBindPoint bindPoint;
+    const MaterialID materialID;
 
-    void createGraphicsPipeline(const SwapChain *swapChain, const RenderPass *renderPass, DeviceManager *pManager);
-    vk::ShaderModule createShaderModule(std::vector<char> code, DeviceManager *pManager);
+    static IdentifierPool<MaterialID, MaxMaterialID> identifierPool;
 };
 
 TALON_NS_END

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include <ECSConfig.hpp>
+#include <TalonTypes.hpp>
 #include <ecs/ComponentStorageArray.hpp>
 #include <ecs/ComponentStorageMap.hpp>
 #include <ecs/ComponentStorageTree.hpp>

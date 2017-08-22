@@ -1,4 +1,4 @@
-set(SOURCE_FILES main.cpp ../external/signals/Signal.hpp ../external/signals/Dummy.cpp ../config/default/ECSConfig.hpp)
+set(SOURCE_FILES main.cpp ../external/signals/Signal.hpp ../external/signals/Dummy.cpp TestScene.cpp TestScene.hpp ../config/default/TalonTypes.hpp)
 add_executable(imgui_glfw_test ${SOURCE_FILES})
 
 target_link_libraries(imgui_glfw_test talon)

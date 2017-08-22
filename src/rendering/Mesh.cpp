@@ -20,6 +20,10 @@ Mesh::Mesh(const Mesh::GenericMeshData &data) : num_vertices(data.num_vertices) 
     handle.copy(data.vertices, vertices_size_in_bytes);
 }
 
+Mesh::~Mesh() {
+
+}
+
 void Mesh::bind(vk::CommandBuffer commandBuffer) {
     vk::Buffer vertexBuffers[] = {vertexBuffer->data};
     vk::DeviceSize offsets[] = {0};
@@ -30,4 +34,5 @@ void Mesh::bind(vk::CommandBuffer commandBuffer) {
 void Mesh::draw(vk::CommandBuffer commandBuffer) {
     commandBuffer.draw(getNumVertices(), 1, 0, 0);
 }
+
 

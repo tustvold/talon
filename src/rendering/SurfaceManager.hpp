@@ -10,6 +10,7 @@ class WindowManager;
 class SurfaceManager {
 public:
     SurfaceManager(InstanceManager* instanceManager, WindowManager* windowManager);
+    ~SurfaceManager();
 
     vk::SurfaceKHR getSurface() const {
         return surface;

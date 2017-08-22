@@ -6,3 +6,5 @@ ServiceProvider<InstanceManager, nullptr_t> ApplicationServiceTable::instanceMan
 ServiceProvider<DeviceManager, nullptr_t> ApplicationServiceTable::deviceManager;
 ServiceProvider<MemoryAllocator, nullptr_t> ApplicationServiceTable::memoryAllocator;
 ServiceProvider<CommandPool, nullptr_t> ApplicationServiceTable::commandPool;
+ServiceProvider<SurfaceManager, nullptr_t> ApplicationServiceTable::surfaceManager;
+ServiceProvider<WindowManager, nullptr_t> ApplicationServiceTable::windowManager;

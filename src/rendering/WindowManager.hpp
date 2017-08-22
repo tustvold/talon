@@ -19,7 +19,7 @@ public:
         return window;
     }
 
-    vk::Extent2D getWindowExtents();
+    vk::Extent2D getWindowExtents() const;
 
     bool poll();
 

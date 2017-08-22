@@ -1,6 +1,8 @@
 #pragma once
 #include <vulkan/vulkan.hpp>
 #include "TalonConfig.hpp"
+#include "Material.hpp"
+#include "MaterialPipelineCache.hpp"
 
 TALON_NS_BEGIN
 
@@ -9,7 +11,7 @@ class DeviceManager;
 
 class RenderPass {
 public:
-    RenderPass(const SwapChain* swapChain, DeviceManager* deviceManager);
+    explicit RenderPass(SwapChain* swapChain);
     ~RenderPass();
 
     vk::RenderPass getRenderPass() const {
@@ -20,13 +22,16 @@ public:
         return framebuffers;
     }
 
+    void bindMaterial(talon::Material *pMaterial, vk::CommandBuffer buffer);
+
 private:
+    SwapChain* swapChain;
     vk::RenderPass renderPass;
+    MaterialPipelineCache materialPipelineCache;
     std::vector<vk::Framebuffer> framebuffers;
 
-    void createRenderPass(const SwapChain *swapChain, DeviceManager *pManager);
-    void createFrameBuffers(const SwapChain *swapChain, DeviceManager *pManager);
-
+    void createRenderPass();
+    void createFrameBuffers();
 };
 
 

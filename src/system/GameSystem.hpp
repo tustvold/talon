@@ -4,9 +4,11 @@
 
 TALON_NS_BEGIN
 
-class SystemUpdateTransforms {
+class GameSystem {
 public:
-    void update(World &world);
+    virtual ~GameSystem() = default;
+
+    virtual void update(World &world) = 0;
 };
 
 TALON_NS_END

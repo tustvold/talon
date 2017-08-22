@@ -1,15 +1,15 @@
 #pragma once
 #include "TalonConfig.hpp"
 #include <stack>
-#include <ECSConfig.hpp>
+#include <TalonTypes.hpp>
 #include <Logging.hpp>
 
 TALON_NS_BEGIN
 
-template <typename T>
+template <typename T, size_t max>
 class IdentifierPool {
 public:
-    IdentifierPool() : next(0) {
+    IdentifierPool() noexcept : next(0) {
 
     }
 
@@ -19,8 +19,12 @@ public:
             reserve.pop();
             return ret;
         }
-        TASSERT(next < MaxEntityID);
+        TASSERT(next < max);
         return next++;
+    }
+
+    void free(T id) {
+        reserve.push(id);
     }
 
 private:

@@ -1,8 +1,8 @@
-#include "SystemUpdateTransforms.hpp"
+#include "GameSystemUpdateTransforms.hpp"
 
 USING_TALON_NS;
 
-void SystemUpdateTransforms::update(World &world) {
+void GameSystemUpdateTransforms::update(World &world) {
     ComponentStorage<ComponentTransform> &transforms = world.getComponentStorage<ComponentTransform>();
 
     transforms.tree_for_each(boost::hana::fuse([](EntityID id,

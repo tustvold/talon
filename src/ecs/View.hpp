@@ -46,7 +46,7 @@ public:
 
 private:
     Predicate predicate;
-    std::array<GenerationID, sizeof...(Components)> generations;
+    std::array<ComponentGenerationID, sizeof...(Components)> generations;
     std::vector<boost::hana::tuple<EntityID, boost::hana::tuple<typename std::add_pointer<Components>::type...>>> view;
 };
 

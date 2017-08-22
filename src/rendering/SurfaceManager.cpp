@@ -1,5 +1,6 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#include <ApplicationServiceTable.hpp>
 #include "SurfaceManager.hpp"
 #include "InstanceManager.hpp"
 #include "WindowManager.hpp"
@@ -14,4 +15,10 @@ SurfaceManager::SurfaceManager(InstanceManager *instanceManager, WindowManager *
     }
 
     surface = psurf;
+
+    ApplicationServiceTable::surfaceManager.set(this);
+}
+
+SurfaceManager::~SurfaceManager() {
+    ApplicationServiceTable::surfaceManager.clear(this);
 }

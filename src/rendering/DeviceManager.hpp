@@ -45,11 +45,11 @@ public:
         return presentQueue_;
     }
 
-    auto getQueueFamilyIndices(const SurfaceManager *surfaceManager) {
+    auto getQueueFamilyIndices(const SurfaceManager *surfaceManager) const {
         return getQueueFamilyIndices(surfaceManager, physicalDevice_);
     }
 
-    auto getSwapChainSupportDetails(const SurfaceManager *surfaceManager) {
+    auto getSwapChainSupportDetails(const SurfaceManager *surfaceManager) const {
         return getSwapChainSupportDetails(surfaceManager, physicalDevice_);
     }
 

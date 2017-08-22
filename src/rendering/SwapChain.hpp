@@ -7,10 +7,11 @@ TALON_NS_BEGIN
 class WindowManager;
 class SurfaceManager;
 class DeviceManager;
+class RenderPass;
 
 class SwapChain {
 public:
-    SwapChain(WindowManager* windowManager, SurfaceManager* surfaceManager, DeviceManager* deviceManager);
+    explicit SwapChain(int numRenderPasses);
     ~SwapChain();
 
     const vk::SwapchainKHR &getSwapChain() const {
@@ -33,19 +34,22 @@ public:
         return imageViews;
     }
 
+    RenderPass* getRenderPass(size_t index);
+
 private:
     vk::SwapchainKHR swapChain;
     std::vector<vk::Image> images;
     vk::Format imageFormat;
     vk::Extent2D extents;
     std::vector<vk::ImageView> imageViews;
+    std::vector<RenderPass> renderPasses;
 
-    void createSwapChain(WindowManager *windowManager, SurfaceManager *surfaceManager, DeviceManager *pManager);
-    void createImageViews(DeviceManager *pManager);
+    void createSwapChain();
+    void createImageViews();
 
     static vk::SurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR> &availableFormats);
     static vk::PresentModeKHR chooseSwapPresentMode(const std::vector<vk::PresentModeKHR> &availablePresentModes);
-    static vk::Extent2D chooseSwapExtent(WindowManager *windowManager, const vk::SurfaceCapabilitiesKHR &capabilities);
+    static vk::Extent2D chooseSwapExtent(const WindowManager *windowManager, const vk::SurfaceCapabilitiesKHR &capabilities);
 };
 
 TALON_NS_END

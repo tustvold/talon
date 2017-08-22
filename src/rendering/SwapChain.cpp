@@ -3,6 +3,7 @@
 #include "WindowManager.hpp"
 #include "SurfaceManager.hpp"
 #include "DeviceManager.hpp"
+#include "RenderPass.hpp"
 
 USING_TALON_NS;
 
@@ -35,7 +36,7 @@ vk::PresentModeKHR SwapChain::chooseSwapPresentMode(const std::vector<vk::Presen
     return bestMode;
 }
 
-vk::Extent2D SwapChain::chooseSwapExtent(WindowManager *windowManager, const vk::SurfaceCapabilitiesKHR &capabilities) {
+vk::Extent2D SwapChain::chooseSwapExtent(const WindowManager *windowManager, const vk::SurfaceCapabilitiesKHR &capabilities) {
     if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
         return capabilities.currentExtent;
     } else {
@@ -50,12 +51,13 @@ vk::Extent2D SwapChain::chooseSwapExtent(WindowManager *windowManager, const vk:
     }
 }
 
-SwapChain::SwapChain(WindowManager *windowManager,
-                     SurfaceManager *surfaceManager,
-                     DeviceManager* deviceManager)
+SwapChain::SwapChain(int numberRenderPasses)
     : imageFormat(vk::Format::eUndefined) {
-    createSwapChain(windowManager, surfaceManager, deviceManager);
-    createImageViews(deviceManager);
+    createSwapChain();
+    createImageViews();
+
+    for(int i = 0; i < numberRenderPasses; i++)
+        renderPasses.emplace_back(this);
 }
 
 SwapChain::~SwapChain() {
@@ -65,7 +67,11 @@ SwapChain::~SwapChain() {
     ApplicationServiceTable::deviceManager->getDevice().destroySwapchainKHR(swapChain);
 }
 
-void SwapChain::createSwapChain(WindowManager *windowManager, SurfaceManager *surfaceManager, DeviceManager *deviceManager) {
+void SwapChain::createSwapChain() {
+    auto deviceManager = ApplicationServiceTable::deviceManager.get();
+    auto surfaceManager = ApplicationServiceTable::surfaceManager.get();
+    auto windowManager = ApplicationServiceTable::windowManager.get();
+
     SwapChainSupportDetails swapChainSupport = deviceManager->getSwapChainSupportDetails(surfaceManager);
 
     auto surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
@@ -111,7 +117,7 @@ void SwapChain::createSwapChain(WindowManager *windowManager, SurfaceManager *su
     extents = extent;
 }
 
-void SwapChain::createImageViews(DeviceManager *deviceManager) {
+void SwapChain::createImageViews() {
     imageViews.resize(images.size());
 
     for (size_t i = 0; i < images.size(); i++) {
@@ -130,6 +136,9 @@ void SwapChain::createImageViews(DeviceManager *deviceManager) {
         createInfo.subresourceRange.baseArrayLayer = 0;
         createInfo.subresourceRange.layerCount = 1;
 
-        imageViews[i] = deviceManager->getDevice().createImageView(createInfo);
+        imageViews[i] = ApplicationServiceTable::deviceManager->getDevice().createImageView(createInfo);
     }
+}
+RenderPass *SwapChain::getRenderPass(size_t index) {
+    return &renderPasses[index];
 }

@@ -1,6 +1,6 @@
 #include <GLFW/glfw3.h>
-#include <system/SystemUpdateTransforms.hpp>
-#include <system/SystemRenderMeshFilter.hpp>
+#include <system/GameSystemUpdateTransforms.hpp>
+#include <system/RenderSystemMeshFilter.hpp>
 #include "GameLoop.hpp"
 #include "ApplicationServiceTable.hpp"
 #include "rendering/Vertex.hpp"
@@ -13,32 +13,23 @@
 
 USING_TALON_NS;
 
-const std::vector<Vertex> test_vertices = {
-    {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-    {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-    {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
-};
-
-GameLoop::GameLoop(DeviceManager *deviceManager, SurfaceManager *surfaceManager, WindowManager *windowManager)
+GameLoop::GameLoop()
     : commandBuffers(1), updateCount(0), updateStartInterval(glfwGetTime()) {
-    swapChain = std::make_unique<SwapChain>(windowManager, surfaceManager, deviceManager);
-    renderPass = std::make_unique<RenderPass>(swapChain.get(), deviceManager);
-    testMaterial = std::make_unique<Material>(swapChain.get(), renderPass.get(), deviceManager);
+}
 
-    auto meshData = makeMeshData(test_vertices);
-    testMesh = std::make_unique<Mesh>(meshData);
+void GameLoop::addRenderSystem(std::unique_ptr<RenderSystem> &&renderSystem) {
+    renderSystems.emplace_back(std::move(renderSystem));
+}
 
-    ComponentMeshFilter filter;
-    filter.mesh = testMesh.get();
-    filter.material = testMaterial.get();
-
-    ComponentTransform transform;
-    world.createEntity(transform, filter);
+void GameLoop::addGameSystem(std::unique_ptr<GameSystem> &&gameSystem) {
+    gameSystems.emplace_back(std::move(gameSystem));
 }
 
 GameLoop::~GameLoop() = default;
 
-bool GameLoop::renderFrame(DeviceManager *deviceManager, SurfaceManager *surfaceManager) {
+bool GameLoop::doUpdate(World &world, SwapChain* swapChain) {
+    auto deviceManager = ApplicationServiceTable::deviceManager;
+
     auto current = glfwGetTime();
     auto delta = current - updateStartInterval;
     if (delta > 5) {
@@ -52,8 +43,9 @@ bool GameLoop::renderFrame(DeviceManager *deviceManager, SurfaceManager *surface
     }
     updateCount++;
 
-    SystemUpdateTransforms updateTransforms;
-    updateTransforms.update(world);
+    for (auto &system : gameSystems) {
+        system->update(world);
+    }
 
     deviceManager->getGraphicsQueue().waitIdle();
 
@@ -71,7 +63,7 @@ bool GameLoop::renderFrame(DeviceManager *deviceManager, SurfaceManager *surface
         throw std::runtime_error("failed to acquire swap chain image!");
     }
 
-    recordCommandBuffer(imageIndex);
+    recordCommandBuffer(world, swapChain, imageIndex);
 
     vk::SubmitInfo submitInfo = {};
 
@@ -112,7 +104,7 @@ bool GameLoop::renderFrame(DeviceManager *deviceManager, SurfaceManager *surface
     return true;
 }
 
-void GameLoop::recordCommandBuffer(int index) {
+void GameLoop::recordCommandBuffer(World &world, SwapChain* swapChain, int index) {
     auto commandBuffer = commandBuffers[0];
 
     vk::CommandBufferBeginInfo beginInfo = {};
@@ -120,6 +112,8 @@ void GameLoop::recordCommandBuffer(int index) {
     commandBuffer.reset(vk::CommandBufferResetFlags());
 
     commandBuffer.begin(beginInfo);
+
+    auto renderPass = swapChain->getRenderPass(0);
 
     vk::RenderPassBeginInfo renderPassInfo = {};
     renderPassInfo.renderPass = renderPass->getRenderPass();
@@ -134,14 +128,11 @@ void GameLoop::recordCommandBuffer(int index) {
 
     commandBuffer.beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
 
-    SystemRenderMeshFilter renderMeshFilter;
-    renderMeshFilter.update(world, commandBuffer);
+    RenderSystemArgs args(&world, swapChain, renderPass, commandBuffer);
 
-//    commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, testMaterial->getGraphicsPipeline());
-//
-//    testMesh->bind(commandBuffer);
-//
-//    commandBuffer.draw(testMesh->getNumVertices(), 1, 0, 0);
+    for (auto &system : renderSystems) {
+        system->update(args);
+    }
 
     commandBuffer.endRenderPass();
     commandBuffer.end();

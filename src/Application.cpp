@@ -1,5 +1,6 @@
 #include "Application.hpp"
 #include "GameLoop.hpp"
+#include "Scene.hpp"
 
 #include "rendering/DeviceManager.hpp"
 #include "rendering/InstanceManager.hpp"
@@ -10,55 +11,43 @@
 
 
 USING_TALON_NS;
-
-void Application::onWindowResized(vk::Extent2D extent2D) {
-    recreateSwapChain();
-}
-
-void Application::run() {
+void Application::run(std::unique_ptr<Scene>&& scene) {
+    currentScene = std::move(scene);
     while (windowManager->poll()) {
-        if (!gameLoop->renderFrame(deviceManager.get(), surfaceManager.get()))
-            recreateSwapChain();
+        currentScene->renderFrame();
     }
 
     vkDeviceWaitIdle(deviceManager->getDevice());
 }
 
-void Application::recreateSwapChain() {
-    deviceManager->getDevice().waitIdle();
-    gameLoop.reset();
-    gameLoop = std::make_unique<GameLoop>(deviceManager.get(), surfaceManager.get(), windowManager.get());
+void Application::vulkanDebugCallback(const VDebugCallbackArgs &args) {
+    TLOGERROR("Validation Layer - %s\n", args.pMessage);
 }
 
-Application::Application(std::unique_ptr<ApplicationDelegate> &&delegate, const ApplicationInitSettings &initSettings)
-    : applicationDelegate(std::move(delegate)) {
-
+Application::Application(const ApplicationInitSettings &initSettings) {
     windowManager = std::make_unique<WindowManager>(initSettings);
     instanceManager = std::make_unique<InstanceManager>(initSettings);
 
     if (initSettings.validationLayersEnabled)
-        debugCallback = std::make_unique<DebugCallback>(Gallant::MakeDelegate(applicationDelegate.get(), &ApplicationDelegate::vulkanDebugCallback));
+        debugCallback = std::make_unique<DebugCallback>(Gallant::MakeDelegate(this, &Application::vulkanDebugCallback));
 
     surfaceManager = std::make_unique<SurfaceManager>(instanceManager.get(), windowManager.get());
     deviceManager = std::make_unique<DeviceManager>(initSettings, instanceManager.get(), surfaceManager.get());
     memoryAllocator = std::make_unique<MemoryAllocator>(deviceManager.get());
     commandPool = std::make_unique<CommandPool>(deviceManager.get(), surfaceManager.get());
-    gameLoop = std::make_unique<GameLoop>(deviceManager.get(), surfaceManager.get(), windowManager.get());
 
-    windowManager->getWindowResizeEvent().Connect(this, &Application::onWindowResized);
+
 }
 
 Application::~Application() {
-    gameLoop.reset();
-
+    currentScene.reset();
     memoryAllocator.reset();
-
     commandPool.reset();
-
     deviceManager.reset();
-
     debugCallback.reset();
     surfaceManager.reset();
     instanceManager.reset();
     windowManager.reset();
 }
+
+

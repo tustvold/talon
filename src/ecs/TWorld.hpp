@@ -201,7 +201,7 @@ public:
     }
 
 private:
-    IdentifierPool<EntityID> pool;
+    IdentifierPool<EntityID, MaxEntityID> pool;
     ComponentStorageTuple<SystemComponents...> storage;
 };
 

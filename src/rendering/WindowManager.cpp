@@ -1,4 +1,5 @@
 #include <GLFW/glfw3.h>
+#include <ApplicationServiceTable.hpp>
 #include "WindowManager.hpp"
 
 USING_TALON_NS;
@@ -16,9 +17,12 @@ WindowManager::WindowManager(const ApplicationInitSettings &initSettings) {
 
     glfwSetWindowUserPointer(window, this);
     glfwSetWindowSizeCallback(window, WindowManager::onWindowResizedStatic);
+
+    ApplicationServiceTable::windowManager.set(this);
 }
 
 WindowManager::~WindowManager() {
+    ApplicationServiceTable::windowManager.clear(this);
     glfwDestroyWindow(window);
     glfwTerminate();
 }
@@ -32,7 +36,7 @@ void WindowManager::onWindowResized(GLFWwindow *window, int width, int height) {
     windowResizeEvent(vk::Extent2D(static_cast<uint32_t>(width), static_cast<uint32_t>(height)));
 }
 
-vk::Extent2D WindowManager::getWindowExtents() {
+vk::Extent2D WindowManager::getWindowExtents() const {
     int width, height;
     glfwGetWindowSize(window, &width, &height);
 

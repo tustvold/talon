@@ -9,9 +9,6 @@ struct Vertex {
     Eigen::Vector2f pos;
     Eigen::Vector3f color;
 
-    static_assert(sizeof(pos) == 2 * sizeof(float), "asddas");
-    static_assert(sizeof(color) == 3 * sizeof(float), "asddas");
-
     static vk::VertexInputBindingDescription getBindingDescription() {
         vk::VertexInputBindingDescription bindingDescription = {};
         bindingDescription.binding = 0;

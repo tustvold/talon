@@ -17,7 +17,7 @@ public:
     // We initialize generation to 1, so that 0 corresponds to uninitialized for Views
     ComponentStorageBase() : generation(1) {}
 
-    GenerationID getGeneration() const {
+    ComponentGenerationID getGeneration() const {
         return generation;
     }
 
@@ -29,7 +29,7 @@ protected:
 
 private:
 
-    GenerationID generation;
+    ComponentGenerationID generation;
 };
 
 template<typename Component>

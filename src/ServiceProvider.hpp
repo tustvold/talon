@@ -11,11 +11,11 @@ public:
 
     }
 
-    const Service* get() const noexcept {
+    const Service* get() noexcept {
         return current;
     }
 
-    const Service* operator->() const noexcept {
+    const Service* operator->() noexcept {
         return get();
     }
 
@@ -41,11 +41,11 @@ public:
 
     }
 
-    const Service* get() const noexcept {
+    Service* get() noexcept {
         return current;
     }
 
-    const Service* operator->() const noexcept {
+    Service* operator->() noexcept {
         return get();
     }
 

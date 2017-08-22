@@ -1,6 +1,6 @@
 #pragma once
 #include "TalonConfig.hpp"
-#include "ECSConfig.hpp"
+#include "TalonTypes.hpp"
 
 #include "ecs/TWorld.hpp"
 #include "ecs/ComponentStorage.hpp"

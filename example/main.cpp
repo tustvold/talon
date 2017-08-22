@@ -2,13 +2,9 @@
 #include "Logging.hpp"
 #include "Application.hpp"
 #include "ApplicationInitSettings.hpp"
+#include "TestScene.hpp"
 
-struct MyApplicationDelegate : public talon::ApplicationDelegate {
-public:
-    void vulkanDebugCallback(const talon::VDebugCallbackArgs& args) override {
-        TLOGERROR("Validation Layer - %s\n", args.pMessage);
-    }
-};
+USING_TALON_NS;
 
 int main() {
 
@@ -24,10 +20,8 @@ int main() {
     settings.validationLayersEnabled = false;
 #endif
     try {
-        auto delegate = std::make_unique<MyApplicationDelegate>();
-        auto app = std::make_unique<TALON_NS::Application>(std::move(delegate), settings);
-
-        app->run();
+        auto app = std::make_unique<Application>(settings);
+        app->run(std::make_unique<TestScene>());
     } catch (const std::runtime_error &e) {
         TLOGERROR("Runtime Error - %s", e.what());
         return EXIT_FAILURE;

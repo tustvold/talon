@@ -3,6 +3,8 @@
 #include "TalonConfig.hpp"
 #include "rendering/VSemaphore.hpp"
 #include "rendering/CommandBufferCollection.hpp"
+#include "system/RenderSystem.hpp"
+#include "system/GameSystem.hpp"
 
 TALON_NS_BEGIN
 
@@ -17,20 +19,29 @@ class WindowManager;
 
 class GameLoop {
 public:
-    GameLoop(DeviceManager* deviceManger, SurfaceManager* surfaceManager, WindowManager* windowManager);
+    GameLoop();
     ~GameLoop();
-    bool renderFrame(DeviceManager* deviceManger, SurfaceManager* surfaceManager);
+    bool doUpdate(World& world, SwapChain* swapChain);
+
+    void addRenderSystem(std::unique_ptr<RenderSystem> &&renderSystem);
+    void addGameSystem(std::unique_ptr<GameSystem> &&gameSystem);
+
+    template<typename T>
+    void addRenderSystem() {
+        addRenderSystem(std::unique_ptr<RenderSystem>(new T()));
+    }
+
+    template<typename T>
+    void addGameSystem() {
+        addGameSystem(std::unique_ptr<GameSystem>(new T()));
+    }
 
 private:
-    std::unique_ptr<SwapChain> swapChain;
-    std::unique_ptr<RenderPass> renderPass;
 
     CommandBufferCollection commandBuffers;
 
-    std::unique_ptr<Mesh> testMesh;
-    std::unique_ptr<Material> testMaterial;
-
-    World world;
+    std::vector<std::unique_ptr<RenderSystem>> renderSystems;
+    std::vector<std::unique_ptr<GameSystem>> gameSystems;
 
     VSemaphore imageAvailableSemaphore;
     VSemaphore renderFinishedSemaphore;
@@ -38,7 +49,7 @@ private:
     uint32_t updateCount;
     double updateStartInterval;
 
-    void recordCommandBuffer(int index);
+    void recordCommandBuffer(World& world, SwapChain* swapChain, int index);
 };
 
 TALON_NS_END
