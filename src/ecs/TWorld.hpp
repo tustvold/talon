@@ -90,6 +90,18 @@ struct ForEachUtil<TComponent> {
         auto &componentStorage = st.template getComponentStorage<TComponent>();
         return componentStorage.end();
     }
+
+    template<class StorageTuple>
+    static auto cbegin(StorageTuple &st) {
+        auto &componentStorage = st.template getComponentStorage<TComponent>();
+        return componentStorage.cbegin();
+    }
+
+    template<class StorageTuple>
+    static auto cend(StorageTuple &st) {
+        auto &componentStorage = st.template getComponentStorage<TComponent>();
+        return componentStorage.cend();
+    }
 };
 
 template<typename Component, typename... Others>
@@ -108,6 +120,23 @@ struct ForEachUtil<Component, Others...> {
     static auto end(StorageTuple &st) {
         auto myEnd = ForEachUtil<Component>::end(st);
         auto otherEnd = ForEachUtil<Others...>::end(st);
+        return ForEachUtilIter(myEnd, myEnd, otherEnd, otherEnd);
+    }
+
+    template<class StorageTuple>
+    static auto cbegin(StorageTuple &st) {
+        auto myBegin = ForEachUtil<Component>::cbegin(st);
+        auto myEnd = ForEachUtil<Component>::cend(st);
+
+        auto otherBegin = ForEachUtil<Others...>::cbegin(st);
+        auto otherEnd = ForEachUtil<Others...>::cend(st);
+        return ForEachUtilIter(myBegin, myEnd, otherBegin, otherEnd);
+    }
+
+    template<class StorageTuple>
+    static auto cend(StorageTuple &st) {
+        auto myEnd = ForEachUtil<Component>::cend(st);
+        auto otherEnd = ForEachUtil<Others...>::cend(st);
         return ForEachUtilIter(myEnd, myEnd, otherEnd, otherEnd);
     }
 };
@@ -180,11 +209,29 @@ public:
         return detail::ForEachUtil<Components...>::end(storage);
     }
 
+    template<typename... Components>
+    auto cbegin() const {
+        return detail::ForEachUtil<Components...>::cbegin(storage);
+    }
+
+    template<typename... Components>
+    auto cend() const {
+        return detail::ForEachUtil<Components...>::cend(storage);
+    }
+
     template<typename... Components, class UnaryFunction>
     void for_each(UnaryFunction f) {
         auto beginLocal = begin<Components...>();
         auto endLocal = end<Components...>();
+        for (auto it = beginLocal; it != endLocal; ++it) {
+            f(*it);
+        }
+    }
 
+    template<typename... Components, class UnaryFunction>
+    void for_each(UnaryFunction f) const {
+        auto beginLocal = cbegin<Components...>();
+        auto endLocal = cend<Components...>();
         for (auto it = beginLocal; it != endLocal; ++it) {
             f(*it);
         }

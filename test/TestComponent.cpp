@@ -67,13 +67,11 @@ struct TestComponentMeshFilter2 {
 
 TALON_NS_BEGIN
 
-template<>
-struct ComponentStorage<TestComponentTransform> : ComponentStorageArray<TestComponentTransform> {};
-template<>
-struct ComponentStorage<TestComponentMeshFilter> : ComponentStorageMap<TestComponentMeshFilter> {};
+COMPONENT_STORAGE_DEF(TestComponentTransform, ComponentStorageArray);
 
-template <>
-struct ComponentStorage<TestComponentMeshFilter2> : ComponentStorageTree<TestComponentMeshFilter2, ComponentStorageArray> {};
+COMPONENT_STORAGE_DEF(TestComponentMeshFilter, ComponentStorageMap);
+
+COMPONENT_STORAGE_DEF_TREE(TestComponentMeshFilter2, ComponentStorageArray);
 
 TALON_NS_END
 
@@ -394,4 +392,92 @@ TEST(TestComponent, TestComponentConstructTree) {
 
     EXPECT_EQ(transform2->idx, transform.idx);
     EXPECT_EQ(meshFilter2->idx, meshFilter.idx);
+}
+
+TEST(TestComponent, TestComponentConstComponent) {
+    TWorld<TestComponentTransform, const TestComponentTransform> world;
+
+    auto id_non_const = world.createEntity<TestComponentTransform>();
+    auto id_const = world.createEntity<const TestComponentTransform>();
+
+    auto transform_non_const = world.getComponentStorage<TestComponentTransform>().get(id_non_const);
+    auto transform_const = world.getComponentStorage<const TestComponentTransform>().get(id_const);
+
+    auto can_alter = boost::hana::is_valid([](auto&& x) -> decltype((void)x->idx++){});
+
+    static_assert(can_alter(transform_non_const));
+    static_assert(!can_alter(transform_const));
+
+    EXPECT_TRUE(transform_non_const != nullptr);
+    EXPECT_TRUE(transform_const != nullptr);
+
+}
+
+TEST(TestComponent, TestComponentConstWorld) {
+    TWorld<TestComponentTransform, const TestComponentTransform> world;
+    auto const_world = (const decltype(world)*)&world;
+
+
+    auto id_non_const = world.createEntity<TestComponentTransform>();
+    auto id_const = world.createEntity<const TestComponentTransform>();
+
+    auto transform_non_const = const_world->getComponentStorage<TestComponentTransform>().get(id_non_const);
+    auto transform_const = const_world->getComponentStorage<const TestComponentTransform>().get(id_const);
+
+    auto can_alter = boost::hana::is_valid([](auto&& x) -> decltype((void)x->idx++){});
+
+    static_assert(!can_alter(transform_non_const));
+    static_assert(!can_alter(transform_const));
+
+    EXPECT_TRUE(transform_non_const != nullptr);
+    EXPECT_TRUE(transform_const != nullptr);
+}
+
+TEST(TestComponent, TestComponentConstWorld2) {
+    TWorld<TestComponentMeshFilter2, const TestComponentMeshFilter2> world;
+    auto const_world = (const decltype(world)*)&world;
+
+
+    auto id_non_const = world.createEntity<TestComponentMeshFilter2>();
+    auto id_const = world.createEntity<const TestComponentMeshFilter2>();
+
+    auto transform_non_const = const_world->getComponentStorage<TestComponentMeshFilter2>().get(id_non_const);
+    auto transform_const = const_world->getComponentStorage<const TestComponentMeshFilter2>().get(id_const);
+
+    auto can_alter = boost::hana::is_valid([](auto&& x) -> decltype((void)x->idx++){});
+
+    static_assert(!can_alter(transform_non_const));
+    static_assert(!can_alter(transform_const));
+
+    EXPECT_TRUE(transform_non_const != nullptr);
+    EXPECT_TRUE(transform_const != nullptr);
+}
+
+TEST(TestComponent, TestComponentConstWorld3) {
+    TWorld<TestComponentMeshFilter2, const TestComponentMeshFilter2> world;
+    auto const_world = (const decltype(world)*)&world;
+
+
+    auto id_non_const = world.createEntity<TestComponentMeshFilter2>();
+    auto id_const = world.createEntity<const TestComponentMeshFilter2>();
+
+    auto transform_non_const = const_world->getComponentStorage<TestComponentMeshFilter2>().get(id_non_const);
+    auto transform_const = const_world->getComponentStorage<const TestComponentMeshFilter2>().get(id_const);
+
+    const_world->for_each<TestComponentMeshFilter2>([](auto a) {
+        auto can_alter = boost::hana::is_valid([](auto&& x) -> decltype((void)x->idx++){});
+
+        auto component = a[1_c];
+        static_assert(!can_alter(component));
+    });
+
+    const_world->for_each<const TestComponentMeshFilter2>([](auto a) {
+        auto can_alter = boost::hana::is_valid([](auto&& x) -> decltype((void)x->idx++){});
+
+        auto component = a[1_c];
+        static_assert(!can_alter(component));
+    });
+
+    EXPECT_TRUE(transform_non_const != nullptr);
+    EXPECT_TRUE(transform_const != nullptr);
 }

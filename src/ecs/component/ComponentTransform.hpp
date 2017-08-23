@@ -15,9 +15,7 @@ struct ComponentTransform {
     Eigen::Transform<float, 3, Eigen::Affine> localTransform;
     Eigen::Transform<float, 3, Eigen::Affine> worldTransform;
 
-    ComponentTransform() : position(0,0,0), scale(1,1,1), rotation(1,0,0,0), localTransformDirty(true) {
-
-    }
+    ComponentTransform() : position(0,0,0), scale(1,1,1), rotation(1,0,0,0), localTransformDirty(true) {}
 
     void updateLocalTransform() {
         if (!localTransformDirty)

@@ -8,7 +8,7 @@ class SwapChain;
 class RenderPass;
 
 struct RenderSystemArgs {
-    World* world;
+    const World* world;
     SwapChain* swapChain;
     RenderPass* renderPass;
     vk::CommandBuffer commandBuffer;

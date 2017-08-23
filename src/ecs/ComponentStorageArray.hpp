@@ -11,20 +11,19 @@ using namespace boost::hana::literals;
 TALON_NS_BEGIN
 template<typename Component>
 struct ComponentStorageArray : ComponentStorageBase {
+    using internal_iterator = typename std::array<std::optional<Component>, MaxEntityID>::iterator;
+    using internal_const_iterator = typename std::array<std::optional<Component>, MaxEntityID>::const_iterator;
 public:
+    template <typename InputIterator>
     struct Iterator {
     public:
-        using InputIterator = typename std::array<std::optional<Component>, MaxEntityID>::iterator;
-
         Iterator(InputIterator begin, InputIterator end) : begin(begin), current(begin), end(end) {
             if (!isValid())
                 increment();
         }
 
-        boost::hana::tuple<EntityID, boost::hana::tuple<Component *>> operator*() {
-            boost::hana::tuple<EntityID, boost::hana::tuple<Component *>>
-                ret(static_cast<EntityID>(current - begin), boost::hana::make_tuple(&current->value()));
-            return ret;
+        auto operator*() {
+            return boost::hana::make_tuple(static_cast<EntityID>(current - begin), boost::hana::make_tuple(&current->value()));
         }
 
         bool operator==(const Iterator &rhs) { return current == rhs.current; }
@@ -59,6 +58,9 @@ public:
         }
     };
 
+    using iterator = Iterator<internal_iterator>;
+    using const_iterator = Iterator<internal_const_iterator>;
+
     ComponentStorageArray() = default;
     ComponentStorageArray(const ComponentStorageArray &) = delete;
     ComponentStorageArray(ComponentStorageArray &&other) noexcept = delete;
@@ -82,12 +84,24 @@ public:
         return data[id].has_value() ? &data[id].value() : nullptr;
     }
 
-    Iterator begin() {
-        return Iterator(data.begin(), data.end());
+    const Component* get(EntityID id) const {
+        return data[id].has_value() ? &data[id].value() : nullptr;
     }
 
-    Iterator end() {
-        return Iterator(data.end(), data.end());
+    iterator begin() {
+        return iterator(data.begin(), data.end());
+    }
+
+    iterator end() {
+        return iterator(data.end(), data.end());
+    }
+
+    const_iterator cbegin() const {
+        return const_iterator(data.cbegin(), data.cend());
+    }
+
+    const_iterator cend() const {
+        return const_iterator(data.cend(), data.cend());
     }
 
     template<class UnaryFunction>

@@ -1,5 +1,7 @@
 #pragma once
 #include "TalonConfig.hpp"
+#include "TalonTypes.hpp"
+#include "util/Logging.hpp"
 #include "ComponentStorage.hpp"
 #include <boost/hana.hpp>
 #include <map>
@@ -10,16 +12,17 @@ TALON_NS_BEGIN
 
 template<typename Component>
 struct ComponentStorageMap : ComponentStorageBase {
+    using internal_iterator = typename std::map<EntityID, Component>::iterator;
+    using internal_const_iterator = typename std::map<EntityID, Component>::const_iterator;
 public:
+    template <typename InputIterator>
     struct Iterator {
-        using InputIterator = typename std::map<EntityID, Component>::iterator;
+
     public:
         explicit Iterator(InputIterator begin) : current(begin) {}
 
-        boost::hana::tuple<EntityID, boost::hana::tuple<Component *>> operator*() {
-            boost::hana::tuple<EntityID, boost::hana::tuple<Component *>>
-                ret(current->first, boost::hana::make_tuple(&current->second));
-            return ret;
+        auto operator*() {
+            return boost::hana::make_tuple(current->first, boost::hana::make_tuple(&current->second));
         }
 
         bool operator==(const Iterator &rhs) { return current == rhs.current; }
@@ -45,6 +48,9 @@ public:
 
     };
 
+    using iterator = Iterator<internal_iterator>;
+    using const_iterator = Iterator<internal_const_iterator>;
+
     ComponentStorageMap() = default;
     ComponentStorageMap(const ComponentStorageMap &) = delete;
     ComponentStorageMap(ComponentStorageMap &&other) noexcept = delete;
@@ -69,12 +75,25 @@ public:
         return it == data.end() ? nullptr : &it->second;
     }
 
-    Iterator begin() {
-        return Iterator(data.begin());
+    const Component* get(EntityID id) const {
+        auto it = data.find(id);
+        return it == data.end() ? nullptr : &it->second;
     }
 
-    Iterator end() {
-        return Iterator(data.end());
+    iterator begin() {
+        return iterator(data.begin());
+    }
+
+    iterator end() {
+        return iterator(data.end());
+    }
+
+    const_iterator cbegin() const {
+        return const_iterator(data.cbegin());
+    }
+
+    const_iterator cend() const {
+        return const_iterator(data.cend());
     }
 
     template<class UnaryFunction>

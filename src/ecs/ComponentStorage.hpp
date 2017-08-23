@@ -6,10 +6,12 @@ using namespace boost::hana::literals;
 TALON_NS_BEGIN
 
 #define COMPONENT_STORAGE_DEF(Component, StorageType) \
-    template <> struct ComponentStorage<Component> : StorageType<Component> {}
+    template <> struct ComponentStorage<Component> : StorageType<Component> {}; \
+    template <> struct ComponentStorage<const Component> : StorageType<const Component> {}
 
 #define COMPONENT_STORAGE_DEF_TREE(Component, StorageType) \
-    template <> struct ComponentStorage<Component> : ComponentStorageTree<Component, StorageType> {}
+    template <> struct ComponentStorage<Component> : ComponentStorageTree<Component, StorageType> {}; \
+    template <> struct ComponentStorage<const Component> : ComponentStorageTree<const Component, StorageType> {}
 
 
 struct ComponentStorageBase {

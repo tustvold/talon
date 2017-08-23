@@ -18,21 +18,20 @@ private:
         explicit TreeElement(Component&& component) : component(std::move(component)), parent(EntityIDInvalid) {}
     };
 
-public:
 
+    using internal_iterator = typename Storage<TreeElement>::iterator;
+    using internal_const_iterator = typename Storage<TreeElement>::const_iterator;
+public:
+    template <typename InputIterator>
     struct Iterator {
     private:
-        using InputIterator = typename Storage<TreeElement>::Iterator;
+
     public:
         explicit Iterator(InputIterator iterator) : wrapped(iterator) {}
 
-        boost::hana::tuple<EntityID, boost::hana::tuple<Component *>> operator*() {
-            boost::hana::tuple<EntityID, boost::hana::tuple<TreeElement *>> cast = *wrapped;
-
-            boost::hana::tuple<EntityID, boost::hana::tuple<Component *>> ret(
-                cast[0_c], boost::hana::make_tuple(&cast[1_c][0_c]->component)
-            );
-            return ret;
+        auto operator*() {
+            auto cast = *wrapped;
+            return boost::hana::make_tuple(cast[0_c], boost::hana::make_tuple(&cast[1_c][0_c]->component));
         };
 
         bool operator==(const Iterator &rhs) { return wrapped == rhs.wrapped; }
@@ -57,6 +56,9 @@ public:
         InputIterator wrapped;
     };
 
+    using iterator = Iterator<internal_iterator>;
+    using const_iterator = Iterator<internal_const_iterator>;
+
     void add(EntityID child_id) {
         wrapped.add(child_id);
     }
@@ -78,12 +80,24 @@ public:
         return &wrapped.get(id)->component;
     }
 
-    auto begin() {
-        return Iterator(wrapped.begin());
+    const Component *get(EntityID id) const {
+        return &wrapped.get(id)->component;
     }
 
-    auto end() {
-        return Iterator(wrapped.end());
+    iterator begin() {
+        return iterator(wrapped.begin());
+    }
+
+    iterator end() {
+        return iterator(wrapped.end());
+    }
+
+    const_iterator cbegin() const {
+        return const_iterator(wrapped.cbegin());
+    }
+
+    const_iterator cend() const {
+        return const_iterator(wrapped.cend());
     }
 
     template<class UnaryFunction>
