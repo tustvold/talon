@@ -1,7 +1,7 @@
 #include "TestScene.hpp"
-#include <rendering/Vertex.hpp>
-#include "rendering/Mesh.hpp"
-#include "rendering/Material.hpp"
+#include <rendering/mesh/Vertex.hpp>
+#include "rendering/mesh/Mesh.hpp"
+#include "rendering/material/Material.hpp"
 
 USING_TALON_NS;
 

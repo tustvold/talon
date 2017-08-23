@@ -1,11 +1,19 @@
 
-set(SOURCE_FILES Application.hpp
-        Application.cpp rendering/VulkanLoader.cpp rendering/VulkanLoader.hpp rendering/Vertex.hpp rendering/DeviceManager.cpp
-        rendering/DeviceManager.hpp rendering/InstanceManager.cpp rendering/InstanceManager.hpp rendering/WindowManager.cpp rendering/WindowManager.hpp
-        rendering/SurfaceManager.cpp rendering/SurfaceManager.hpp ApplicationInitSettings.hpp rendering/SwapChain.cpp rendering/SwapChain.hpp
-        rendering/RenderPass.cpp rendering/RenderPass.hpp rendering/Material.cpp rendering/Material.hpp ApplicationServiceTable.hpp
-        ServiceProvider.hpp ApplicationServiceTable.cpp ecs/TWorld.hpp ecs/ComponentStorageArray.hpp ecs/ComponentStorageMap.hpp
-        ecs/ComponentStorage.hpp ecs/IdentifierPool.hpp Logging.hpp ${TALON_CONFIG_DIR}/TalonConfig.hpp ${TALON_CONFIG_DIR}/WorldConfig.hpp rendering/MemoryAllocator.cpp rendering/MemoryAllocator.hpp ecs/View.hpp rendering/Mesh.cpp rendering/Mesh.hpp rendering/CommandPool.cpp rendering/CommandPool.hpp GameLoop.cpp GameLoop.hpp rendering/VSemaphore.hpp rendering/VSemaphore.cpp rendering/CommandBufferCollection.cpp rendering/CommandBufferCollection.hpp rendering/DebugCallback.cpp rendering/DebugCallback.hpp ecs/ComponentStorageTree.hpp component/ComponentTransform.hpp Util.hpp system/GameSystemUpdateTransforms.cpp system/GameSystemUpdateTransforms.hpp component/ComponentMeshFilter.hpp system/RenderSystemMeshFilter.cpp system/RenderSystemMeshFilter.hpp system/GameSystem.hpp system/RenderSystem.hpp Scene.cpp Scene.hpp rendering/MaterialPipeline.cpp rendering/MaterialPipeline.hpp system/RenderSystem.cpp rendering/MaterialPipelineCache.cpp rendering/MaterialPipelineCache.hpp)
+set(SOURCE_FILES application/Application.hpp
+        application/Application.cpp rendering/singleton/VulkanLoader.cpp rendering/singleton/VulkanLoader.hpp rendering/mesh/Vertex.hpp rendering/singleton/DeviceManager.cpp
+        rendering/singleton/DeviceManager.hpp rendering/singleton/InstanceManager.cpp rendering/singleton/InstanceManager.hpp rendering/singleton/WindowManager.cpp
+        rendering/singleton/WindowManager.hpp rendering/singleton/SurfaceManager.cpp rendering/singleton/SurfaceManager.hpp application/ApplicationInitSettings.hpp rendering/system/SwapChain.cpp
+        rendering/system/SwapChain.hpp rendering/system/RenderPass.cpp rendering/system/RenderPass.hpp rendering/material/Material.cpp rendering/material/Material.hpp
+        rendering/singleton/RenderServiceTable.hpp util/ServiceProvider.hpp rendering/singleton/RenderServiceTable.cpp ecs/TWorld.hpp ecs/ComponentStorageArray.hpp ecs/ComponentStorageMap.hpp
+        ecs/ComponentStorage.hpp ecs/IdentifierPool.hpp util/Logging.hpp ${TALON_CONFIG_DIR}/TalonConfig.hpp ${TALON_CONFIG_DIR}/WorldConfig.hpp rendering/singleton/MemoryAllocator.cpp
+        rendering/singleton/MemoryAllocator.hpp ecs/View.hpp rendering/mesh/Mesh.cpp rendering/mesh/Mesh.hpp rendering/singleton/CommandPool.cpp rendering/singleton/CommandPool.hpp
+        application/GameLoop.cpp application/GameLoop.hpp rendering/system/VSemaphore.hpp rendering/system/VSemaphore.cpp rendering/system/CommandBufferCollection.cpp
+        rendering/system/CommandBufferCollection.hpp rendering/singleton/DebugCallback.cpp rendering/singleton/DebugCallback.hpp
+        ecs/ComponentStorageTree.hpp ecs/component/ComponentTransform.hpp util/Util.hpp ecs/system/GameSystemUpdateTransforms.cpp
+        ecs/system/GameSystemUpdateTransforms.hpp ecs/component/ComponentMeshFilter.hpp
+        ecs/system/RenderSystemMeshFilter.cpp ecs/system/RenderSystemMeshFilter.hpp ecs/system/GameSystem.hpp
+        ecs/system/RenderSystem.hpp application/Scene.cpp application/Scene.hpp rendering/material/MaterialPipeline.cpp rendering/material/MaterialPipeline.hpp
+        ecs/system/RenderSystem.cpp rendering/material/MaterialPipelineCache.cpp rendering/material/MaterialPipelineCache.hpp)
 
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 

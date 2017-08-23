@@ -8,8 +8,8 @@
 #include "ecs/ComponentStorageMap.hpp"
 #include "ecs/ComponentStorageTree.hpp"
 
-#include <component/ComponentTransform.hpp>
-#include <component/ComponentMeshFilter.hpp>
+#include <ecs/component/ComponentTransform.hpp>
+#include <ecs/component/ComponentMeshFilter.hpp>
 
 
 TALON_NS_BEGIN

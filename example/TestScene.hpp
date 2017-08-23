@@ -1,5 +1,5 @@
 #pragma once
-#include <Scene.hpp>
+#include <application/Scene.hpp>
 #include "TalonConfig.hpp"
 
 class TestScene : public TALON_NS::Scene {

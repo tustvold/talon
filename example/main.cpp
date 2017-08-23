@@ -1,7 +1,7 @@
 #include "vulkan/vulkan.hpp"
-#include "Logging.hpp"
-#include "Application.hpp"
-#include "ApplicationInitSettings.hpp"
+#include "util/Logging.hpp"
+#include "application/Application.hpp"
+#include "application/ApplicationInitSettings.hpp"
 #include "TestScene.hpp"
 
 USING_TALON_NS;

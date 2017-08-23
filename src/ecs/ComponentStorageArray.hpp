@@ -3,7 +3,7 @@
 #include "ComponentStorage.hpp"
 #include <array>
 #include <optional>
-#include <Logging.hpp>
+#include <util/Logging.hpp>
 
 #include <boost/hana.hpp>
 using namespace boost::hana::literals;

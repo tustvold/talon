@@ -2,7 +2,7 @@
 #include "TalonConfig.hpp"
 #include <stack>
 #include <TalonTypes.hpp>
-#include <Logging.hpp>
+#include <util/Logging.hpp>
 
 TALON_NS_BEGIN
 
