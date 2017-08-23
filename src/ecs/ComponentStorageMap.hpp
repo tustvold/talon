@@ -28,6 +28,10 @@ public:
         bool operator==(const Iterator &rhs) { return current == rhs.current; }
         bool operator!=(const Iterator &rhs) { return current != rhs.current; }
 
+        void advanceToOrIncrement(EntityID id) {
+            current++;
+        }
+
         Iterator operator++() {
             Iterator i = *this;
             current++;

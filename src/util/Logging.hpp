@@ -28,12 +28,12 @@
 
 // Assertions
 
-#define TASSERT(condition) TALON_NS::Assert(!!(condition), "Condition (" #condition ") failed at " S_LOCATION)
+#define TASSERT(condition) TALON_NS::Assert(static_cast<bool>(condition), "Condition (" #condition ") failed at " S_LOCATION)
 
 TALON_NS_BEGIN
 
-static constexpr void Assert(bool condition, const std::string& msg) {
-    if (!condition) {
+static inline void Assert(bool condition, const std::string& msg) {
+    if (__builtin_expect(!condition, 0)) {
         throw std::runtime_error(msg);
     }
 }

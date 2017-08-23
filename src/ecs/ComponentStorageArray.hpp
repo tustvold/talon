@@ -35,6 +35,10 @@ public:
             return i;
         }
 
+        void advanceToOrIncrement(EntityID id) {
+            current = begin + id;
+        }
+
         Iterator operator++(int bar) {
             increment();
             return *this;
@@ -45,9 +49,9 @@ public:
         }
 
     private:
-        const InputIterator begin;
+        InputIterator begin;
         InputIterator current;
-        const InputIterator end;
+        InputIterator end;
 
         void increment() {
             while (current != end) {

@@ -43,6 +43,10 @@ public:
             return i;
         }
 
+        void advanceToOrIncrement(EntityID id) {
+            wrapped.advanceToOrIncrement(id);
+        }
+
         Iterator operator++(int bar) {
             wrapped++;
             return *this;

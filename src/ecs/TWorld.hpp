@@ -52,22 +52,39 @@ private:
     }
 
     void increment() {
-        while (current1.isValid() && current2.isValid() && current1 != end1 && current2 != end2) {
-            if ((*current1)[0_c] < (*current2)[0_c]) {
+        while (current1 != end1 || current2 != end2) {
+            while (current1.isValid() && current2.isValid()) {
+                EntityID current1_id =(*current1)[0_c];
+                EntityID current2_id = (*current2)[0_c];
+
+                if (current1_id == current2_id) {
+                    if (current1 != end1)
+                        current1++;
+                    if (current2 != end2)
+                        current2++;
+                } else if (current1_id < current2_id) {
+                    if (current1 == end1) {
+                        current2 = end2;
+                        return;
+                    }
+                    current1.advanceToOrIncrement(current2_id);
+                } else {
+                    if (current2 == end2) {
+                        current1 = end1;
+                        return;
+                    }
+                    current2.advanceToOrIncrement(current1_id);
+                }
+                if (isValid())
+                    return;
+            }
+
+            while (!current1.isValid() && current1 != end1) {
                 current1++;
-            } else {
+            }
+            while (!current2.isValid() && current2 != end2) {
                 current2++;
             }
-            if (isValid())
-                return;
-        }
-        while (current1 != end1) {
-            current1++;
-            if (isValid())
-                return;
-        }
-        while (current2 != end2) {
-            current2++;
             if (isValid())
                 return;
         }

@@ -13,7 +13,7 @@ set(SOURCE_FILES application/Application.hpp
         ecs/system/GameSystemUpdateTransforms.hpp ecs/component/ComponentMeshFilter.hpp
         ecs/system/RenderSystemMeshFilter.cpp ecs/system/RenderSystemMeshFilter.hpp ecs/system/GameSystem.hpp
         ecs/system/RenderSystem.hpp application/Scene.cpp application/Scene.hpp rendering/material/MaterialPipeline.cpp rendering/material/MaterialPipeline.hpp
-        ecs/system/RenderSystem.cpp rendering/material/MaterialPipelineCache.cpp rendering/material/MaterialPipelineCache.hpp)
+        ecs/system/RenderSystem.cpp rendering/material/MaterialPipelineCache.cpp rendering/material/MaterialPipelineCache.hpp ecs/component/ComponentCamera.cpp ecs/component/ComponentCamera.hpp util/Math.hpp ecs/component/ComponentTransform.cpp)
 
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 

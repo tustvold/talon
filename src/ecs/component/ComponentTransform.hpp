@@ -1,6 +1,5 @@
 #pragma once
 #include "TalonConfig.hpp"
-#include "util/Logging.hpp"
 #include "Eigen/Core"
 #include "Eigen/Geometry"
 
@@ -12,23 +11,15 @@ struct ComponentTransform {
     Eigen::Quaternionf rotation;
     bool localTransformDirty;
 
-    Eigen::Transform<float, 3, Eigen::Affine> localTransform;
-    Eigen::Transform<float, 3, Eigen::Affine> worldTransform;
+    Eigen::Matrix4f localTransform;
+    Eigen::Matrix4f worldTransform;
 
-    ComponentTransform() : position(0,0,0), scale(1,1,1), rotation(1,0,0,0), localTransformDirty(true) {}
+    ComponentTransform();
+    ~ComponentTransform();
 
-    void updateLocalTransform() {
-        if (!localTransformDirty)
-            return;
-        localTransformDirty = false;
-        localTransform = Eigen::Translation3f(position) * rotation.toRotationMatrix() * Eigen::Scaling(scale);
-    }
+    void updateLocalTransform();
 
-    void updateWorldTransform(ComponentTransform* parent) {
-        TASSERT(!parent->localTransformDirty);
-        TASSERT(!localTransformDirty);
-        worldTransform = parent->worldTransform * localTransform;
-    }
+    void updateWorldTransform(ComponentTransform* parent);
 };
 
 TALON_NS_END
