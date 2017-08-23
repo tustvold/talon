@@ -7,15 +7,14 @@ TALON_NS_BEGIN
 class SwapChain;
 class RenderPass;
 class Material;
+class CommandBuffer;
 
 class MaterialPipeline {
 public:
     MaterialPipeline(Material* material, SwapChain* swapChain, RenderPass* renderPass);
     ~MaterialPipeline();
 
-    void bind(vk::CommandBuffer commandBuffer) {
-        commandBuffer.bindPipeline(bindPoint, pipeline);
-    }
+    void bind(CommandBuffer* buffer);
 
 private:
     vk::PipelineLayout pipelineLayout;

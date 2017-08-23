@@ -5,5 +5,12 @@ USING_TALON_NS;
 RenderSystemArgs::RenderSystemArgs(World *world,
                                    SwapChain *swapChain,
                                    RenderPass *renderPass,
-                                   const vk::CommandBuffer &commandBuffer)
-    : world(world), swapChain(swapChain), renderPass(renderPass), commandBuffer(commandBuffer) {}
+                                   PrimaryCommandBuffer *primaryCommandBuffer,
+                                   vk::CommandBufferInheritanceInfo *commandBufferInheritanceInfo)
+    : world(world),
+      swapChain(swapChain),
+      renderPass(renderPass),
+      primaryCommandBuffer(primaryCommandBuffer),
+      commandBufferInheritanceInfo(commandBufferInheritanceInfo) {
+
+}

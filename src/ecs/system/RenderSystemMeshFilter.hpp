@@ -7,7 +7,13 @@ TALON_NS_BEGIN
 
 class RenderSystemMeshFilter : public RenderSystem {
 public:
+    RenderSystemMeshFilter();
+    ~RenderSystemMeshFilter() override;
+
     void update(const RenderSystemArgs& args) override;
+
+private:
+    SecondaryCommandBuffer commandBuffer;
 };
 
 

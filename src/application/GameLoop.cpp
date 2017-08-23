@@ -14,7 +14,8 @@
 USING_TALON_NS;
 
 GameLoop::GameLoop()
-    : commandBuffers(1), updateCount(0), updateStartInterval(glfwGetTime()) {
+    : updateCount(0), updateStartInterval(glfwGetTime()) {
+
 }
 
 void GameLoop::addRenderSystem(std::unique_ptr<RenderSystem> &&renderSystem) {
@@ -75,7 +76,7 @@ bool GameLoop::doUpdate(World &world, SwapChain* swapChain) {
     submitInfo.setPWaitDstStageMask(waitStages);
 
     submitInfo.commandBufferCount = 1;
-    submitInfo.pCommandBuffers = commandBuffers.data();
+    submitInfo.pCommandBuffers = &commandBuffer.get();
 
     vk::Semaphore renderFinishedSemaphores[] = {renderFinishedSemaphore.get()};
     submitInfo.signalSemaphoreCount = 1;
@@ -105,7 +106,6 @@ bool GameLoop::doUpdate(World &world, SwapChain* swapChain) {
 }
 
 void GameLoop::recordCommandBuffer(World &world, SwapChain* swapChain, int index) {
-    auto commandBuffer = commandBuffers[0];
 
     vk::CommandBufferBeginInfo beginInfo = {};
 
@@ -126,9 +126,13 @@ void GameLoop::recordCommandBuffer(World &world, SwapChain* swapChain, int index
     renderPassInfo.clearValueCount = 1;
     renderPassInfo.setPClearValues(&clearColor);
 
-    commandBuffer.beginRenderPass(renderPassInfo, vk::SubpassContents::eInline);
+    vk::CommandBufferInheritanceInfo inheritanceInfo;
+    inheritanceInfo.renderPass = renderPassInfo.renderPass;
+    inheritanceInfo.framebuffer = renderPassInfo.framebuffer;
 
-    RenderSystemArgs args(&world, swapChain, renderPass, commandBuffer);
+    commandBuffer.beginRenderPass(renderPassInfo, vk::SubpassContents::eSecondaryCommandBuffers);
+
+    RenderSystemArgs args(&world, swapChain, renderPass, &commandBuffer, &inheritanceInfo);
 
     for (auto &system : renderSystems) {
         system->update(args);

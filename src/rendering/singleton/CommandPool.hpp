@@ -8,17 +8,22 @@ class DeviceManager;
 class SurfaceManager;
 
 class CommandPool {
+    friend class CommandBuffer;
 public:
     explicit CommandPool(DeviceManager *deviceManager, SurfaceManager *surfaceManager);
     ~CommandPool();
 
-    void destroyCommandBuffers(const std::vector<vk::CommandBuffer>& commandBuffers) const;
 
-    std::vector<vk::CommandBuffer> createCommandBuffers(uint32_t count,
-                                                        vk::CommandBufferLevel level = vk::CommandBufferLevel::ePrimary) const;
 
 private:
     vk::CommandPool commandPool;
+
+    void destroyCommandBuffers(const std::vector<vk::CommandBuffer>& commandBuffers) const;
+    std::vector<vk::CommandBuffer> createCommandBuffers(uint32_t count, vk::CommandBufferLevel level) const;
+
+    void destroyCommandBuffer(vk::CommandBuffer buffer) const;
+    vk::CommandBuffer createCommandBuffer(vk::CommandBufferLevel level);
+
 };
 
 TALON_NS_END

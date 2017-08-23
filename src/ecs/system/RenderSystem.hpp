@@ -1,4 +1,5 @@
 #pragma once
+#include <rendering/system/CommandBuffer.hpp>
 #include "TalonConfig.hpp"
 #include "WorldConfig.hpp"
 
@@ -11,9 +12,10 @@ struct RenderSystemArgs {
     const World* world;
     SwapChain* swapChain;
     RenderPass* renderPass;
-    vk::CommandBuffer commandBuffer;
+    PrimaryCommandBuffer* primaryCommandBuffer;
+    vk::CommandBufferInheritanceInfo* commandBufferInheritanceInfo;
 
-    RenderSystemArgs(World *world, SwapChain *swapChain, RenderPass *renderPass, const vk::CommandBuffer &commandBuffer);
+    RenderSystemArgs(World *world, SwapChain *swapChain, RenderPass *renderPass, PrimaryCommandBuffer* primaryCommandBuffer, vk::CommandBufferInheritanceInfo* commandBufferInheritanceInfo);
 };
 
 class RenderSystem {

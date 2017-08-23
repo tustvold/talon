@@ -7,8 +7,8 @@ set(SOURCE_FILES application/Application.hpp
         rendering/singleton/RenderServiceTable.hpp util/ServiceProvider.hpp rendering/singleton/RenderServiceTable.cpp ecs/TWorld.hpp ecs/ComponentStorageArray.hpp ecs/ComponentStorageMap.hpp
         ecs/ComponentStorage.hpp ecs/IdentifierPool.hpp util/Logging.hpp ${TALON_CONFIG_DIR}/TalonConfig.hpp ${TALON_CONFIG_DIR}/WorldConfig.hpp rendering/singleton/MemoryAllocator.cpp
         rendering/singleton/MemoryAllocator.hpp ecs/View.hpp rendering/mesh/Mesh.cpp rendering/mesh/Mesh.hpp rendering/singleton/CommandPool.cpp rendering/singleton/CommandPool.hpp
-        application/GameLoop.cpp application/GameLoop.hpp rendering/system/VSemaphore.hpp rendering/system/VSemaphore.cpp rendering/system/CommandBufferCollection.cpp
-        rendering/system/CommandBufferCollection.hpp rendering/singleton/DebugCallback.cpp rendering/singleton/DebugCallback.hpp
+        application/GameLoop.cpp application/GameLoop.hpp rendering/system/VSemaphore.hpp rendering/system/VSemaphore.cpp rendering/system/CommandBuffer.cpp
+        rendering/system/CommandBuffer.hpp rendering/singleton/DebugCallback.cpp rendering/singleton/DebugCallback.hpp
         ecs/ComponentStorageTree.hpp ecs/component/ComponentTransform.hpp util/Util.hpp ecs/system/GameSystemUpdateTransforms.cpp
         ecs/system/GameSystemUpdateTransforms.hpp ecs/component/ComponentMeshFilter.hpp
         ecs/system/RenderSystemMeshFilter.cpp ecs/system/RenderSystemMeshFilter.hpp ecs/system/GameSystem.hpp

@@ -33,3 +33,10 @@ std::vector<vk::CommandBuffer> CommandPool::createCommandBuffers(uint32_t count,
 void CommandPool::destroyCommandBuffers(const std::vector<vk::CommandBuffer> &commandBuffers) const {
     RenderServiceTable::deviceManager->getDevice().freeCommandBuffers(commandPool, commandBuffers);
 }
+void CommandPool::destroyCommandBuffer(vk::CommandBuffer buffer) const {
+    RenderServiceTable::deviceManager->getDevice().freeCommandBuffers(commandPool, 1, &buffer);
+}
+
+vk::CommandBuffer CommandPool::createCommandBuffer(vk::CommandBufferLevel level) {
+    return createCommandBuffers(1, level)[0];
+}

@@ -5,6 +5,7 @@
 #include "rendering/mesh/Vertex.hpp"
 #include "rendering/system/SwapChain.hpp"
 #include "rendering/system/RenderPass.hpp"
+#include "rendering/system/CommandBuffer.hpp"
 
 USING_TALON_NS;
 
@@ -149,4 +150,8 @@ MaterialPipeline::MaterialPipeline(Material* material, SwapChain *swapChain, Ren
 MaterialPipeline::~MaterialPipeline() {
     RenderServiceTable::deviceManager->getDevice().destroyPipeline(pipeline);
     RenderServiceTable::deviceManager->getDevice().destroyPipelineLayout(pipelineLayout);
+}
+
+void MaterialPipeline::bind(CommandBuffer *buffer) {
+    buffer->bindPipeline(bindPoint, pipeline);
 }

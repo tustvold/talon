@@ -82,6 +82,6 @@ void RenderPass::createFrameBuffers() {
     }
 }
 
-void RenderPass::bindMaterial(talon::Material *material, vk::CommandBuffer buffer) {
+void RenderPass::bindMaterial(talon::Material *material, CommandBuffer* buffer) {
     materialPipelineCache.bindMaterial(material, swapChain, this, buffer);
 }

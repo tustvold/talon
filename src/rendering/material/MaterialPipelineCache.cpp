@@ -4,15 +4,10 @@
 
 USING_TALON_NS;
 
-MaterialPipelineCache::MaterialPipelineCache() {
+MaterialPipelineCache::MaterialPipelineCache() = default;
+MaterialPipelineCache::~MaterialPipelineCache() = default;
 
-}
-
-MaterialPipelineCache::~MaterialPipelineCache() {
-
-}
-
-void MaterialPipelineCache::bindMaterial(Material* material, SwapChain* swapChain, RenderPass* renderPass, vk::CommandBuffer buffer) {
+void MaterialPipelineCache::bindMaterial(Material* material, SwapChain* swapChain, RenderPass* renderPass, CommandBuffer* buffer) {
     auto it = cache.find(material->getMaterialID());
     if (it != cache.end()) {
         it->second.bind(buffer);

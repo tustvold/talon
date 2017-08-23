@@ -1,3 +1,4 @@
+#include <rendering/system/CommandBuffer.hpp>
 #include "Mesh.hpp"
 #include "rendering/singleton/RenderServiceTable.hpp"
 #include "rendering/singleton/MemoryAllocator.hpp"
@@ -20,19 +21,17 @@ Mesh::Mesh(const Mesh::GenericMeshData &data) : num_vertices(data.num_vertices) 
     handle.copy(data.vertices, vertices_size_in_bytes);
 }
 
-Mesh::~Mesh() {
+Mesh::~Mesh() = default;
 
-}
-
-void Mesh::bind(vk::CommandBuffer commandBuffer) {
+void Mesh::bind(CommandBuffer* commandBuffer) {
     vk::Buffer vertexBuffers[] = {vertexBuffer->data};
     vk::DeviceSize offsets[] = {0};
 
-    commandBuffer.bindVertexBuffers(0, 1, vertexBuffers, offsets);
+    commandBuffer->bindVertexBuffers(0, 1, vertexBuffers, offsets);
 }
 
-void Mesh::draw(vk::CommandBuffer commandBuffer) {
-    commandBuffer.draw(getNumVertices(), 1, 0, 0);
+void Mesh::draw(CommandBuffer* commandBuffer) {
+    commandBuffer->draw(getNumVertices(), 1, 0, 0);
 }
 
 

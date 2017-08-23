@@ -2,7 +2,7 @@
 #include <WorldConfig.hpp>
 #include "TalonConfig.hpp"
 #include "rendering/system/VSemaphore.hpp"
-#include "rendering/system/CommandBufferCollection.hpp"
+#include "rendering/system/CommandBuffer.hpp"
 #include "ecs/system/RenderSystem.hpp"
 #include "ecs/system/GameSystem.hpp"
 
@@ -37,8 +37,7 @@ public:
     }
 
 private:
-
-    CommandBufferCollection commandBuffers;
+    PrimaryCommandBuffer commandBuffer;
 
     std::vector<std::unique_ptr<RenderSystem>> renderSystems;
     std::vector<std::unique_ptr<GameSystem>> gameSystems;

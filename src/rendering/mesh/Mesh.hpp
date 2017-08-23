@@ -6,6 +6,7 @@
 TALON_NS_BEGIN
 
 class Buffer;
+class CommandBuffer;
 
 template<typename Vertex>
 struct MeshData {
@@ -42,9 +43,9 @@ public:
 
     ~Mesh();
 
-    void bind(vk::CommandBuffer commandBuffer);
+    void bind(CommandBuffer* commandBuffer);
 
-    void draw(vk::CommandBuffer commandBuffer);
+    void draw(CommandBuffer* commandBuffer);
 
     uint32_t getNumVertices() const {
         return num_vertices;

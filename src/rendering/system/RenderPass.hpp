@@ -8,6 +8,7 @@ TALON_NS_BEGIN
 
 class SwapChain;
 class DeviceManager;
+class CommandBuffer;
 
 class RenderPass {
 public:
@@ -22,7 +23,7 @@ public:
         return framebuffers;
     }
 
-    void bindMaterial(talon::Material *pMaterial, vk::CommandBuffer buffer);
+    void bindMaterial(talon::Material *pMaterial, CommandBuffer* buffer);
 
 private:
     SwapChain* swapChain;
