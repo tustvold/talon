@@ -161,6 +161,95 @@ TEST(TestComponent, TestMultiple) {
         world.for_each<TestComponentMeshFilter, TestComponentTransform>(increment);
 }
 
+TEST(TestComponent, TestMultiple2) {
+    TestWorldType world;
+
+    std::vector<EntityID> ids;
+
+    for (int i = 0; i < 25; i++) {
+        ids.push_back(world.createEntity<TestComponentTransform, TestComponentMeshFilter>());
+    }
+
+    for (int i = 0; i < 100; i++) {
+        world.createEntity<TestComponentTransform>();
+    }
+
+    for (int i = 0; i < 100; i++) {
+        world.createEntity<TestComponentMeshFilter>();
+    }
+
+    for (int i = 0; i < 25; i++) {
+        ids.push_back(world.createEntity<TestComponentTransform, TestComponentMeshFilter>());
+    }
+
+    for (int i = 0; i < 100; i++) {
+        world.createEntity<TestComponentTransform>();
+    }
+
+    for (auto id : ids) {
+        TestComponentMeshFilter *componentMeshFilter = world.getComponentStorage<TestComponentMeshFilter>().get(id);
+        EXPECT_CALL(*componentMeshFilter, testMeshFilter()).Times(100);
+
+        TestComponentTransform *componentTransform = world.getComponentStorage<TestComponentTransform>().get(id);
+        EXPECT_CALL(*componentTransform, testTransform()).Times(100);
+    }
+
+    auto increment = boost::hana::fuse([](auto entityID,
+                                          boost::hana::tuple<TestComponentMeshFilter *,
+                                                             TestComponentTransform *> components) {
+        components[0_c]->testMeshFilter();
+        components[1_c]->testTransform();
+    });
+
+    for (int i = 0; i < 100; i++)
+        world.for_each<TestComponentMeshFilter, TestComponentTransform>(increment);
+}
+
+
+TEST(TestComponent, TestMultiple3) {
+    TestWorldType world;
+
+    std::vector<EntityID> ids;
+
+    for (int i = 0; i < 25; i++) {
+        ids.push_back(world.createEntity<TestComponentTransform, TestComponentMeshFilter>());
+    }
+
+    for (int i = 0; i < 100; i++) {
+        world.createEntity<TestComponentTransform>();
+    }
+
+    for (int i = 0; i < 100; i++) {
+        world.createEntity<TestComponentMeshFilter>();
+    }
+
+    for (int i = 0; i < 25; i++) {
+        ids.push_back(world.createEntity<TestComponentTransform, TestComponentMeshFilter>());
+    }
+
+    for (int i = 0; i < 100; i++) {
+        world.createEntity<TestComponentMeshFilter>();
+    }
+
+    for (auto id : ids) {
+        TestComponentMeshFilter *componentMeshFilter = world.getComponentStorage<TestComponentMeshFilter>().get(id);
+        EXPECT_CALL(*componentMeshFilter, testMeshFilter()).Times(100);
+
+        TestComponentTransform *componentTransform = world.getComponentStorage<TestComponentTransform>().get(id);
+        EXPECT_CALL(*componentTransform, testTransform()).Times(100);
+    }
+
+    auto increment = boost::hana::fuse([](auto entityID,
+                                          boost::hana::tuple<TestComponentMeshFilter *,
+                                                             TestComponentTransform *> components) {
+        components[0_c]->testMeshFilter();
+        components[1_c]->testTransform();
+    });
+
+    for (int i = 0; i < 100; i++)
+        world.for_each<TestComponentMeshFilter, TestComponentTransform>(increment);
+}
+
 TEST(TestComponent, TestView) {
     TestWorldType world;
 

@@ -47,6 +47,10 @@ public:
             return true;
         }
 
+        EntityID getID() {
+            return current->first;
+        }
+
     private:
         InputIterator current;
 

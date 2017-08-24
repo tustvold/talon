@@ -52,42 +52,29 @@ private:
     }
 
     void increment() {
-        while (current1 != end1 || current2 != end2) {
-            while (current1.isValid() && current2.isValid()) {
-                EntityID current1_id =(*current1)[0_c];
-                EntityID current2_id = (*current2)[0_c];
+        // When one of the iterators has reached the end
+        // It can never be valid so the iteration can be terminated
+        while (current1 != end1 && current2 != end2) {
+            EntityID current1_id = current1.getID();
+            EntityID current2_id = current2.getID();
 
-                if (current1_id == current2_id) {
-                    if (current1 != end1)
-                        current1++;
-                    if (current2 != end2)
-                        current2++;
-                } else if (current1_id < current2_id) {
-                    if (current1 == end1) {
-                        current2 = end2;
-                        return;
-                    }
-                    current1.advanceToOrIncrement(current2_id);
-                } else {
-                    if (current2 == end2) {
-                        current1 = end1;
-                        return;
-                    }
-                    current2.advanceToOrIncrement(current1_id);
-                }
-                if (isValid())
-                    return;
-            }
-
-            while (!current1.isValid() && current1 != end1) {
-                current1++;
-            }
-            while (!current2.isValid() && current2 != end2) {
-                current2++;
+            if (current1_id == current2_id) {
+                // The ++ operator for ComponentStorageArray will try to find valid value
+                // This method allows the usage of ComponentStorageMap
+                // to avoid scanning values that are not in the map
+                // as advanceToOrIncrement will not perform a search
+                current1.advanceToOrIncrement(current1_id+1);
+                current2.advanceToOrIncrement(current1_id+1);
+            } else if (current1_id < current2_id) {
+                current1.advanceToOrIncrement(current2_id);
+            } else {
+                current2.advanceToOrIncrement(current1_id);
             }
             if (isValid())
                 return;
         }
+        current1 = end1;
+        current2 = end2;
     }
 };
 

@@ -17,7 +17,7 @@ public:
     template <typename InputIterator>
     struct Iterator {
     public:
-        Iterator(InputIterator begin, InputIterator end) : begin(begin), current(begin), end(end) {
+        Iterator(InputIterator begin, InputIterator end) : begin(begin), current(begin), end(end) , size(end - begin) {
             if (!isValid())
                 increment();
         }
@@ -36,7 +36,7 @@ public:
         }
 
         void advanceToOrIncrement(EntityID id) {
-            current = begin + id;
+            current = begin + (id > size ? size : id);
         }
 
         Iterator operator++(int bar) {
@@ -48,10 +48,15 @@ public:
             return current->has_value();
         }
 
+        EntityID getID() {
+            return static_cast<EntityID >(current - begin);
+        }
+
     private:
         InputIterator begin;
         InputIterator current;
         InputIterator end;
+        size_t size;
 
         void increment() {
             while (current != end) {
@@ -65,7 +70,9 @@ public:
     using iterator = Iterator<internal_iterator>;
     using const_iterator = Iterator<internal_const_iterator>;
 
-    ComponentStorageArray() = default;
+    ComponentStorageArray() : maxAddedEntityID(0) {
+
+    }
     ComponentStorageArray(const ComponentStorageArray &) = delete;
     ComponentStorageArray(ComponentStorageArray &&other) noexcept = delete;
     ComponentStorageArray &operator=(const ComponentStorageArray &) = delete;
@@ -73,6 +80,7 @@ public:
 
     void add(EntityID id) {
         TASSERT(id < MaxEntityID);
+        maxAddedEntityID = id > maxAddedEntityID ? id : maxAddedEntityID;
         data[id].emplace();
         incrementGeneration();
     }
@@ -80,6 +88,7 @@ public:
     template <typename... Args>
     void add(EntityID id, Args&&... args) {
         TASSERT(id < MaxEntityID);
+        maxAddedEntityID = id > maxAddedEntityID ? id : maxAddedEntityID;
         data[id].emplace(std::forward<Args>(args)...);
         incrementGeneration();
     }
@@ -93,19 +102,19 @@ public:
     }
 
     iterator begin() {
-        return iterator(data.begin(), data.end());
+        return iterator(data.begin(), data.begin() + maxAddedEntityID + 1);
     }
 
     iterator end() {
-        return iterator(data.end(), data.end());
+        return iterator(data.begin() + maxAddedEntityID + 1, data.begin() + maxAddedEntityID + 1);
     }
 
     const_iterator cbegin() const {
-        return const_iterator(data.cbegin(), data.cend());
+        return const_iterator(data.cbegin(), data.cbegin() + maxAddedEntityID + 1);
     }
 
     const_iterator cend() const {
-        return const_iterator(data.cend(), data.cend());
+        return const_iterator(data.cbegin() + maxAddedEntityID + 1, data.cbegin() + maxAddedEntityID + 1);
     }
 
     template<class UnaryFunction>
@@ -117,6 +126,7 @@ public:
 
 private:
     std::array<std::optional<Component>, MaxEntityID> data;
+    EntityID maxAddedEntityID;
 };
 
 TALON_NS_END

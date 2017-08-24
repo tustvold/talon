@@ -56,6 +56,10 @@ public:
             return wrapped.isValid();
         }
 
+        EntityID getID() {
+            return wrapped.getID();
+        }
+
     private:
         InputIterator wrapped;
     };
