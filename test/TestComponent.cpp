@@ -82,7 +82,7 @@ TEST(TestComponent, TestTransform) {
 
     std::vector<EntityID> ids;
 
-    for (int i = 0; i < 50; i++) {
+    for (int i = 0; i < 5; i++) {
         ids.push_back(world.createEntity<TestComponentTransform>());
     }
 
@@ -622,4 +622,16 @@ TEST(TestComponent, TestComponentAll) {
 
     for (int i = 0; i < 100; i++)
         world.for_each<TestComponentMeshFilter, TestComponentTransform, TestComponentMeshFilter2>(increment);
+}
+
+TEST(TestComponent, TestSimple) {
+    TWorld<TestComponentMeshFilter, TestComponentTransform> world;
+    world.createEntity<TestComponentMeshFilter, TestComponentTransform>();
+    world.createEntity<TestComponentMeshFilter, TestComponentTransform>();
+    world.createEntity<TestComponentTransform>();
+
+    world.for_each<TestComponentMeshFilter, TestComponentTransform>([](auto) {
+
+    });
+
 }

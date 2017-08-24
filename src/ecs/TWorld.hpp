@@ -45,6 +45,8 @@ public:
     void advanceToOrIncrement(EntityID id) {
         current1.advanceToOrIncrement(id);
         auto current1ID = current1.getID();
+        if (current1 == end1)
+            return;
         current2.advanceToOrIncrement(current1ID < id ? id : current1ID);
     }
 
@@ -77,6 +79,8 @@ private:
 
             if (current1_id == current2_id) {
                 current1++;
+                if (current1 == end1)
+                    return;
                 current2.advanceToOrIncrement(current1.getID());
             } else if (current1_id < current2_id) {
                 current1.advanceToOrIncrement(current2_id);
