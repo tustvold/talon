@@ -35,8 +35,11 @@ public:
             return i;
         }
 
-        void advanceToOrIncrement(EntityID id) {
-            current = begin + (id > size ? size : id);
+        bool advanceToOrIncrement(EntityID id) {
+            if (id > size)
+                return false;
+            current = begin + id;
+            return current->has_value();
         }
 
         Iterator operator++(int bar) {
@@ -45,6 +48,8 @@ public:
         }
 
         bool isValid() {
+            TLOGINFO("%i", static_cast<EntityID>(current - begin));
+
             return current->has_value();
         }
 

@@ -570,3 +570,56 @@ TEST(TestComponent, TestComponentConstWorld3) {
     EXPECT_TRUE(transform_non_const != nullptr);
     EXPECT_TRUE(transform_const != nullptr);
 }
+
+TEST(TestComponent, TestComponentAll) {
+    TWorld<TestComponentMeshFilter, TestComponentMeshFilter2, TestComponentTransform> world;
+
+    std::vector<EntityID> ids;
+
+    for (int i = 0; i < 25; i++) {
+        ids.push_back(world.createEntity<TestComponentMeshFilter, TestComponentMeshFilter2, TestComponentTransform>());
+    }
+
+    for (int i = 0; i < 100; i++) {
+        world.createEntity<TestComponentTransform>();
+    }
+
+    for (int i = 0; i < 100; i++) {
+        world.createEntity<TestComponentMeshFilter>();
+    }
+
+    for (int i = 0; i < 25; i++) {
+        ids.push_back(world.createEntity<TestComponentMeshFilter, TestComponentMeshFilter2, TestComponentTransform>());
+    }
+
+    for (int i = 0; i < 100; i++) {
+        world.createEntity<TestComponentMeshFilter>();
+    }
+
+    for (int i = 0; i < 100; i++) {
+        world.createEntity<TestComponentMeshFilter2>();
+    }
+
+    for (auto id : ids) {
+        TestComponentMeshFilter *componentMeshFilter = world.getComponentStorage<TestComponentMeshFilter>().get(id);
+        EXPECT_CALL(*componentMeshFilter, testMeshFilter()).Times(100);
+
+        TestComponentTransform *componentTransform = world.getComponentStorage<TestComponentTransform>().get(id);
+        EXPECT_CALL(*componentTransform, testTransform()).Times(100);
+
+        TestComponentMeshFilter2 *componentMeshFilter2 = world.getComponentStorage<TestComponentMeshFilter2>().get(id);
+        EXPECT_CALL(*componentMeshFilter2, testMeshFilter2()).Times(100);
+    }
+
+    auto increment = boost::hana::fuse([](auto entityID,
+                                          boost::hana::tuple<TestComponentMeshFilter *,
+                                                             TestComponentTransform *, TestComponentMeshFilter2*> components) {
+        components[0_c]->testMeshFilter();
+        components[1_c]->testTransform();
+        components[2_c]->testMeshFilter2();
+
+    });
+
+    for (int i = 0; i < 100; i++)
+        world.for_each<TestComponentMeshFilter, TestComponentTransform, TestComponentMeshFilter2>(increment);
+}

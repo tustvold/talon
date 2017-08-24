@@ -41,20 +41,45 @@ public:
         increment();
         return *this;
     }
+
+    bool advanceToOrIncrement(EntityID id) {
+        bool ret = current1.advanceToOrIncrement(id) && current2.advanceToOrIncrement(id);
+        if (current1 == end1 || current2 == end2) {
+            current1 = end1;
+            current2 = end2;
+        }
+        return ret;
+    }
+
+    bool isValid() {
+        return current1.isValid() && current2.isValid() && (*current1)[0_c] == (*current2)[0_c];
+    }
+
+    EntityID getID() {
+        auto id1 = current1.getID();
+        auto id2 = current2.getID();
+        return id1 > id2 ? id1 : id2;
+    }
+
 private:
     Iter1 current1;
     Iter1 end1;
     Iter2 current2;
     Iter2 end2;
 
-    inline bool isValid() {
-        return current1.isValid() && current2.isValid() && (*current1)[0_c] == (*current2)[0_c];
-    }
-
     void increment() {
         // When one of the iterators has reached the end
         // It can never be valid so the iteration can be terminated
-        while (current1 != end1 && current2 != end2) {
+        if (current1 == end1 || current2 == end2) {
+            current1 = end1;
+            current2 = end2;
+            return;
+        }
+
+        bool current1Valid = current1.isValid();
+        bool current2Valid = current2.isValid();
+
+        do {
             EntityID current1_id = current1.getID();
             EntityID current2_id = current2.getID();
 
@@ -63,16 +88,17 @@ private:
                 // This method allows the usage of ComponentStorageMap
                 // to avoid scanning values that are not in the map
                 // as advanceToOrIncrement will not perform a search
-                current1.advanceToOrIncrement(current1_id+1);
-                current2.advanceToOrIncrement(current1_id+1);
+                current1Valid = current1.advanceToOrIncrement(current1_id + 1);
+                current2Valid = current2.advanceToOrIncrement(current1_id + 1);
             } else if (current1_id < current2_id) {
-                current1.advanceToOrIncrement(current2_id);
+                current1Valid = current1.advanceToOrIncrement(current2_id);
             } else {
-                current2.advanceToOrIncrement(current1_id);
+                current2Valid = current2.advanceToOrIncrement(current1_id);
             }
-            if (isValid())
+            if (current1Valid && current2Valid && (*current1)[0_c] == (*current2)[0_c])
                 return;
-        }
+        } while (current1 != end1 && current2 != end2);
+
         current1 = end1;
         current2 = end2;
     }
@@ -147,21 +173,23 @@ struct ForEachUtil<Component, Others...> {
 
 }
 
-
 namespace detail {
-template <typename World, typename... Components> struct CreateEntityUtil;
+template<typename World, typename... Components>
+struct CreateEntityUtil;
 
-template <typename World, typename Component>
+template<typename World, typename Component>
 struct CreateEntityUtil<World, Component> {
-    static void addEntity(World& world, EntityID id, Component&& component) {
-        world.template getComponentStorage<typename std::remove_reference<Component>::type>().template add(id, std::forward<Component>(component));
+    static void addEntity(World &world, EntityID id, Component &&component) {
+        world.template getComponentStorage<typename std::remove_reference<Component>::type>().
+            template add(id, std::forward<Component>(component));
     }
 };
 
-template <typename World, typename Component, typename... Components>
+template<typename World, typename Component, typename... Components>
 struct CreateEntityUtil<World, Component, Components...> {
-    static void addEntity(World& world, EntityID id, Component&& component, Components&&... components) {
-        world.template getComponentStorage<typename std::remove_reference<Component>::type>().template add<Component>(id, std::forward<Component>(component));
+    static void addEntity(World &world, EntityID id, Component &&component, Components &&... components) {
+        world.template getComponentStorage<typename std::remove_reference<Component>::type>().
+            template add<Component>(id, std::forward<Component>(component));
         CreateEntityUtil<World, Components...>::addEntity(world, id, std::forward<Components>(components)...);
     }
 };
@@ -171,8 +199,6 @@ struct CreateEntityUtil<World, Component, Components...> {
 template<typename... SystemComponents>
 class TWorld {
     using self_type = TWorld<SystemComponents...>;
-
-
 
 public:
     TWorld() = default;
@@ -195,10 +221,12 @@ public:
     }
 
     template<typename... EntityComponents>
-    EntityID createEntity(EntityComponents&&... args) {
+    EntityID createEntity(EntityComponents &&... args) {
         auto id = pool.get();
 
-        detail::CreateEntityUtil<self_type, EntityComponents...>::addEntity(*this, id, std::forward<EntityComponents>(args)...);
+        detail::CreateEntityUtil<self_type, EntityComponents...>::addEntity(*this,
+                                                                            id,
+                                                                            std::forward<EntityComponents>(args)...);
 
         return id;
     }
