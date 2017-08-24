@@ -28,8 +28,8 @@ public:
         return ret;
     }
 
-    bool operator==(const ForEachUtilIter &rhs) { return current1 == rhs.current1 && current2 == rhs.current2; }
-    bool operator!=(const ForEachUtilIter &rhs) { return current1 != rhs.current1 || current2 != rhs.current2; }
+    bool operator==(const ForEachUtilIter &rhs) { return current1 == rhs.current1 || current2 == rhs.current2; }
+    bool operator!=(const ForEachUtilIter &rhs) { return current1 != rhs.current1 && current2 != rhs.current2; }
 
     ForEachUtilIter operator++() {
         ForEachUtilIter i = *this;
@@ -42,13 +42,10 @@ public:
         return *this;
     }
 
-    bool advanceToOrIncrement(EntityID id) {
-        bool ret = current1.advanceToOrIncrement(id) && current2.advanceToOrIncrement(id);
-        if (current1 == end1 || current2 == end2) {
-            current1 = end1;
-            current2 = end2;
-        }
-        return ret;
+    void advanceToOrIncrement(EntityID id) {
+        current1.advanceToOrIncrement(id);
+        auto current1ID = current1.getID();
+        current2.advanceToOrIncrement(current1ID < id ? id : current1ID);
     }
 
     bool isValid() {
@@ -68,39 +65,29 @@ private:
     Iter2 end2;
 
     void increment() {
-        // When one of the iterators has reached the end
-        // It can never be valid so the iteration can be terminated
         if (current1 == end1 || current2 == end2) {
-            current1 = end1;
-            current2 = end2;
             return;
         }
 
-        bool current1Valid = current1.isValid();
-        bool current2Valid = current2.isValid();
-
-        do {
+        // When one of the iterators has reached the end
+        // It can never be valid so the iteration can be terminated
+        while (true) {
             EntityID current1_id = current1.getID();
             EntityID current2_id = current2.getID();
 
             if (current1_id == current2_id) {
-                // The ++ operator for ComponentStorageArray will try to find valid value
-                // This method allows the usage of ComponentStorageMap
-                // to avoid scanning values that are not in the map
-                // as advanceToOrIncrement will not perform a search
-                current1Valid = current1.advanceToOrIncrement(current1_id + 1);
-                current2Valid = current2.advanceToOrIncrement(current1_id + 1);
+                current1++;
+                current2.advanceToOrIncrement(current1.getID());
             } else if (current1_id < current2_id) {
-                current1Valid = current1.advanceToOrIncrement(current2_id);
+                current1.advanceToOrIncrement(current2_id);
             } else {
-                current2Valid = current2.advanceToOrIncrement(current1_id);
+                current2.advanceToOrIncrement(current1_id);
             }
-            if (current1Valid && current2Valid && (*current1)[0_c] == (*current2)[0_c])
+            if (current1 == end1 || current2 == end2)
+                break;
+            else if ((*current1)[0_c] == (*current2)[0_c])
                 return;
-        } while (current1 != end1 && current2 != end2);
-
-        current1 = end1;
-        current2 = end2;
+        }
     }
 };
 
