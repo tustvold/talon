@@ -24,6 +24,8 @@ struct TestComponentTransform {
     }
 
     int idx = 0;
+    EntityID parent = EntityIDInvalid;
+    std::vector<EntityID> children;
 
     MOCK_CONST_METHOD0(testTransform, void());
 };
@@ -71,7 +73,7 @@ COMPONENT_STORAGE_DEF(TestComponentTransform, ComponentStorageArray);
 
 COMPONENT_STORAGE_DEF(TestComponentMeshFilter, ComponentStorageMap);
 
-COMPONENT_STORAGE_DEF_TREE(TestComponentMeshFilter2, ComponentStorageArray);
+COMPONENT_STORAGE_DEF(TestComponentMeshFilter2, ComponentStorageArray);
 
 TALON_NS_END
 
@@ -377,70 +379,6 @@ TEST(TestComponent, TestViewPredicate) {
 
     for (int i = 0; i < 100; i++)
         view1.for_each(world, increment);
-}
-
-TEST(TestComponent, TestComponentStorageTreeMap) {
-    ComponentStorageTree<TestComponentTransform, ComponentStorageMap> storage;
-
-    storage.add(1);
-    storage.add(5);
-    storage.addWithParent(2, 5);
-    storage.add(3);
-    storage.addWithParent(4, 5);
-
-    std::vector<EntityID> normalIterate;
-    std::vector<EntityID> normalIterate_expected = {1, 2, 3, 4, 5};
-
-    std::vector<EntityID> treeIterate;
-    std::vector<EntityID> treeIterate_expected = {1, 3, 5, 2, 4};
-
-    std::vector<EntityID> parents;
-    std::vector<EntityID> parents_expected = {EntityIDInvalid, EntityIDInvalid, EntityIDInvalid, 5, 5};
-
-    storage.for_each([&normalIterate](auto component) {
-        normalIterate.push_back(component[0_c]);
-    });
-
-    storage.tree_for_each([&treeIterate, &parents](auto component) {
-        treeIterate.push_back(component[0_c]);
-        parents.push_back(component[2_c]);
-    });
-
-    EXPECT_EQ(normalIterate, normalIterate_expected);
-    EXPECT_EQ(treeIterate, treeIterate_expected);
-    EXPECT_EQ(parents, parents_expected);
-}
-
-TEST(TestComponent, TestComponentStorageTreeArray) {
-    ComponentStorageTree<TestComponentTransform, ComponentStorageArray> storage;
-
-    storage.add(1);
-    storage.add(5);
-    storage.addWithParent(2, 5);
-    storage.add(3);
-    storage.addWithParent(4, 5);
-
-    std::vector<EntityID> normalIterate;
-    std::vector<EntityID> normalIterate_expected = {1, 2, 3, 4, 5};
-
-    std::vector<EntityID> treeIterate;
-    std::vector<EntityID> treeIterate_expected = {1, 3, 5, 2, 4};
-
-    std::vector<EntityID> parents;
-    std::vector<EntityID> parents_expected = {EntityIDInvalid, EntityIDInvalid, EntityIDInvalid, 5, 5};
-
-    storage.for_each([&normalIterate](auto component) {
-        normalIterate.push_back(component[0_c]);
-    });
-
-    storage.tree_for_each([&treeIterate, &parents](auto component) {
-        treeIterate.push_back(component[0_c]);
-        parents.push_back(component[2_c]);
-    });
-
-    EXPECT_EQ(normalIterate, normalIterate_expected);
-    EXPECT_EQ(treeIterate, treeIterate_expected);
-    EXPECT_EQ(parents, parents_expected);
 }
 
 TEST(TestComponent, TestComponentConstruct) {

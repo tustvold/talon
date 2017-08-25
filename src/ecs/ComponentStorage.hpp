@@ -1,5 +1,6 @@
 #pragma once
-#include "TalonConfig.hpp"
+#include <TalonConfig.hpp>
+#include <TalonTypes.hpp>
 #include <boost/hana.hpp>
 using namespace boost::hana::literals;
 
@@ -41,7 +42,7 @@ template<typename... SystemComponents>
 struct ComponentStorageTuple {
 
     template<typename Component>
-    auto &getComponentStorage() {
+    ComponentStorage<Component> &getComponentStorage() {
         constexpr auto
         index = boost::hana::index_if(boost::hana::tuple_t<ComponentStorage<SystemComponents>...>, [](auto t) {
             return t == boost::hana::type_c<ComponentStorage<Component>>;
@@ -52,7 +53,7 @@ struct ComponentStorageTuple {
     }
 
     template<typename Component>
-    auto &getComponentStorage() const {
+    const ComponentStorage<Component> &getComponentStorage() const {
         constexpr auto
         index = boost::hana::index_if(boost::hana::tuple_t<ComponentStorage<SystemComponents>...>, [](auto t) {
             return t == boost::hana::type_c<ComponentStorage<Component>>;

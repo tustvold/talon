@@ -125,6 +125,20 @@ struct ForEachUtil<TComponent> {
     }
 };
 
+template <typename... Components>
+static constexpr auto GetTupleType() {
+    auto tuple = boost::hana::tuple_t<Components...>;
+    auto id = boost::hana::tuple_t<EntityID>;
+    auto transformed = boost::hana::transform(tuple, [](auto a) {return boost::hana::metafunction<std::add_pointer>(a);});
+    auto concat =  boost::hana::concat(id, transformed);
+
+    using type = typename decltype(boost::hana::unpack(concat, boost::hana::template_<boost::hana::tuple>))::type;
+    return boost::hana::type_c<type>;
+}
+
+template <typename... Components>
+using TupleType = typename decltype(GetTupleType<Components...>())::type;
+
 template<typename Component, typename... Others>
 struct ForEachUtil<Component, Others...> {
     template<class StorageTuple>
@@ -162,9 +176,6 @@ struct ForEachUtil<Component, Others...> {
     }
 };
 
-}
-
-namespace detail {
 template<typename World, typename... Components>
 struct CreateEntityUtil;
 
@@ -190,7 +201,6 @@ struct CreateEntityUtil<World, Component, Components...> {
 template<typename... SystemComponents>
 class TWorld {
     using self_type = TWorld<SystemComponents...>;
-
 public:
     TWorld() = default;
     TWorld(const TWorld &) = delete;
@@ -244,6 +254,7 @@ public:
 
     template<typename... Components, class UnaryFunction>
     void for_each(UnaryFunction f) {
+        static_assert(sizeof...(Components) > 0, "Must specify Components");
         auto beginLocal = begin<Components...>();
         auto endLocal = end<Components...>();
         for (auto it = beginLocal; it != endLocal; ++it) {
@@ -253,6 +264,7 @@ public:
 
     template<typename... Components, class UnaryFunction>
     void for_each(UnaryFunction f) const {
+        static_assert(sizeof...(Components) > 0, "Must specify Components");
         auto beginLocal = cbegin<Components...>();
         auto endLocal = cend<Components...>();
         for (auto it = beginLocal; it != endLocal; ++it) {

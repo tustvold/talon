@@ -2,110 +2,66 @@
 #include "TalonConfig.hpp"
 #include "ComponentStorage.hpp"
 #include <vector>
+#include <ecs/component/TreeComponent.hpp>
 
 TALON_NS_BEGIN
 
 template<typename Component, template<typename> class Storage>
-class ComponentStorageTree : ComponentStorageBase {
-private:
-    struct TreeElement {
-        Component component;
-        std::vector<EntityID> children;
-        EntityID parent;
-
-        TreeElement() : parent(EntityIDInvalid) {}
-        explicit TreeElement(const Component& component) : component(component), parent(EntityIDInvalid) {}
-        explicit TreeElement(Component&& component) : component(std::move(component)), parent(EntityIDInvalid) {}
-    };
-
-
-    using internal_iterator = typename Storage<TreeElement>::iterator;
-    using internal_const_iterator = typename Storage<TreeElement>::const_iterator;
+class ComponentStorageTree : public ComponentStorageBase {
 public:
-    template <typename InputIterator>
-    struct Iterator {
-    private:
+    using iterator = typename Storage<Component>::iterator;
+    using const_iterator = typename Storage<Component>::const_iterator;
 
-    public:
-        explicit Iterator(InputIterator iterator) : wrapped(iterator) {}
+    static_assert(std::is_base_of<TreeComponent, Component>::value, "Must be TreeComponent");
 
-        auto operator*() {
-            auto cast = *wrapped;
-            return boost::hana::make_tuple(cast[0_c], boost::hana::make_tuple(&cast[1_c][0_c]->component));
-        };
+    ComponentStorageTree() : first(EntityIDInvalid) {
 
-        bool operator==(const Iterator &rhs) { return wrapped == rhs.wrapped; }
-        bool operator!=(const Iterator &rhs) { return wrapped != rhs.wrapped; }
-
-        Iterator operator++() {
-            Iterator i = *this;
-            wrapped++;
-            return i;
-        }
-
-        void advanceToOrIncrement(EntityID id) {
-            wrapped.advanceToOrIncrement(id);
-        }
-
-        Iterator operator++(int bar) {
-            wrapped++;
-            return *this;
-        }
-
-        bool isValid() {
-            return wrapped.isValid();
-        }
-
-        EntityID getID() {
-            return wrapped.getID();
-        }
-
-    private:
-        InputIterator wrapped;
-    };
-
-    using iterator = Iterator<internal_iterator>;
-    using const_iterator = Iterator<internal_const_iterator>;
-
-    void add(EntityID child_id) {
-        wrapped.add(child_id);
     }
+
 
     template <typename... Args>
     void add(EntityID child_id, Args&&... args) {
         wrapped.add(child_id, std::forward<Args>(args)...);
+        addSiblingOf(first, child_id);
+        incrementGeneration();
+    }
+
+    void add(EntityID child_id) {
+        wrapped.add(child_id);
+        addSiblingOf(first, child_id);
+        incrementGeneration();
+
     }
 
     void addWithParent(EntityID child_id, EntityID parent_id) {
         wrapped.add(child_id);
-        wrapped.get(child_id)->parent = parent_id;
-        wrapped.get(parent_id)->children.push_back(child_id);
-
+        auto parent = wrapped.get(parent_id);
+        addSiblingOf(parent->first_child, child_id);
         incrementGeneration();
     }
 
-    Component *get(EntityID id) {
-        return &wrapped.get(id)->component;
+    inline Component *get(EntityID id) {
+        return wrapped.get(id);
     }
 
-    const Component *get(EntityID id) const {
-        return &wrapped.get(id)->component;
+    inline const Component *get(EntityID id) const {
+        return wrapped.get(id);
     }
 
-    iterator begin() {
-        return iterator(wrapped.begin());
+    inline iterator begin() {
+        return wrapped.begin();
     }
 
-    iterator end() {
-        return iterator(wrapped.end());
+    inline iterator end() {
+        return wrapped.end();
     }
 
-    const_iterator cbegin() const {
-        return const_iterator(wrapped.cbegin());
+    inline const_iterator cbegin() const {
+        return wrapped.cbegin();
     }
 
-    const_iterator cend() const {
-        return const_iterator(wrapped.cend());
+    inline const_iterator cend() const {
+        return wrapped.cend();
     }
 
     template<class UnaryFunction>
@@ -117,29 +73,63 @@ public:
 
     template<class UnaryFunction>
     void tree_for_each(UnaryFunction f) {
-        auto beginLocal = wrapped.begin();
-        auto endLocal = wrapped.end();
-        for (auto it = beginLocal; it != endLocal; ++it) {
-            TreeElement* element = (*it)[1_c][0_c];
-            EntityID parent = element->parent;
-            if (parent == EntityIDInvalid)
-                tree_for_each_process(f, (*it)[0_c], element, nullptr);
-        }
+        if (first == EntityIDInvalid)
+            return;
+        tree_for_each_process_siblings(f, first, EntityIDInvalid, nullptr);
     }
 
 private:
-    Storage<TreeElement> wrapped;
+    Storage<Component> wrapped;
+    EntityID first;
 
     template<class UnaryFunction>
-    void tree_for_each_process(UnaryFunction f, EntityID id, TreeElement* element, TreeElement* parent) {
-        boost::hana::tuple<EntityID, Component *, EntityID , Component*> ret(
-            id, &element->component, element->parent, parent ? &parent->component : nullptr
+    void tree_for_each_process_siblings(UnaryFunction f, EntityID id, EntityID  parent_id, Component* parent) {
+        do {
+            Component* component = wrapped.get(id);
+            tree_for_each_process(f, id, component, parent_id, parent);
+            id = component->next_sibling;
+        } while (id != EntityIDInvalid);
+    }
+
+    template<class UnaryFunction>
+    void tree_for_each_process(UnaryFunction f, EntityID id, Component* element, EntityID  parent_id, Component* parent) {
+        boost::hana::tuple<EntityID, Component*, EntityID , Component*> ret(
+            id, element, parent_id, parent
         );
         f(ret);
+        if (element->first_child != EntityIDInvalid)
+            tree_for_each_process_siblings(f, element->first_child, id, element);
+    }
 
-        for (auto childId : element->children) {
-            tree_for_each_process(f, childId, wrapped.get(childId), element);
+    static_assert(EntityIDInvalid > MaxEntityID);
+
+    void addSiblingOf(EntityID& sibling_root, EntityID to_insert) {
+        // Search through linked list to find insertion position
+        // We maintain sorted order to improve performance
+        // By making accesses more prefetch friendly
+
+        if (sibling_root == EntityIDInvalid) {
+            sibling_root = to_insert;
+            return;
         }
+        Component* to_insert_component = wrapped.get(to_insert);
+
+        if (sibling_root > to_insert) {
+            to_insert_component->next_sibling = sibling_root;
+            sibling_root = to_insert;
+            return;
+        }
+
+        EntityID predecessor = sibling_root;
+        Component* current_component = wrapped.get(predecessor);
+        while (true) {
+            if (current_component->next_sibling > to_insert)
+                break;
+            predecessor = current_component->next_sibling;
+            current_component = wrapped.get(predecessor);
+        }
+        to_insert_component->next_sibling = current_component->next_sibling;
+        current_component->next_sibling = to_insert;
     }
 };
 

@@ -2,10 +2,11 @@
 #include "TalonConfig.hpp"
 #include "Eigen/Core"
 #include "Eigen/Geometry"
+#include "TreeComponent.hpp"
 
 TALON_NS_BEGIN
 
-struct ComponentTransform {
+struct ComponentTransform : public TreeComponent {
     Eigen::Vector3f position;
     Eigen::Vector3f scale;
     Eigen::Quaternionf rotation;

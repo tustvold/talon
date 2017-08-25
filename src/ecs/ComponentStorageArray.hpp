@@ -10,9 +10,9 @@ using namespace boost::hana::literals;
 
 TALON_NS_BEGIN
 template<typename Component>
-struct ComponentStorageArray : ComponentStorageBase {
-    using internal_iterator = typename std::array<std::optional<Component>, MaxEntityID>::iterator;
-    using internal_const_iterator = typename std::array<std::optional<Component>, MaxEntityID>::const_iterator;
+struct ComponentStorageArray : public ComponentStorageBase {
+    using internal_iterator = typename std::vector<std::optional<Component>>::iterator;
+    using internal_const_iterator = typename std::vector<std::optional<Component>>::const_iterator;
 public:
     template <typename InputIterator>
     struct Iterator {
@@ -22,20 +22,20 @@ public:
                 increment();
         }
 
-        auto operator*() {
+        inline auto operator*() {
             return boost::hana::make_tuple(static_cast<EntityID>(current - begin), boost::hana::make_tuple(&current->value()));
         }
 
-        bool operator==(const Iterator &rhs) { return current == rhs.current; }
-        bool operator!=(const Iterator &rhs) { return current != rhs.current; }
+        inline bool operator==(const Iterator &rhs) { return current == rhs.current; }
+        inline bool operator!=(const Iterator &rhs) { return current != rhs.current; }
 
-        Iterator operator++() {
+        inline Iterator operator++() {
             Iterator i = *this;
             increment();
             return i;
         }
 
-        void advanceToOrIncrement(EntityID id) {
+        inline void advanceToOrIncrement(EntityID id) {
             if (id >= size) {
                 current = end;
                 return;
@@ -45,16 +45,16 @@ public:
                 increment();
         }
 
-        Iterator operator++(int bar) {
+        inline Iterator operator++(int bar) {
             increment();
             return *this;
         }
 
-        bool isValid() {
+        inline bool isValid() {
             return current->has_value();
         }
 
-        EntityID getID() {
+        inline EntityID getID() {
             return static_cast<EntityID >(current - begin);
         }
 
@@ -64,7 +64,7 @@ public:
         InputIterator end;
         size_t size;
 
-        void increment() {
+        inline void increment() {
             while (current != end) {
                 current++;
                 if (isValid())
@@ -76,7 +76,7 @@ public:
     using iterator = Iterator<internal_iterator>;
     using const_iterator = Iterator<internal_const_iterator>;
 
-    ComponentStorageArray() : maxAddedEntityID(0) {
+    ComponentStorageArray() : data(MaxEntityID), maxAddedEntityID(0) {
 
     }
     ComponentStorageArray(const ComponentStorageArray &) = delete;
@@ -86,6 +86,7 @@ public:
 
     void add(EntityID id) {
         TASSERT(id < MaxEntityID);
+        TASSERT(!data[id].has_value());
         maxAddedEntityID = id > maxAddedEntityID ? id : maxAddedEntityID;
         data[id].emplace();
         incrementGeneration();
@@ -94,32 +95,33 @@ public:
     template <typename... Args>
     void add(EntityID id, Args&&... args) {
         TASSERT(id < MaxEntityID);
+        TASSERT(!data[id].has_value());
         maxAddedEntityID = id > maxAddedEntityID ? id : maxAddedEntityID;
         data[id].emplace(std::forward<Args>(args)...);
         incrementGeneration();
     }
 
-    Component* get(EntityID id) {
+    inline Component* get(EntityID id) {
         return data[id].has_value() ? &data[id].value() : nullptr;
     }
 
-    const Component* get(EntityID id) const {
+    inline const Component* get(EntityID id) const {
         return data[id].has_value() ? &data[id].value() : nullptr;
     }
 
-    iterator begin() {
+    inline iterator begin() {
         return iterator(data.begin(), data.begin() + maxAddedEntityID + 1);
     }
 
-    iterator end() {
+    inline iterator end() {
         return iterator(data.begin() + maxAddedEntityID + 1, data.begin() + maxAddedEntityID + 1);
     }
 
-    const_iterator cbegin() const {
+    inline const_iterator cbegin() const {
         return const_iterator(data.cbegin(), data.cbegin() + maxAddedEntityID + 1);
     }
 
-    const_iterator cend() const {
+    inline const_iterator cend() const {
         return const_iterator(data.cbegin() + maxAddedEntityID + 1, data.cbegin() + maxAddedEntityID + 1);
     }
 
@@ -131,7 +133,7 @@ public:
     }
 
 private:
-    std::array<std::optional<Component>, MaxEntityID> data;
+    std::vector<std::optional<Component>> data;
     EntityID maxAddedEntityID;
 };
 

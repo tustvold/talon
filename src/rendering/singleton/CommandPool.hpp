@@ -13,8 +13,6 @@ public:
     explicit CommandPool(DeviceManager *deviceManager, SurfaceManager *surfaceManager);
     ~CommandPool();
 
-
-
 private:
     vk::CommandPool commandPool;
 
