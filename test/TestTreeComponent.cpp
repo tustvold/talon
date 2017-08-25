@@ -6,19 +6,12 @@
 #include <ecs/ComponentStorageTree.hpp>
 #include <ecs/View.hpp>
 #include "ecs/TWorld.hpp"
+#include "Components.hpp"
 
 USING_TALON_NS;
 
-struct TestTreeComponentTransform : public TreeComponent {
-    TestTreeComponentTransform() : touched(false) {
-
-    }
-
-    mutable bool touched;
-};
-
 TEST(TestTreeComponent, TestComponentStorageTreeArray) {
-    ComponentStorageTree<TestTreeComponentTransform, ComponentStorageVector> storage;
+    ComponentStorageTree<TestComponentArrayTree, ComponentStorageVector> storage;
 
     storage.add(1);
     storage.add(5);
@@ -50,39 +43,16 @@ TEST(TestTreeComponent, TestComponentStorageTreeArray) {
 }
 
 TEST(TestTreeComponent, TestComponentStorageTreeArrayRandom) {
-    ComponentStorageTree<const TestTreeComponentTransform, ComponentStorageVector> storage;
-
-    std::vector<EntityID> addedIDs;
+    ComponentStorageTree<const TestComponentArrayTree, ComponentStorageVector> storage;
 
     const int num_tests = 1024;
 
-    std::vector<EntityID> toAdd;
-    for (int i = 0; i < num_tests; i++) {
-        toAdd.push_back(i);
-    }
-
-    std::random_shuffle(toAdd.begin(), toAdd.end());
-
-    storage.add(toAdd.back());
-    addedIDs.push_back(toAdd.back());
-    toAdd.pop_back();
-
-    for (auto id : toAdd) {
-        auto parent_idx = rand() % addedIDs.size();
-        bool foo = static_cast<bool>(rand() % 8);
-        if (!foo) {
-            storage.addWithParent(id, addedIDs[parent_idx]);
-        } else {
-            storage.add(id);
-        }
-        addedIDs.push_back(id);
-
-    }
+    generateTreeHierarchy(storage, num_tests);
 
     storage.tree_for_each(boost::hana::fuse([](EntityID id,
-                                               const TestTreeComponentTransform *component,
+                                               const TestComponentArrayTree *component,
                                                EntityID parent_id,
-                                               const TestTreeComponentTransform *parent) {
+                                               const TestComponentArrayTree *parent) {
 
         EXPECT_EQ(parent == nullptr, parent_id == EntityIDInvalid);
         if (parent != nullptr) {
@@ -92,6 +62,34 @@ TEST(TestTreeComponent, TestComponentStorageTreeArrayRandom) {
         component->touched = true;
     }));
 
+    for (int i = 0; i < num_tests; i++) {
+        auto component = storage.get(i);
+        EXPECT_TRUE(component->touched);
+    }
+}
+
+TEST(TestTreeComponent, TestComponentStorageTreeArrayRandomWorld) {
+    TWorld<TestComponentArrayTree> world;
+
+    const int num_tests = 1024;
+
+    generateTreeHierarchy(world.getComponentStorage<TestComponentArrayTree>(), num_tests);
+
+    world.tree_for_each<TestComponentArrayTree>(boost::hana::fuse([](EntityID id,
+                                               const TestComponentArrayTree *component,
+                                               EntityID parent_id,
+                                               const TestComponentArrayTree *parent) {
+
+        EXPECT_EQ(parent == nullptr, parent_id == EntityIDInvalid);
+        if (parent != nullptr) {
+            EXPECT_TRUE(parent->touched);
+        }
+        EXPECT_FALSE(component->touched);
+        component->touched = true;
+    }));
+
+
+    auto& storage = world.getComponentStorage<TestComponentArrayTree>();
     for (int i = 0; i < num_tests; i++) {
         auto component = storage.get(i);
         EXPECT_TRUE(component->touched);

@@ -10,13 +10,13 @@
 
 #include <ecs/component/ComponentTransform.hpp>
 #include <ecs/component/ComponentMeshFilter.hpp>
-
+#include <ecs/ComponentStorageFlatMap.hpp>
 
 TALON_NS_BEGIN
 
 using World = TWorld<ComponentTransform, ComponentMeshFilter>;
 
-COMPONENT_STORAGE_DEF_TREE(ComponentTransform, ComponentStorageVector);
-COMPONENT_STORAGE_DEF(ComponentMeshFilter, ComponentStorageMap);
+COMPONENT_STORAGE_DEF_TREE(ComponentTransform, ComponentStorageFlatMap);
+COMPONENT_STORAGE_DEF(ComponentMeshFilter, ComponentStorageFlatMap);
 
 TALON_NS_END

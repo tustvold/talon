@@ -36,7 +36,9 @@ private:
 };
 
 template<typename Component>
-struct ComponentStorage;
+struct ComponentStorage {
+    static_assert(sizeof(Component) == 0, "Must provide specialization");
+};
 
 template<typename... SystemComponents>
 struct ComponentStorageTuple {

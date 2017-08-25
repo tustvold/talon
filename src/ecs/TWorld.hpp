@@ -125,18 +125,19 @@ struct ForEachUtil<TComponent> {
     }
 };
 
-template <typename... Components>
+template<typename... Components>
 static constexpr auto GetTupleType() {
     auto tuple = boost::hana::tuple_t<Components...>;
     auto id = boost::hana::tuple_t<EntityID>;
-    auto transformed = boost::hana::transform(tuple, [](auto a) {return boost::hana::metafunction<std::add_pointer>(a);});
-    auto concat =  boost::hana::concat(id, transformed);
+    auto transformed =
+        boost::hana::transform(tuple, [](auto a) { return boost::hana::metafunction<std::add_pointer>(a); });
+    auto concat = boost::hana::concat(id, transformed);
 
     using type = typename decltype(boost::hana::unpack(concat, boost::hana::template_<boost::hana::tuple>))::type;
     return boost::hana::type_c<type>;
 }
 
-template <typename... Components>
+template<typename... Components>
 using TupleType = typename decltype(GetTupleType<Components...>())::type;
 
 template<typename Component, typename... Others>
@@ -280,6 +281,11 @@ public:
     template<typename Component>
     auto &getComponentStorage() const {
         return storage.getComponentStorage<Component>();
+    }
+
+    template<typename Component, class UnaryFunction>
+    void tree_for_each(UnaryFunction f) {
+        storage.getComponentStorage<Component>().tree_for_each(f);
     }
 
 private:

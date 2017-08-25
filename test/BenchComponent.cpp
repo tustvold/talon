@@ -2,72 +2,17 @@
 #include <gmock/gmock.h>
 #include <boost/timer/timer.hpp>
 #include <TalonConfig.hpp>
-#include <ecs/ComponentStorage.hpp>
-#include <ecs/ComponentStorageVector.hpp>
-#include <ecs/ComponentStorageMap.hpp>
-#include <ecs/ComponentStorageTree.hpp>
-#include <ecs/ComponentStorageFlatMap.hpp>
 #include <ecs/TWorld.hpp>
 #include <ecs/View.hpp>
+#include "Components.hpp"
 
 USING_TALON_NS;
-
-struct TestComponentArray : public TreeComponent {
-    int idx = 0;
-    static constexpr const char* name() {
-        return "TestComponentArray";
-    }
-};
-
-struct TestComponentMap : public TreeComponent {
-    int idx = 0;
-    static constexpr const char* name() {
-        return "TestComponentMap";
-    }
-};
-
-struct TestComponentFlatMap : public TreeComponent {
-    int idx = 0;
-    static constexpr const char* name() {
-        return "TestComponentFlatMap";
-    }
-};
-
-struct TestComponentArrayTree : public TreeComponent {
-    int idx = 0;
-    static constexpr const char* name() {
-        return "TestComponentArrayTree";
-    }
-};
-
-struct TestComponentMapTree : public TreeComponent {
-    int idx = 0;
-    static constexpr const char* name() {
-        return "TestComponentMapTree";
-    }
-};
-
-struct TestComponentFlatMapTree : public TreeComponent {
-    int idx = 0;
-    static constexpr const char* name() {
-        return "TestComponentFlatMapTree";
-    }
-};
 
 #ifndef NDEBUG
 static const int num_iterations = 1;
 #else
 static const int num_iterations = 100;
 #endif
-
-TALON_NS_BEGIN
-COMPONENT_STORAGE_DEF(TestComponentArray, ComponentStorageVector);
-COMPONENT_STORAGE_DEF(TestComponentMap, ComponentStorageMap);
-COMPONENT_STORAGE_DEF(TestComponentFlatMap, ComponentStorageFlatMap);
-COMPONENT_STORAGE_DEF_TREE(TestComponentArrayTree, ComponentStorageVector);
-COMPONENT_STORAGE_DEF_TREE(TestComponentMapTree, ComponentStorageMap);
-COMPONENT_STORAGE_DEF_TREE(TestComponentFlatMapTree, ComponentStorageFlatMap);
-TALON_NS_END
 
 // This is indicative of a rapidly changing hierarchy
 template <typename Component>
@@ -84,12 +29,6 @@ void DynamicTest() {
             world.template for_each<Component>(boost::hana::fuse([](auto id, auto components){
                 components[0_c]->idx++;
             }));
-        }
-
-        if (j == 0) {
-            for (EntityID i = 0; i < MaxEntityID; i++) {
-                EXPECT_EQ(world.template getComponentStorage<Component>().get(i)->idx, MaxEntityID - i);
-            }
         }
     }
 }
@@ -111,12 +50,6 @@ void DynamicTestView() {
             view.for_each(world, boost::hana::fuse([](auto id, auto components){
                 components[0_c]->idx++;
             }));
-        }
-
-        if (j == 0) {
-            for (EntityID i = 0; i < MaxEntityID; i++) {
-                EXPECT_EQ(world.template getComponentStorage<Component>().get(i)->idx, MaxEntityID - i);
-            }
         }
     }
 }
@@ -140,12 +73,6 @@ void StaticTest() {
             world.template for_each<Component>(boost::hana::fuse([](auto id, auto components){
                 components[0_c]->idx++;
             }));
-        }
-
-        if (j == 0) {
-            for (EntityID i = 0; i < MaxEntityID; i++) {
-                EXPECT_EQ(world.template getComponentStorage<Component>().get(i)->idx, MaxEntityID);
-            }
         }
     }
 }
@@ -172,12 +99,6 @@ void StaticTestView() {
             view.for_each(world, boost::hana::fuse([](auto id, auto components){
                 components[0_c]->idx++;
             }));
-        }
-
-        if (j == 0) {
-            for (EntityID i = 0; i < MaxEntityID; i++) {
-                EXPECT_EQ(world.template getComponentStorage<Component>().get(i)->idx, MaxEntityID);
-            }
         }
     }
 }
