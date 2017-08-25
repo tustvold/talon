@@ -3,12 +3,12 @@
 
 TALON_NS_BEGIN
 
-class TreeComponent {
+class TreeComponentData {
 public:
     template<typename, template<typename> class>
     friend class ComponentStorageTree;
 
-    TreeComponent() : first_child(EntityIDInvalid), next_sibling(EntityIDInvalid) {
+    TreeComponentData() : first_child(EntityIDInvalid), next_sibling(EntityIDInvalid) {
 
     }
 

@@ -1,27 +1,14 @@
 #include "ComponentTransform.hpp"
-#include "util/Logging.hpp"
 
 USING_TALON_NS;
 
-ComponentTransform::ComponentTransform() : position(0,0,0), scale(1,1,1), rotation(1,0,0,0), localTransformDirty(true) {
+ComponentTransform::ComponentTransform() : position(0, 0, 0), scale(1, 1, 1), rotation(1, 0, 0, 0), dirty(false) {
 
 }
 
-ComponentTransform::~ComponentTransform() {
+ComponentTransform::~ComponentTransform() = default;
 
+
+void ComponentTransform::updateTransform(Eigen::Matrix4f &transform) const {
+    transform = (Eigen::Translation3f(position) * rotation.toRotationMatrix() * Eigen::Scaling(scale)).matrix();
 }
-
-void ComponentTransform::updateLocalTransform() {
-    if (!localTransformDirty)
-        return;
-    localTransformDirty = false;
-    localTransform = (Eigen::Translation3f(position) * rotation.toRotationMatrix() * Eigen::Scaling(scale)).matrix();
-}
-
-void ComponentTransform::updateWorldTransform(ComponentTransform *parent) {
-    TASSERT(!parent->localTransformDirty);
-    TASSERT(!localTransformDirty);
-    worldTransform = parent->worldTransform * localTransform;
-}
-
-

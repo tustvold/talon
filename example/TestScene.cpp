@@ -22,7 +22,8 @@ TestScene::TestScene() : Scene(1) {
     filter.material = testMaterial.get();
 
     ComponentTransform transform;
-    world.createEntity(transform, filter);
+    ComponentModelMatrix modelMatrix;
+    world.createEntity(transform, modelMatrix, filter);
 }
 
 TestScene::~TestScene() {

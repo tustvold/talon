@@ -3,16 +3,36 @@
 USING_TALON_NS;
 
 void GameSystemUpdateTransforms::update(World &world) {
-    ComponentStorage<ComponentTransform> &transforms = world.getComponentStorage<ComponentTransform>();
+    auto &modelMatrixStorage = world.getComponentStorage<ComponentModelMatrix>();
 
-    transforms.tree_for_each(boost::hana::fuse([](EntityID id,
-                                                  ComponentTransform *component,
-                                                  EntityID parent_id,
-                                                  ComponentTransform *parent) {
-        component->updateLocalTransform();
-        if (parent)
-            component->updateWorldTransform(parent);
-        else
-            component->worldTransform = component->localTransform;
+
+
+    world.for_each<ComponentTransform, ComponentModelMatrix>(boost::hana::fuse([](
+        EntityID id, boost::hana::tuple<ComponentTransform *, ComponentModelMatrix *> components) {
+        ComponentTransform *a = components[0_c];
+        if (!a->dirty)
+            return;
+        ComponentModelMatrix *b = components[1_c];
+        a->updateTransform(b->modelMatrix);
     }));
+
+
+    // This may not have the best possible performance
+    // Options to improve it are
+    // - change ComponentModelMatrix to be in a RandomAccess friendly storage container
+    // - extend View to allow tree_for_each with additional components
+    world.tree_for_each<ComponentTransformTree>(boost::hana::fuse([&modelMatrixStorage](EntityID id,
+                                                                                        ComponentTransformTree *component,
+                                                                                        EntityID parent_id,
+                                                                                        ComponentTransformTree *parent) {
+
+        Eigen::Matrix4f localTransform;
+        component->updateTransform(localTransform);
+
+        ComponentModelMatrix *modelMatrixComponent = modelMatrixStorage.get(id);
+        ComponentModelMatrix *parentModelMatrixComponent = modelMatrixStorage.get(parent_id);
+        modelMatrixComponent->modelMatrix = parentModelMatrixComponent->modelMatrix * localTransform;
+    }));
+
+
 }

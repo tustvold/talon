@@ -9,11 +9,11 @@ set(SOURCE_FILES application/Application.hpp
         rendering/singleton/MemoryAllocator.hpp ecs/View.hpp rendering/mesh/Mesh.cpp rendering/mesh/Mesh.hpp rendering/singleton/CommandPool.cpp rendering/singleton/CommandPool.hpp
         application/GameLoop.cpp application/GameLoop.hpp rendering/system/VSemaphore.hpp rendering/system/VSemaphore.cpp rendering/system/CommandBuffer.cpp
         rendering/system/CommandBuffer.hpp rendering/singleton/DebugCallback.cpp rendering/singleton/DebugCallback.hpp
-        ecs/ComponentStorageTree.hpp ecs/component/ComponentTransform.hpp util/Util.hpp ecs/system/GameSystemUpdateTransforms.cpp
+        ecs/ComponentStorageTree.hpp ecs/component/ComponentTransformTree.hpp util/Util.hpp ecs/system/GameSystemUpdateTransforms.cpp
         ecs/system/GameSystemUpdateTransforms.hpp ecs/component/ComponentMeshFilter.hpp
         ecs/system/RenderSystemMeshFilter.cpp ecs/system/RenderSystemMeshFilter.hpp ecs/system/GameSystem.hpp
         ecs/system/RenderSystem.hpp application/Scene.cpp application/Scene.hpp rendering/material/MaterialPipeline.cpp rendering/material/MaterialPipeline.hpp
-        ecs/system/RenderSystem.cpp rendering/material/MaterialPipelineCache.cpp rendering/material/MaterialPipelineCache.hpp ecs/component/ComponentCamera.cpp ecs/component/ComponentCamera.hpp util/Math.hpp ecs/component/ComponentTransform.cpp ecs/component/TreeComponent.hpp ecs/component/ComponentModelMatrix.cpp ecs/component/ComponentModelMatrix.hpp ecs/ComponentStorageFlatMap.hpp)
+        ecs/system/RenderSystem.cpp rendering/material/MaterialPipelineCache.cpp rendering/material/MaterialPipelineCache.hpp ecs/component/ComponentCamera.cpp ecs/component/ComponentCamera.hpp util/Math.hpp ecs/component/ComponentTransformTree.cpp ecs/component/TreeComponentData.hpp ecs/component/ComponentModelMatrix.cpp ecs/component/ComponentModelMatrix.hpp ecs/ComponentStorageFlatMap.hpp ecs/component/ComponentTransform.cpp ecs/component/ComponentTransform.hpp)
 
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 

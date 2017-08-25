@@ -2,7 +2,7 @@
 #include "TalonConfig.hpp"
 #include "ComponentStorage.hpp"
 #include <vector>
-#include <ecs/component/TreeComponent.hpp>
+#include <ecs/component/TreeComponentData.hpp>
 
 TALON_NS_BEGIN
 
@@ -12,12 +12,9 @@ public:
     using iterator = typename Storage<Component>::iterator;
     using const_iterator = typename Storage<Component>::const_iterator;
 
-    static_assert(std::is_base_of<TreeComponent, Component>::value, "Must be TreeComponent");
-
     ComponentStorageTree() : first(EntityIDInvalid) {
 
     }
-
 
     template <typename... Args>
     void add(EntityID child_id, Args&&... args) {
@@ -36,7 +33,7 @@ public:
     void addWithParent(EntityID child_id, EntityID parent_id) {
         wrapped.add(child_id);
         auto parent = wrapped.get(parent_id);
-        addSiblingOf(parent->first_child, child_id);
+        addSiblingOf(parent->treeComponentData.first_child, child_id);
         incrementGeneration();
     }
 
@@ -87,7 +84,7 @@ private:
         do {
             Component* component = wrapped.get(id);
             tree_for_each_process(f, id, component, parent_id, parent);
-            id = component->next_sibling;
+            id = component->treeComponentData.next_sibling;
         } while (id != EntityIDInvalid);
     }
 
@@ -97,8 +94,8 @@ private:
             id, element, parent_id, parent
         );
         f(ret);
-        if (element->first_child != EntityIDInvalid)
-            tree_for_each_process_siblings(f, element->first_child, id, element);
+        if (element->treeComponentData.first_child != EntityIDInvalid)
+            tree_for_each_process_siblings(f, element->treeComponentData.first_child, id, element);
     }
 
     static_assert(EntityIDInvalid > MaxEntityID);
@@ -115,7 +112,7 @@ private:
         Component* to_insert_component = wrapped.get(to_insert);
 
         if (sibling_root > to_insert) {
-            to_insert_component->next_sibling = sibling_root;
+            to_insert_component->treeComponentData.next_sibling = sibling_root;
             sibling_root = to_insert;
             return;
         }
@@ -123,13 +120,13 @@ private:
         EntityID predecessor = sibling_root;
         Component* current_component = wrapped.get(predecessor);
         while (true) {
-            if (current_component->next_sibling > to_insert)
+            if (current_component->treeComponentData.next_sibling > to_insert)
                 break;
-            predecessor = current_component->next_sibling;
+            predecessor = current_component->treeComponentData.next_sibling;
             current_component = wrapped.get(predecessor);
         }
-        to_insert_component->next_sibling = current_component->next_sibling;
-        current_component->next_sibling = to_insert;
+        to_insert_component->treeComponentData.next_sibling = current_component->treeComponentData.next_sibling;
+        current_component->treeComponentData.next_sibling = to_insert;
     }
 };
 

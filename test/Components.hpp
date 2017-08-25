@@ -5,11 +5,12 @@
 #include <ecs/ComponentStorageMap.hpp>
 #include <ecs/ComponentStorageTree.hpp>
 #include <ecs/ComponentStorageFlatMap.hpp>
-#include <ecs/component/TreeComponent.hpp>
+#include <ecs/component/TreeComponentData.hpp>
 
 USING_TALON_NS;
 
-struct TestComponentArray : public TreeComponent {
+struct TestComponentArray {
+    TreeComponentData treeComponentData;
     int idx = 0;
     static constexpr const char* name() {
         return "TestComponentArray";
@@ -17,7 +18,8 @@ struct TestComponentArray : public TreeComponent {
     mutable bool touched = false;
 };
 
-struct TestComponentMap : public TreeComponent {
+struct TestComponentMap {
+    TreeComponentData treeComponentData;
     int idx = 0;
     static constexpr const char* name() {
         return "TestComponentMap";
@@ -25,7 +27,8 @@ struct TestComponentMap : public TreeComponent {
     mutable bool touched = false;
 };
 
-struct TestComponentFlatMap : public TreeComponent {
+struct TestComponentFlatMap {
+    TreeComponentData treeComponentData;
     int idx = 0;
     static constexpr const char* name() {
         return "TestComponentFlatMap";
@@ -33,7 +36,8 @@ struct TestComponentFlatMap : public TreeComponent {
     mutable bool touched = false;
 };
 
-struct TestComponentArrayTree : public TreeComponent {
+struct TestComponentArrayTree {
+    TreeComponentData treeComponentData;
     int idx = 0;
     static constexpr const char* name() {
         return "TestComponentArrayTree";
@@ -41,7 +45,8 @@ struct TestComponentArrayTree : public TreeComponent {
     mutable bool touched = false;
 };
 
-struct TestComponentMapTree : public TreeComponent {
+struct TestComponentMapTree {
+    TreeComponentData treeComponentData;
     int idx = 0;
     static constexpr const char* name() {
         return "TestComponentMapTree";
@@ -49,7 +54,8 @@ struct TestComponentMapTree : public TreeComponent {
     mutable bool touched = false;
 };
 
-struct TestComponentFlatMapTree : public TreeComponent {
+struct TestComponentFlatMapTree {
+    TreeComponentData treeComponentData;
     int idx = 0;
     static constexpr const char* name() {
         return "TestComponentFlatMapTree";

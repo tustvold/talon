@@ -2,25 +2,19 @@
 #include "TalonConfig.hpp"
 #include "Eigen/Core"
 #include "Eigen/Geometry"
-#include "TreeComponent.hpp"
 
 TALON_NS_BEGIN
 
-struct ComponentTransform : public TreeComponent {
+struct ComponentTransform {
     Eigen::Vector3f position;
     Eigen::Vector3f scale;
     Eigen::Quaternionf rotation;
-    bool localTransformDirty;
-
-    Eigen::Matrix4f localTransform;
-    Eigen::Matrix4f worldTransform;
+    bool dirty;
 
     ComponentTransform();
     ~ComponentTransform();
 
-    void updateLocalTransform();
-
-    void updateWorldTransform(ComponentTransform* parent);
+    void updateTransform(Eigen::Matrix4f& transform) const;
 };
 
 TALON_NS_END

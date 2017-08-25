@@ -8,15 +8,18 @@
 #include "ecs/ComponentStorageMap.hpp"
 #include "ecs/ComponentStorageTree.hpp"
 
-#include <ecs/component/ComponentTransform.hpp>
+#include <ecs/component/ComponentTransformTree.hpp>
 #include <ecs/component/ComponentMeshFilter.hpp>
 #include <ecs/ComponentStorageFlatMap.hpp>
+#include <ecs/component/ComponentModelMatrix.hpp>
 
 TALON_NS_BEGIN
 
-using World = TWorld<ComponentTransform, ComponentMeshFilter>;
+using World = TWorld<ComponentModelMatrix, ComponentTransform, ComponentTransformTree, ComponentMeshFilter>;
 
-COMPONENT_STORAGE_DEF_TREE(ComponentTransform, ComponentStorageFlatMap);
+COMPONENT_STORAGE_DEF_TREE(ComponentTransformTree, ComponentStorageFlatMap);
 COMPONENT_STORAGE_DEF(ComponentMeshFilter, ComponentStorageFlatMap);
+COMPONENT_STORAGE_DEF(ComponentTransform, ComponentStorageFlatMap);
+COMPONENT_STORAGE_DEF(ComponentModelMatrix, ComponentStorageFlatMap);
 
 TALON_NS_END
