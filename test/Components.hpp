@@ -5,7 +5,9 @@
 #include <ecs/ComponentStorageMap.hpp>
 #include <ecs/ComponentStorageTree.hpp>
 #include <ecs/ComponentStorageFlatMap.hpp>
+#include <ecs/ComponentStorageCategory.hpp>
 #include <ecs/component/TreeComponentData.hpp>
+#include <ecs/component/CategoryComponentData.hpp>
 
 USING_TALON_NS;
 
@@ -63,6 +65,44 @@ struct TestComponentFlatMapTree {
     mutable bool touched = false;
 };
 
+struct TestComponentArrayCategory {
+    CategoryComponentData categoryComponentData;
+    int idx = 0;
+    static constexpr const char* name() {
+        return "TestComponentArrayCategory";
+    }
+    mutable bool touched = false;
+
+    explicit TestComponentArrayCategory(int category) : categoryComponentData(category) {
+
+    }
+};
+
+struct TestComponentMapCategory {
+    CategoryComponentData categoryComponentData;
+    int idx = 0;
+    static constexpr const char* name() {
+        return "TestComponentMapCategory";
+    }
+    mutable bool touched = false;
+
+    explicit TestComponentMapCategory(int category) : categoryComponentData(category) {
+
+    }
+};
+
+struct TestComponentFlatMapCategory {
+    CategoryComponentData categoryComponentData;
+    int idx = 0;
+    static constexpr const char* name() {
+        return "TestComponentFlatMapCategory";
+    }
+    mutable bool touched = false;
+
+    explicit TestComponentFlatMapCategory(int category) : categoryComponentData(category) {
+
+    }
+};
 TALON_NS_BEGIN
 COMPONENT_STORAGE_DEF(TestComponentArray, ComponentStorageVector);
 COMPONENT_STORAGE_DEF(TestComponentMap, ComponentStorageMap);
@@ -70,6 +110,9 @@ COMPONENT_STORAGE_DEF(TestComponentFlatMap, ComponentStorageFlatMap);
 COMPONENT_STORAGE_DEF_TREE(TestComponentArrayTree, ComponentStorageVector);
 COMPONENT_STORAGE_DEF_TREE(TestComponentMapTree, ComponentStorageMap);
 COMPONENT_STORAGE_DEF_TREE(TestComponentFlatMapTree, ComponentStorageFlatMap);
+COMPONENT_STORAGE_DEF_CATEGORY(TestComponentArrayCategory, ComponentStorageVector);
+COMPONENT_STORAGE_DEF_CATEGORY(TestComponentMapCategory, ComponentStorageMap);
+COMPONENT_STORAGE_DEF_CATEGORY(TestComponentFlatMapCategory, ComponentStorageFlatMap);
 TALON_NS_END
 
 template <typename Storage>

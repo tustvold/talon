@@ -14,6 +14,9 @@ TALON_NS_BEGIN
     template <> struct ComponentStorage<Component> : ComponentStorageTree<Component, StorageType> {}; \
     template <> struct ComponentStorage<const Component> : ComponentStorageTree<const Component, StorageType> {}
 
+#define COMPONENT_STORAGE_DEF_CATEGORY(Component, StorageType) \
+    template <> struct ComponentStorage<Component> : ComponentStorageCategory<Component, StorageType> {}; \
+    template <> struct ComponentStorage<const Component> : ComponentStorageCategory<const Component, StorageType> {}
 
 struct ComponentStorageBase {
 public:

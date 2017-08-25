@@ -12,7 +12,9 @@ static_assert(std::numeric_limits<EntityID>::max() > MaxEntityID, "EntityID too 
 
 using ComponentGenerationID = uint64_t;
 
-using MaterialID = uint32_t;
+using MaterialID = unsigned int;
 static const MaterialID MaxMaterialID = 1024;
+
+using CategoryID = unsigned int;
 
 TALON_NS_END
