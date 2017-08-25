@@ -3,9 +3,10 @@
 #include <boost/timer/timer.hpp>
 #include <TalonConfig.hpp>
 #include <ecs/ComponentStorage.hpp>
-#include <ecs/ComponentStorageArray.hpp>
+#include <ecs/ComponentStorageVector.hpp>
 #include <ecs/ComponentStorageMap.hpp>
 #include <ecs/ComponentStorageTree.hpp>
+#include <ecs/ComponentStorageFlatMap.hpp>
 #include <ecs/TWorld.hpp>
 #include <ecs/View.hpp>
 
@@ -25,6 +26,13 @@ struct TestComponentMap : public TreeComponent {
     }
 };
 
+struct TestComponentFlatMap : public TreeComponent {
+    int idx = 0;
+    static constexpr const char* name() {
+        return "TestComponentFlatMap";
+    }
+};
+
 struct TestComponentArrayTree : public TreeComponent {
     int idx = 0;
     static constexpr const char* name() {
@@ -39,11 +47,26 @@ struct TestComponentMapTree : public TreeComponent {
     }
 };
 
+struct TestComponentFlatMapTree : public TreeComponent {
+    int idx = 0;
+    static constexpr const char* name() {
+        return "TestComponentFlatMapTree";
+    }
+};
+
+#ifndef NDEBUG
+static const int num_iterations = 1;
+#else
+static const int num_iterations = 100;
+#endif
+
 TALON_NS_BEGIN
-COMPONENT_STORAGE_DEF(TestComponentArray, ComponentStorageArray);
+COMPONENT_STORAGE_DEF(TestComponentArray, ComponentStorageVector);
 COMPONENT_STORAGE_DEF(TestComponentMap, ComponentStorageMap);
-COMPONENT_STORAGE_DEF_TREE(TestComponentArrayTree, ComponentStorageArray);
+COMPONENT_STORAGE_DEF(TestComponentFlatMap, ComponentStorageFlatMap);
+COMPONENT_STORAGE_DEF_TREE(TestComponentArrayTree, ComponentStorageVector);
 COMPONENT_STORAGE_DEF_TREE(TestComponentMapTree, ComponentStorageMap);
+COMPONENT_STORAGE_DEF_TREE(TestComponentFlatMapTree, ComponentStorageFlatMap);
 TALON_NS_END
 
 // This is indicative of a rapidly changing hierarchy
@@ -53,7 +76,7 @@ void DynamicTest() {
     std::cout << "Dynamic Test - " << Component::name() << std::endl;
 
     boost::timer::auto_cpu_timer timer;
-    for (int j = 0; j < 1; j++) {
+    for (int j = 0; j < num_iterations; j++) {
         TWorld<Component> world;
         for (EntityID i = 0; i < MaxEntityID; i++) {
             world.template createEntity<Component>();
@@ -78,7 +101,7 @@ void DynamicTestView() {
     std::cout << "Dynamic Test View - " << Component::name() << std::endl;
 
     boost::timer::auto_cpu_timer timer;
-    for (int j = 0; j < 1; j++) {
+    for (int j = 0; j < num_iterations; j++) {
         TWorld<Component> world;
         auto view = makeView<Component>(world, [](auto a) { return true; });
 
@@ -105,7 +128,7 @@ void StaticTest() {
     std::cout << "Static Test - " << Component::name() << std::endl;
 
     boost::timer::auto_cpu_timer timer;
-    for (int j = 0; j < 1; j++) {
+    for (int j = 0; j < num_iterations; j++) {
         timer.stop();
         TWorld<Component> world;
         for (EntityID i = 0; i < MaxEntityID; i++) {
@@ -134,7 +157,7 @@ void StaticTestView() {
     std::cout << "Static Test View - " << Component::name() << std::endl;
 
     boost::timer::auto_cpu_timer timer;
-    for (int j = 0; j < 1; j++) {
+    for (int j = 0; j < num_iterations; j++) {
         timer.stop();
         TWorld<Component> world;
 
@@ -162,23 +185,31 @@ void StaticTestView() {
 TEST(BenchComponent, DynamicBenchmarks) {
     DynamicTest<TestComponentArray>();
     DynamicTest<TestComponentMap>();
+    DynamicTest<TestComponentFlatMap>();
     DynamicTest<TestComponentArrayTree>();
     DynamicTest<TestComponentMapTree>();
+    DynamicTest<TestComponentFlatMapTree>();
 
     DynamicTestView<TestComponentArray>();
     DynamicTestView<TestComponentMap>();
+    DynamicTestView<TestComponentFlatMap>();
     DynamicTestView<TestComponentArrayTree>();
     DynamicTestView<TestComponentMapTree>();
+    DynamicTestView<TestComponentFlatMapTree>();
 }
 
 TEST(BenchComponent, StaticBenchmarks) {
     StaticTest<TestComponentArray>();
     StaticTest<TestComponentMap>();
+    StaticTest<TestComponentFlatMap>();
     StaticTest<TestComponentArrayTree>();
     StaticTest<TestComponentMapTree>();
+    StaticTest<TestComponentFlatMapTree>();
 
     StaticTestView<TestComponentArray>();
     StaticTestView<TestComponentMap>();
+    StaticTestView<TestComponentFlatMap>();
     StaticTestView<TestComponentArrayTree>();
     StaticTestView<TestComponentMapTree>();
+    StaticTestView<TestComponentFlatMapTree>();
 }

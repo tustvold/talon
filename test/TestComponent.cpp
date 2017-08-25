@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <TalonTypes.hpp>
-#include <ecs/ComponentStorageArray.hpp>
+#include <ecs/ComponentStorageVector.hpp>
 #include <ecs/ComponentStorageMap.hpp>
 #include <ecs/ComponentStorageTree.hpp>
 #include <ecs/View.hpp>
@@ -69,11 +69,11 @@ struct TestComponentMeshFilter2 {
 
 TALON_NS_BEGIN
 
-COMPONENT_STORAGE_DEF(TestComponentTransform, ComponentStorageArray);
+COMPONENT_STORAGE_DEF(TestComponentTransform, ComponentStorageVector);
 
 COMPONENT_STORAGE_DEF(TestComponentMeshFilter, ComponentStorageMap);
 
-COMPONENT_STORAGE_DEF(TestComponentMeshFilter2, ComponentStorageArray);
+COMPONENT_STORAGE_DEF(TestComponentMeshFilter2, ComponentStorageVector);
 
 TALON_NS_END
 

@@ -4,7 +4,7 @@ set(SOURCE_FILES application/Application.hpp
         rendering/singleton/DeviceManager.hpp rendering/singleton/InstanceManager.cpp rendering/singleton/InstanceManager.hpp rendering/singleton/WindowManager.cpp
         rendering/singleton/WindowManager.hpp rendering/singleton/SurfaceManager.cpp rendering/singleton/SurfaceManager.hpp application/ApplicationInitSettings.hpp rendering/system/SwapChain.cpp
         rendering/system/SwapChain.hpp rendering/system/RenderPass.cpp rendering/system/RenderPass.hpp rendering/material/Material.cpp rendering/material/Material.hpp
-        rendering/singleton/RenderServiceTable.hpp util/ServiceProvider.hpp rendering/singleton/RenderServiceTable.cpp ecs/TWorld.hpp ecs/ComponentStorageArray.hpp ecs/ComponentStorageMap.hpp
+        rendering/singleton/RenderServiceTable.hpp util/ServiceProvider.hpp rendering/singleton/RenderServiceTable.cpp ecs/TWorld.hpp ecs/ComponentStorageVector.hpp ecs/ComponentStorageMap.hpp
         ecs/ComponentStorage.hpp ecs/IdentifierPool.hpp util/Logging.hpp ${TALON_CONFIG_DIR}/TalonConfig.hpp ${TALON_CONFIG_DIR}/WorldConfig.hpp rendering/singleton/MemoryAllocator.cpp
         rendering/singleton/MemoryAllocator.hpp ecs/View.hpp rendering/mesh/Mesh.cpp rendering/mesh/Mesh.hpp rendering/singleton/CommandPool.cpp rendering/singleton/CommandPool.hpp
         application/GameLoop.cpp application/GameLoop.hpp rendering/system/VSemaphore.hpp rendering/system/VSemaphore.cpp rendering/system/CommandBuffer.cpp
@@ -13,7 +13,7 @@ set(SOURCE_FILES application/Application.hpp
         ecs/system/GameSystemUpdateTransforms.hpp ecs/component/ComponentMeshFilter.hpp
         ecs/system/RenderSystemMeshFilter.cpp ecs/system/RenderSystemMeshFilter.hpp ecs/system/GameSystem.hpp
         ecs/system/RenderSystem.hpp application/Scene.cpp application/Scene.hpp rendering/material/MaterialPipeline.cpp rendering/material/MaterialPipeline.hpp
-        ecs/system/RenderSystem.cpp rendering/material/MaterialPipelineCache.cpp rendering/material/MaterialPipelineCache.hpp ecs/component/ComponentCamera.cpp ecs/component/ComponentCamera.hpp util/Math.hpp ecs/component/ComponentTransform.cpp ecs/component/TreeComponent.hpp)
+        ecs/system/RenderSystem.cpp rendering/material/MaterialPipelineCache.cpp rendering/material/MaterialPipelineCache.hpp ecs/component/ComponentCamera.cpp ecs/component/ComponentCamera.hpp util/Math.hpp ecs/component/ComponentTransform.cpp ecs/component/TreeComponent.hpp ecs/component/ComponentModelMatrix.cpp ecs/component/ComponentModelMatrix.hpp ecs/ComponentStorageFlatMap.hpp)
 
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 

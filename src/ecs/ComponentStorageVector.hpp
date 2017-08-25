@@ -1,18 +1,19 @@
 #pragma once
 #include "TalonConfig.hpp"
 #include "ComponentStorage.hpp"
-#include <array>
+#include <vector>
 #include <optional>
 #include <util/Logging.hpp>
+#include <boost/container/static_vector.hpp>
 
 #include <boost/hana.hpp>
 using namespace boost::hana::literals;
 
 TALON_NS_BEGIN
 template<typename Component>
-struct ComponentStorageArray : public ComponentStorageBase {
-    using internal_iterator = typename std::vector<std::optional<Component>>::iterator;
-    using internal_const_iterator = typename std::vector<std::optional<Component>>::const_iterator;
+struct ComponentStorageVector : public ComponentStorageBase {
+    using internal_iterator = typename boost::container::static_vector<std::optional<Component>, MaxEntityID>::iterator;
+    using internal_const_iterator = typename boost::container::static_vector<std::optional<Component>, MaxEntityID>::const_iterator;
 public:
     template <typename InputIterator>
     struct Iterator {
@@ -76,13 +77,13 @@ public:
     using iterator = Iterator<internal_iterator>;
     using const_iterator = Iterator<internal_const_iterator>;
 
-    ComponentStorageArray() : data(MaxEntityID), maxAddedEntityID(0) {
+    ComponentStorageVector() : data(MaxEntityID), maxAddedEntityID(0) {
 
     }
-    ComponentStorageArray(const ComponentStorageArray &) = delete;
-    ComponentStorageArray(ComponentStorageArray &&other) noexcept = delete;
-    ComponentStorageArray &operator=(const ComponentStorageArray &) = delete;
-    ComponentStorageArray &operator=(ComponentStorageArray &&) = delete;
+    ComponentStorageVector(const ComponentStorageVector &) = delete;
+    ComponentStorageVector(ComponentStorageVector &&other) noexcept = delete;
+    ComponentStorageVector &operator=(const ComponentStorageVector &) = delete;
+    ComponentStorageVector &operator=(ComponentStorageVector &&) = delete;
 
     void add(EntityID id) {
         TASSERT(id < MaxEntityID);
@@ -133,7 +134,7 @@ public:
     }
 
 private:
-    std::vector<std::optional<Component>> data;
+    boost::container::static_vector<std::optional<Component>, MaxEntityID> data;
     EntityID maxAddedEntityID;
 };
 

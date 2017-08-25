@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <TalonTypes.hpp>
-#include <ecs/ComponentStorageArray.hpp>
+#include <ecs/ComponentStorageVector.hpp>
 #include <ecs/ComponentStorageMap.hpp>
 #include <ecs/ComponentStorageTree.hpp>
 #include <ecs/View.hpp>
@@ -18,7 +18,7 @@ struct TestTreeComponentTransform : public TreeComponent {
 };
 
 TEST(TestTreeComponent, TestComponentStorageTreeArray) {
-    ComponentStorageTree<TestTreeComponentTransform, ComponentStorageArray> storage;
+    ComponentStorageTree<TestTreeComponentTransform, ComponentStorageVector> storage;
 
     storage.add(1);
     storage.add(5);
@@ -50,7 +50,7 @@ TEST(TestTreeComponent, TestComponentStorageTreeArray) {
 }
 
 TEST(TestTreeComponent, TestComponentStorageTreeArrayRandom) {
-    ComponentStorageTree<const TestTreeComponentTransform, ComponentStorageArray> storage;
+    ComponentStorageTree<const TestTreeComponentTransform, ComponentStorageVector> storage;
 
     std::vector<EntityID> addedIDs;
 
