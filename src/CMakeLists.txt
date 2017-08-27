@@ -13,7 +13,7 @@ set(SOURCE_FILES application/Application.hpp
         ecs/system/GameSystemUpdateTransforms.hpp ecs/component/ComponentMeshFilter.hpp
         ecs/system/RenderSystemMeshFilter.cpp ecs/system/RenderSystemMeshFilter.hpp ecs/system/GameSystem.hpp
         ecs/system/RenderSystem.hpp application/Scene.cpp application/Scene.hpp rendering/material/MaterialPipeline.cpp rendering/material/MaterialPipeline.hpp
-        ecs/system/RenderSystem.cpp rendering/material/MaterialPipelineCache.cpp rendering/material/MaterialPipelineCache.hpp ecs/component/ComponentCamera.cpp ecs/component/ComponentCamera.hpp util/Math.hpp ecs/component/ComponentTransformTree.cpp ecs/component/TreeComponentData.hpp ecs/component/ComponentModelMatrix.cpp ecs/component/ComponentModelMatrix.hpp ecs/ComponentStorageFlatMap.hpp ecs/component/ComponentTransform.cpp ecs/component/ComponentTransform.hpp ecs/ComponentStorageCategory.hpp ecs/component/CategoryComponentData.hpp)
+        ecs/system/RenderSystem.cpp rendering/material/MaterialPipelineCache.cpp rendering/material/MaterialPipelineCache.hpp ecs/component/ComponentCamera.cpp ecs/component/ComponentCamera.hpp util/Math.hpp ecs/component/ComponentTransformTree.cpp ecs/annotations/AnnotationTree.hpp ecs/component/ComponentModelMatrix.cpp ecs/component/ComponentModelMatrix.hpp ecs/ComponentStorageFlatMap.hpp ecs/component/ComponentTransform.cpp ecs/component/ComponentTransform.hpp ecs/ComponentStorageCategory.hpp ecs/annotations/AnnotationCategory.hpp ecs/annotations/Annotations.hpp ecs/annotations/AnnotationDependency.hpp util/TypeName.hpp util/TemplateUtil.hpp)
 
 set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 

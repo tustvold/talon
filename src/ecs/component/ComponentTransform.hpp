@@ -2,10 +2,14 @@
 #include "TalonConfig.hpp"
 #include "Eigen/Core"
 #include "Eigen/Geometry"
+#include <ecs/annotations/Annotations.hpp>
+#include <ecs/component/ComponentModelMatrix.hpp>
 
 TALON_NS_BEGIN
 
 struct ComponentTransform {
+    ADD_DEPENDENCY_ANNOTATION(ComponentModelMatrix)
+
     Eigen::Vector3f position;
     Eigen::Vector3f scale;
     Eigen::Quaternionf rotation;

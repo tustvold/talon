@@ -17,7 +17,7 @@ void treeForEachTest() {
 
     boost::timer::auto_cpu_timer timer;
 
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 1000; i++) {
         world.template tree_for_each<Component>(boost::hana::fuse([](EntityID id,
                                                                      Component *component,
                                                                      EntityID parent_id,

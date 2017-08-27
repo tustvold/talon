@@ -6,13 +6,15 @@
 #include <ecs/ComponentStorageTree.hpp>
 #include <ecs/ComponentStorageFlatMap.hpp>
 #include <ecs/ComponentStorageCategory.hpp>
-#include <ecs/component/TreeComponentData.hpp>
-#include <ecs/component/CategoryComponentData.hpp>
+#include <ecs/annotations/AnnotationTree.hpp>
+#include <ecs/annotations/AnnotationCategory.hpp>
+#include <algorithm>
+#include <random>
 
 USING_TALON_NS;
 
 struct TestComponentArray {
-    TreeComponentData treeComponentData;
+    AnnotationTree treeComponentData;
     int idx = 0;
     static constexpr const char* name() {
         return "TestComponentArray";
@@ -21,7 +23,7 @@ struct TestComponentArray {
 };
 
 struct TestComponentMap {
-    TreeComponentData treeComponentData;
+    AnnotationTree treeComponentData;
     int idx = 0;
     static constexpr const char* name() {
         return "TestComponentMap";
@@ -30,7 +32,7 @@ struct TestComponentMap {
 };
 
 struct TestComponentFlatMap {
-    TreeComponentData treeComponentData;
+    AnnotationTree treeComponentData;
     int idx = 0;
     static constexpr const char* name() {
         return "TestComponentFlatMap";
@@ -39,7 +41,7 @@ struct TestComponentFlatMap {
 };
 
 struct TestComponentArrayTree {
-    TreeComponentData treeComponentData;
+    ADD_TREE_ANNOTATION();
     int idx = 0;
     static constexpr const char* name() {
         return "TestComponentArrayTree";
@@ -48,7 +50,7 @@ struct TestComponentArrayTree {
 };
 
 struct TestComponentMapTree {
-    TreeComponentData treeComponentData;
+    ADD_TREE_ANNOTATION();
     int idx = 0;
     static constexpr const char* name() {
         return "TestComponentMapTree";
@@ -57,7 +59,7 @@ struct TestComponentMapTree {
 };
 
 struct TestComponentFlatMapTree {
-    TreeComponentData treeComponentData;
+    ADD_TREE_ANNOTATION();
     int idx = 0;
     static constexpr const char* name() {
         return "TestComponentFlatMapTree";
@@ -66,40 +68,40 @@ struct TestComponentFlatMapTree {
 };
 
 struct TestComponentArrayCategory {
-    CategoryComponentData categoryComponentData;
+    ADD_CATEGORY_ANNOTATION();
     int idx = 0;
     static constexpr const char* name() {
         return "TestComponentArrayCategory";
     }
     mutable bool touched = false;
 
-    explicit TestComponentArrayCategory(int category) : categoryComponentData(category) {
+    explicit TestComponentArrayCategory(int category) : CATEGORY_ANNOTATION(category) {
 
     }
 };
 
 struct TestComponentMapCategory {
-    CategoryComponentData categoryComponentData;
+    ADD_CATEGORY_ANNOTATION();
     int idx = 0;
     static constexpr const char* name() {
         return "TestComponentMapCategory";
     }
     mutable bool touched = false;
 
-    explicit TestComponentMapCategory(int category) : categoryComponentData(category) {
+    explicit TestComponentMapCategory(int category) : CATEGORY_ANNOTATION(category) {
 
     }
 };
 
 struct TestComponentFlatMapCategory {
-    CategoryComponentData categoryComponentData;
+    ADD_CATEGORY_ANNOTATION();
     int idx = 0;
     static constexpr const char* name() {
         return "TestComponentFlatMapCategory";
     }
     mutable bool touched = false;
 
-    explicit TestComponentFlatMapCategory(int category) : categoryComponentData(category) {
+    explicit TestComponentFlatMapCategory(int category) : CATEGORY_ANNOTATION(category) {
 
     }
 };
@@ -125,7 +127,7 @@ void generateTreeHierarchy(Storage& storage, int num_tests) {
         toAdd.push_back(i);
     }
 
-    std::random_shuffle(toAdd.begin(), toAdd.end());
+    std::shuffle(toAdd.begin(), toAdd.end(), std::default_random_engine(1234));
 
     storage.add(toAdd.back());
     addedIDs.push_back(toAdd.back());

@@ -1,7 +1,7 @@
 #pragma once
 #include "TalonConfig.hpp"
 #include "TalonTypes.hpp"
-#include <unordered_map>
+#include <boost/container/flat_map.hpp>
 #include <vulkan/vulkan.hpp>
 #include "MaterialPipeline.hpp"
 
@@ -17,7 +17,7 @@ public:
 
     void bindMaterial(Material* material, SwapChain* swapChain, RenderPass* renderPass, CommandBuffer* buffer);
 private:
-    std::unordered_map<MaterialID, MaterialPipeline> cache;
+    boost::container::flat_map<MaterialID, MaterialPipeline> cache;
 };
 
 

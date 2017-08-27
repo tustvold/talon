@@ -3,6 +3,7 @@
 #include "ComponentStorage.hpp"
 #include "IdentifierPool.hpp"
 #include <functional>
+#include <ecs/annotations/AnnotationDependency.hpp>
 
 TALON_NS_BEGIN
 
@@ -202,6 +203,8 @@ struct CreateEntityUtil<World, Component, Components...> {
 template<typename... SystemComponents>
 class TWorld {
     using self_type = TWorld<SystemComponents...>;
+    static_assert(DependencyChecker<SystemComponents...>::componentDependenciesSatisfied(), "Unsatisfied component dependencies");
+
 public:
     TWorld() = default;
     TWorld(const TWorld &) = delete;
@@ -211,6 +214,8 @@ public:
 
     template<typename... EntityComponents>
     EntityID createEntity() {
+        static_assert(DependencyChecker<EntityComponents...>::componentDependenciesSatisfied(), "Unsatisfied component dependencies");
+
         auto id = pool.get();
 
         auto types = boost::hana::tuple_t<EntityComponents...>;
@@ -224,6 +229,8 @@ public:
 
     template<typename... EntityComponents>
     EntityID createEntity(EntityComponents &&... args) {
+        static_assert(DependencyChecker<EntityComponents...>::componentDependenciesSatisfied(), "Unsatisfied component dependencies");
+
         auto id = pool.get();
 
         detail::CreateEntityUtil<self_type, EntityComponents...>::addEntity(*this,

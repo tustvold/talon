@@ -16,12 +16,16 @@ TEST(TestCategoryComponent, TestCategoryStorage) {
         toAdd.push_back(i);
     }
 
-    std::random_shuffle(toAdd.begin(), toAdd.end());
+    auto random = std::default_random_engine(1234);
+
+    std::shuffle(toAdd.begin(), toAdd.end(), random);
 
     const CategoryID maxCategory = 5;
 
+    std::uniform_int_distribution<CategoryID> uniform_dist(1, maxCategory);
+
     for (auto id : toAdd) {
-        CategoryID category = 1 + rand() % maxCategory;
+        CategoryID category = uniform_dist(random);
         storage.add(id, category);
     }
 

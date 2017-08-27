@@ -1,14 +1,16 @@
 #pragma once
+#include <ecs/annotations/Annotations.hpp>
 #include "TalonConfig.hpp"
 #include "Eigen/Core"
 #include "Eigen/Geometry"
-#include "TreeComponentData.hpp"
+#include "ecs/annotations/AnnotationTree.hpp"
 #include "ComponentTransform.hpp"
 
 TALON_NS_BEGIN
 
 struct ComponentTransformTree : public ComponentTransform {
-    TreeComponentData treeComponentData;
+    ADD_DEPENDENCY_ANNOTATION(ComponentModelMatrix)
+    ADD_TREE_ANNOTATION();
 
     ComponentTransformTree();
     ~ComponentTransformTree();

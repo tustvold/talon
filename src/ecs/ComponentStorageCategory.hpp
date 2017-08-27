@@ -2,8 +2,9 @@
 #include "TalonConfig.hpp"
 #include "ComponentStorage.hpp"
 #include <vector>
-#include <ecs/component/TreeComponentData.hpp>
+#include <ecs/annotations/AnnotationTree.hpp>
 #include <boost/container/flat_map.hpp>
+#include <ecs/annotations/Annotations.hpp>
 
 TALON_NS_BEGIN
 
@@ -21,7 +22,7 @@ public:
     void add(EntityID child_id, Args&&... args) {
         wrapped.add(child_id, std::forward<Args>(args)...);
         auto inserted = wrapped.get(child_id);
-        auto it = first_entities.try_emplace(inserted->categoryComponentData.category, EntityIDInvalid).first;
+        auto it = first_entities.try_emplace(inserted->CATEGORY_ANNOTATION.category, EntityIDInvalid).first;
         addSiblingOf(it->second, child_id);
         incrementGeneration();
     }
@@ -29,7 +30,7 @@ public:
     void add(EntityID child_id) {
         wrapped.add(child_id);
         auto inserted = wrapped.get(child_id);
-        auto it = first_entities.try_emplace(inserted->categoryComponentData.category, EntityIDInvalid).first;
+        auto it = first_entities.try_emplace(inserted->CATEGORY_ANNOTATION.category, EntityIDInvalid).first;
         addSiblingOf(it->second, child_id);
         incrementGeneration();
 
@@ -95,7 +96,7 @@ private:
         Component* to_insert_component = wrapped.get(to_insert);
 
         if (sibling_root > to_insert) {
-            to_insert_component->categoryComponentData.next_sibling = sibling_root;
+            to_insert_component->CATEGORY_ANNOTATION.next_sibling = sibling_root;
             sibling_root = to_insert;
             return;
         }
@@ -103,13 +104,13 @@ private:
         EntityID predecessor = sibling_root;
         Component* current_component = wrapped.get(predecessor);
         while (true) {
-            if (current_component->categoryComponentData.next_sibling > to_insert)
+            if (current_component->CATEGORY_ANNOTATION.next_sibling > to_insert)
                 break;
-            predecessor = current_component->categoryComponentData.next_sibling;
+            predecessor = current_component->CATEGORY_ANNOTATION.next_sibling;
             current_component = wrapped.get(predecessor);
         }
-        to_insert_component->categoryComponentData.next_sibling = current_component->categoryComponentData.next_sibling;
-        current_component->categoryComponentData.next_sibling = to_insert;
+        to_insert_component->CATEGORY_ANNOTATION.next_sibling = current_component->CATEGORY_ANNOTATION.next_sibling;
+        current_component->CATEGORY_ANNOTATION.next_sibling = to_insert;
     }
 
     template<class UnaryFunction>
@@ -117,7 +118,7 @@ private:
         do {
             Component* component = wrapped.get(entityID);
             f(categoryID, entityID, component);
-            entityID = component->categoryComponentData.next_sibling;
+            entityID = component->CATEGORY_ANNOTATION.next_sibling;
         } while (entityID != EntityIDInvalid);
     }
 };

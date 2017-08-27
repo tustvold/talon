@@ -3,19 +3,19 @@
 
 TALON_NS_BEGIN
 
-class TreeComponentData {
+class AnnotationCategory {
 public:
     template<typename, template<typename> class>
-    friend class ComponentStorageTree;
+    friend class ComponentStorageCategory;
 
-    TreeComponentData() : first_child(EntityIDInvalid), next_sibling(EntityIDInvalid) {
+    AnnotationCategory(CategoryID category) : next_sibling(EntityIDInvalid), category(category) {
 
     }
 
 private:
     // ComponentStorageTree guarantees to increment the storage generation whenever these values are touched
-    mutable EntityID first_child;
     mutable EntityID next_sibling;
+    CategoryID category;
 };
 
 TALON_NS_END
