@@ -5,8 +5,12 @@
 #include <vulkan/vulkan.hpp>
 #include <rendering/material/DescriptorSet.hpp>
 #include "ecs/Components.hpp"
+#include "mock/MockApplication.hpp"
+#include "mock/MockDeviceManager.hpp"
 
 USING_TALON_NS;
+
+using namespace testing;
 
 struct Binding1 {
     static vk::DescriptorSetLayoutBinding getDescriptorBinding() {
@@ -14,16 +18,25 @@ struct Binding1 {
         const vk::DescriptorType descriptorType = vk::DescriptorType::eUniformBuffer;
         const uint32_t descriptorCount = 1;
         const vk::ShaderStageFlagBits shaderStageFlags = vk::ShaderStageFlagBits::eVertex;
-        const vk::Sampler* immutableSamplers = nullptr;
+        const vk::Sampler *immutableSamplers = nullptr;
 
-        return vk::DescriptorSetLayoutBinding(binding, descriptorType, descriptorCount, shaderStageFlags, immutableSamplers);
+        return vk::DescriptorSetLayoutBinding(binding,
+                                              descriptorType,
+                                              descriptorCount,
+                                              shaderStageFlags,
+                                              immutableSamplers);
     }
 };
 
-using DescriptorSet1 = ;
-
 TEST(TestDescriptor, Main) {
+    MockApplication application;
+    auto deviceManager = application.getDeviceManager();
 
-    DescriptorSet<Binding1> descriptorSet;
+    EXPECT_CALL(*deviceManager, createDescriptorSetLayout(testing::_)).WillOnce(Invoke([](const vk::DescriptorSetLayoutCreateInfo& in){
+        EXPECT_EQ(in.bindingCount, 1);
+        EXPECT_EQ(in.pBindings[0], Binding1::getDescriptorBinding());
+        return vk::DescriptorSetLayout();
+    }));
 
+    DescriptorSet<Binding1>::createDescriptorSet();
 }

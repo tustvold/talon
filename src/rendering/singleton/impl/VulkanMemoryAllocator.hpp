@@ -15,7 +15,7 @@ public:
                             const VmaMemoryRequirements *pMemoryRequirements,
                             VkBuffer *pBuffer,
                             VmaAllocation *pAllocation,
-                            VmaAllocationInfo *pAllocationInfo) const {
+                            VmaAllocationInfo *pAllocationInfo) const final {
 
         return static_cast<vk::Result>(vmaCreateBuffer(allocator,
                                                        pCreateInfo,
@@ -25,15 +25,15 @@ public:
                                                        pAllocationInfo));
     }
 
-    void destroyBuffer(vk::Buffer buffer, VmaAllocation allocation) {
+    void destroyBuffer(vk::Buffer buffer, VmaAllocation allocation) const final {
         vmaDestroyBuffer(allocator, buffer, allocation);
     }
 
-    vk::Result mapMemory(VmaAllocation allocation, void **ptr) {
+    vk::Result mapMemory(VmaAllocation allocation, void **ptr) const final {
         return static_cast<vk::Result>(vmaMapMemory(allocator, allocation, ptr));
     }
 
-    void unmapMemory(VmaAllocation allocation) {
+    void unmapMemory(VmaAllocation allocation) const final {
         vmaUnmapMemory(allocator, allocation);
     }
 

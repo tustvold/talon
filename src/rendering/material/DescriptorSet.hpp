@@ -5,16 +5,22 @@
 
 TALON_NS_BEGIN
 
+namespace detail {
+class DescriptorSetImpl {
+protected:
+    static vk::DescriptorSetLayout createDescriptorSetInternal(vk::DescriptorSetLayoutCreateInfo& createInfo);
+};
+}
 
-class DescriptorSet {
+template<typename... Components>
+class DescriptorSet : detail::DescriptorSetImpl {
 public:
-    template<typename... Components>
     static vk::DescriptorSetLayout createDescriptorSet() {
         std::array<vk::DescriptorSetLayoutBinding, sizeof...(Components)> bindings;
         vk::DescriptorSetLayoutCreateInfo createInfo;
 
         int i = 0;
-        boost::hana::for_each(boost::hana::tuple_t<Components...>, [&i, &bindings](auto &&t) {
+        boost::hana::for_each(boost::hana::tuple_t<Components...>, [&i, &bindings](auto t) {
             using wrapped = typename decltype(t)::type;
             bindings[i++] = wrapped::getDescriptorBinding();
         });
@@ -22,11 +28,11 @@ public:
         createInfo.bindingCount = static_cast<uint32_t>(bindings.size());
         createInfo.pBindings = bindings.data();
 
-        return createDescriptorSetInternal(createInfo);
+        return detail::DescriptorSetImpl::createDescriptorSetInternal(createInfo);
     }
 
 private:
-    static vk::DescriptorSetLayout createDescriptorSetInternal(vk::DescriptorSetLayoutCreateInfo& createInfo);
+
 };
 
 TALON_NS_END

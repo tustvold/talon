@@ -11,7 +11,7 @@ private:
     virtual std::vector<vk::CommandBuffer> createCommandBuffers(uint32_t count, vk::CommandBufferLevel level) const = 0;
 
     virtual void destroyCommandBuffer(vk::CommandBuffer buffer) const = 0;
-    virtual vk::CommandBuffer createCommandBuffer(vk::CommandBufferLevel level) = 0;
+    virtual vk::CommandBuffer createCommandBuffer(vk::CommandBufferLevel level) const = 0;
 };
 
 TALON_NS_END

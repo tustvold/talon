@@ -18,10 +18,10 @@ public:
                             VmaAllocation *pAllocation,
                             VmaAllocationInfo *pAllocationInfo) const = 0;
 
-    virtual void destroyBuffer(vk::Buffer buffer, VmaAllocation allocation) = 0;
+    virtual void destroyBuffer(vk::Buffer buffer, VmaAllocation allocation) const = 0;
 
-    virtual vk::Result mapMemory(VmaAllocation allocation, void **ptr) = 0;
+    virtual vk::Result mapMemory(VmaAllocation allocation, void **ptr) const = 0;
 
-    virtual void unmapMemory(VmaAllocation allocation) = 0;
+    virtual void unmapMemory(VmaAllocation allocation) const = 0;
 };
 TALON_NS_END

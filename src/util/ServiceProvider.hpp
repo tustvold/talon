@@ -42,10 +42,12 @@ public:
     }
 
     Service* get() noexcept {
+        TASSERT(current != nullptr);
         return current;
     }
 
     Service* operator->() noexcept {
+        TASSERT(current != nullptr);
         return get();
     }
 

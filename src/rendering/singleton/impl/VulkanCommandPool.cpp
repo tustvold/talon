@@ -36,6 +36,6 @@ void VulkanCommandPool::destroyCommandBuffer(vk::CommandBuffer buffer) const {
     RenderServiceTable::deviceManager->freeCommandBuffers(commandPool, 1, &buffer);
 }
 
-vk::CommandBuffer VulkanCommandPool::createCommandBuffer(vk::CommandBufferLevel level) {
+vk::CommandBuffer VulkanCommandPool::createCommandBuffer(vk::CommandBufferLevel level) const {
     return createCommandBuffers(1, level)[0];
 }

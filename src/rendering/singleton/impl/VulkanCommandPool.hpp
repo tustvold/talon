@@ -20,7 +20,7 @@ private:
     std::vector<vk::CommandBuffer> createCommandBuffers(uint32_t count, vk::CommandBufferLevel level) const final;
 
     void destroyCommandBuffer(vk::CommandBuffer buffer) const final;
-    vk::CommandBuffer createCommandBuffer(vk::CommandBufferLevel level) final;
+    vk::CommandBuffer createCommandBuffer(vk::CommandBufferLevel level) const final;
 
 };
 

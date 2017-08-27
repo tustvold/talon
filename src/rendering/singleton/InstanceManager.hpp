@@ -8,9 +8,9 @@ class InstanceManager {
 public:
     virtual ~InstanceManager() = default;
 
-    virtual vk::DebugReportCallbackEXT createDebugReportCallbackEXT(const vk::DebugReportCallbackCreateInfoEXT& createInfoEXT) = 0;
+    virtual vk::DebugReportCallbackEXT createDebugReportCallbackEXT(const vk::DebugReportCallbackCreateInfoEXT& createInfoEXT) const = 0;
 
-    virtual void destroyDebugReportCallbackEXT(vk::DebugReportCallbackEXT callbackEXT) = 0;
+    virtual void destroyDebugReportCallbackEXT(vk::DebugReportCallbackEXT callbackEXT) const = 0;
 };
 
 TALON_NS_END

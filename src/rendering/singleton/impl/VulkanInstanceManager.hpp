@@ -16,11 +16,11 @@ public:
         return instance;
     }
 
-    vk::DebugReportCallbackEXT createDebugReportCallbackEXT(const vk::DebugReportCallbackCreateInfoEXT& createInfoEXT) final {
+    vk::DebugReportCallbackEXT createDebugReportCallbackEXT(const vk::DebugReportCallbackCreateInfoEXT& createInfoEXT) const final {
         return instance.createDebugReportCallbackEXT(createInfoEXT);
     }
 
-    void destroyDebugReportCallbackEXT(vk::DebugReportCallbackEXT callbackEXT) final {
+    void destroyDebugReportCallbackEXT(vk::DebugReportCallbackEXT callbackEXT) const final {
         instance.destroyDebugReportCallbackEXT(callbackEXT);
     }
 
