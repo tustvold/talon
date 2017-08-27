@@ -1,6 +1,6 @@
 enable_testing()
 
-SET(SOURCE_FILES main.cpp TestComponent.cpp BenchComponent.cpp TestTreeComponent.cpp BenchTreeComponent.cpp Components.hpp TestCategoryComponent.cpp TestDependency.cpp)
+SET(SOURCE_FILES main.cpp ecs/TestComponent.cpp ecs/BenchComponent.cpp ecs/TestTreeComponent.cpp ecs/BenchTreeComponent.cpp ecs/Components.hpp ecs/TestCategoryComponent.cpp ecs/TestDependency.cpp TestDescriptor.cpp)
 
 add_executable(talon.tests ${SOURCE_FILES})
 

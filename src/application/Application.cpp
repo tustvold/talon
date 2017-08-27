@@ -35,8 +35,6 @@ Application::Application(const ApplicationInitSettings &initSettings) {
     deviceManager = std::make_unique<DeviceManager>(initSettings, instanceManager.get(), surfaceManager.get());
     memoryAllocator = std::make_unique<MemoryAllocator>(deviceManager.get());
     commandPool = std::make_unique<CommandPool>(deviceManager.get(), surfaceManager.get());
-
-
 }
 
 Application::~Application() {

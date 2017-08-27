@@ -29,6 +29,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # -Wno-unused-local-typedefs as Delegate.hpp otherwise generates warnings
     # -Wno-int-in-bool-context as otherwise Eigen generates warnings
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -Wno-long-long -pedantic -Wno-unused-local-typedefs -Wno-int-in-bool-context")
+    # set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -ftime-report" )
 else ()
     MESSAGE(WARNING "Wasn't able to enable pedantic warnings")
 endif ()

@@ -8,6 +8,7 @@
 #include "ecs/ComponentStorageMap.hpp"
 #include "ecs/ComponentStorageTree.hpp"
 
+#include <ecs/component/ComponentTransform.hpp>
 #include <ecs/component/ComponentTransformTree.hpp>
 #include <ecs/component/ComponentMeshFilter.hpp>
 #include <ecs/ComponentStorageFlatMap.hpp>
