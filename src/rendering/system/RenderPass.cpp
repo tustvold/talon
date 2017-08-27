@@ -5,19 +5,19 @@
 
 USING_TALON_NS;
 
-RenderPass::RenderPass(SwapChain *swapChain) : swapChain(swapChain) {
-    createRenderPass();
-    createFrameBuffers();
+RenderPass::RenderPass(SwapChain *swapChain) {
+    createRenderPass(swapChain);
+    createFrameBuffers(swapChain);
 }
 
 RenderPass::~RenderPass() {
     for (auto &frameBuffer : framebuffers) {
-        RenderServiceTable::deviceManager->getDevice().destroyFramebuffer(frameBuffer);
+        RenderServiceTable::deviceManager->destroyFramebuffer(frameBuffer);
     }
-    RenderServiceTable::deviceManager->getDevice().destroyRenderPass(renderPass);
+    RenderServiceTable::deviceManager->destroyRenderPass(renderPass);
 }
 
-void RenderPass::createRenderPass() {
+void RenderPass::createRenderPass(SwapChain* swapChain) {
     auto deviceManager = RenderServiceTable::deviceManager;
     vk::AttachmentDescription colorAttachment = {};
     colorAttachment.format = swapChain->getImageFormat();
@@ -55,10 +55,10 @@ void RenderPass::createRenderPass() {
     renderPassInfo.dependencyCount = 1;
     renderPassInfo.setPDependencies(&dependency);
 
-    renderPass = deviceManager->getDevice().createRenderPass(renderPassInfo);
+    renderPass = deviceManager->createRenderPass(renderPassInfo);
 }
 
-void RenderPass::createFrameBuffers() {
+void RenderPass::createFrameBuffers(SwapChain* swapChain) {
     auto deviceManager = RenderServiceTable::deviceManager;
     auto &swapChainImageViews = swapChain->getImageViews();
     auto swapChainExtent = swapChain->getExtents();
@@ -78,10 +78,10 @@ void RenderPass::createFrameBuffers() {
         framebufferInfo.height = swapChainExtent.height;
         framebufferInfo.layers = 1;
 
-        framebuffers[i] = deviceManager->getDevice().createFramebuffer(framebufferInfo);
+        framebuffers[i] = deviceManager->createFramebuffer(framebufferInfo);
     }
 }
 
-void RenderPass::bindMaterial(talon::Material *material, CommandBuffer* buffer) {
+void RenderPass::bindMaterial(SwapChain* swapChain, talon::Material *material, CommandBuffer* buffer) {
     materialPipelineCache.bindMaterial(material, swapChain, this, buffer);
 }

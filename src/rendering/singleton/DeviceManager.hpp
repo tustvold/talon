@@ -2,76 +2,82 @@
 #include "TalonConfig.hpp"
 #include <vulkan/vulkan.hpp>
 
+struct VmaAllocatorCreateInfo;
+
 TALON_NS_BEGIN
-struct ApplicationInitSettings;
-class InstanceManager;
-class SurfaceManager;
 
-struct QueueFamilyIndices {
-    int graphicsFamily = -1;
-    int presentFamily = -1;
-
-    bool isComplete() {
-        return graphicsFamily >= 0 && presentFamily >= 0;
-    }
-};
-
-struct SwapChainSupportDetails {
-    vk::SurfaceCapabilitiesKHR capabilities;
-    std::vector<vk::SurfaceFormatKHR> formats;
-    std::vector<vk::PresentModeKHR> presentModes;
-};
+// Generated using
+// Find Regex: ([^ ]*) ([^\W]*)(\([^)]*\)) const \{(\n[^}]*)*}
+// Replace : virtual $1 $2$3 const = 0;
 
 class DeviceManager {
 public:
-    explicit DeviceManager(const ApplicationInitSettings& initSettings, InstanceManager* instanceManager,
-                           SurfaceManager* surfaceManager);
+    virtual ~DeviceManager() = default;
 
-    ~DeviceManager();
+    virtual vk::Queue getGraphicsQueue() const = 0;
 
-    vk::Device getDevice() const {
-        return device_;
-    }
+    virtual vk::Queue getPresentQueue() const = 0;
 
-    vk::PhysicalDevice getPhysicalDevice() const {
-        return physicalDevice_;
-    }
+    virtual void waitDeviceIdle() const = 0;
 
-    vk::Queue getGraphicsQueue() const {
-        return graphicsQueue_;
-    }
+    virtual vk::Framebuffer createFramebuffer(vk::FramebufferCreateInfo &info) const = 0;
 
-    vk::Queue getPresentQueue() const {
-        return presentQueue_;
-    }
+    virtual void destroyFramebuffer(vk::Framebuffer framebuffer) const = 0;
 
-    auto getQueueFamilyIndices(const SurfaceManager *surfaceManager) const {
-        return getQueueFamilyIndices(surfaceManager, physicalDevice_);
-    }
+    virtual vk::RenderPass createRenderPass(const vk::RenderPassCreateInfo &info) const = 0;
 
-    auto getSwapChainSupportDetails(const SurfaceManager *surfaceManager) const {
-        return getSwapChainSupportDetails(surfaceManager, physicalDevice_);
-    }
+    virtual void destroyRenderPass(vk::RenderPass renderPass) const = 0;
 
-private:
-    vk::Device device_;
-    vk::PhysicalDevice physicalDevice_;
-    vk::Queue graphicsQueue_;
-    vk::Queue presentQueue_;
+    virtual vk::ImageView createImageView(const vk::ImageViewCreateInfo &info) const = 0;
 
-    void pickPhysicalDevice(const ApplicationInitSettings &initSettings,
-                                InstanceManager *pManager,
-                                SurfaceManager *pSurfaceManager);
+    virtual void destroyImageView(vk::ImageView imageView) const = 0;
 
-    void createLogicalDevice(const ApplicationInitSettings& initSettings, const SurfaceManager *surfaceManager);
-    static bool isDeviceSuitable(const ApplicationInitSettings& initSettings, const SurfaceManager* surfaceManager, vk::PhysicalDevice device);
+    virtual vk::SwapchainKHR createSwapchainKHR(const vk::SwapchainCreateInfoKHR &info) const = 0;
 
-    static QueueFamilyIndices getQueueFamilyIndices(const SurfaceManager *surfaceManager, vk::PhysicalDevice device);
-    static SwapChainSupportDetails getSwapChainSupportDetails(const SurfaceManager *surfaceManager, vk::PhysicalDevice device);
-    static bool checkDeviceExtensionSupport(const ApplicationInitSettings& initSettings, vk::PhysicalDevice device);
+    virtual void destroySwapchainKHR(vk::SwapchainKHR swapchainKHR) const = 0;
+
+    virtual std::vector<vk::Image> getSwapchainImagesKHR(vk::SwapchainKHR swapchainKHR) const = 0;
+
+    virtual vk::ResultValue<uint32_t> acquireNextImageKHR(vk::SwapchainKHR swapchain,
+                                                  uint64_t timeout,
+                                                  vk::Semaphore semaphore,
+                                                  vk::Fence fence) const = 0;
+
+    virtual vk::Result acquireNextImageKHR(vk::SwapchainKHR swapchain,
+                                   uint64_t timeout,
+                                   vk::Semaphore semaphore,
+                                   vk::Fence fence,
+                                   uint32_t *pImageIndex) const = 0;
+
+    virtual vk::CommandPool createCommandPool(const vk::CommandPoolCreateInfo &info) const = 0;
+
+    virtual void destroyCommandPool(vk::CommandPool commandPool) const = 0;
+
+    virtual std::vector<vk::CommandBuffer> allocateCommandBuffers(const vk::CommandBufferAllocateInfo &info) const = 0;
+
+    virtual void freeCommandBuffers(vk::CommandPool commandPool,
+                            uint32_t commandBufferCount,
+                            const vk::CommandBuffer *pCommandBuffers) const = 0;
+
+    virtual void freeCommandBuffers(vk::CommandPool commandPool, vk::ArrayProxy<const vk::CommandBuffer> commandBuffers) const = 0;
+
+    virtual vk::Semaphore createSemaphore(const vk::SemaphoreCreateInfo &info) const = 0;
+
+    virtual void destroySemaphore(vk::Semaphore semaphore) const = 0;
+
+    virtual vk::ShaderModule createShaderModule(const vk::ShaderModuleCreateInfo &info) const = 0;
+
+    virtual void destroyShaderModule(vk::ShaderModule module) const = 0;
+
+    virtual vk::PipelineLayout createPipelineLayout(const vk::PipelineLayoutCreateInfo &info) const = 0;
+
+    virtual void destroyPipelineLayout(vk::PipelineLayout layout) const = 0;
+
+    virtual vk::Pipeline createGraphicsPipeline(const vk::PipelineCache &cache, vk::GraphicsPipelineCreateInfo &info) const = 0;
+
+    virtual void destroyPipeline(vk::Pipeline pipeline) const = 0;
+
+    virtual vk::DescriptorSetLayout createDescriptorSetLayout(const vk::DescriptorSetLayoutCreateInfo &info) const = 0;
 };
 
-
 TALON_NS_END
-
-

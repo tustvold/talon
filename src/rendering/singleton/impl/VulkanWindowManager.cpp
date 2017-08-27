@@ -1,10 +1,10 @@
 #include <GLFW/glfw3.h>
 #include <rendering/singleton/RenderServiceTable.hpp>
-#include "WindowManager.hpp"
+#include "VulkanWindowManager.hpp"
 
 USING_TALON_NS;
 
-WindowManager::WindowManager(const ApplicationInitSettings &initSettings) {
+VulkanWindowManager::VulkanWindowManager(const ApplicationInitSettings &initSettings) {
     glfwInit();
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -16,27 +16,27 @@ WindowManager::WindowManager(const ApplicationInitSettings &initSettings) {
                               nullptr);
 
     glfwSetWindowUserPointer(window, this);
-    glfwSetWindowSizeCallback(window, WindowManager::onWindowResizedStatic);
+    glfwSetWindowSizeCallback(window, VulkanWindowManager::onWindowResizedStatic);
 
     RenderServiceTable::windowManager.set(this);
 }
 
-WindowManager::~WindowManager() {
+VulkanWindowManager::~VulkanWindowManager() {
     RenderServiceTable::windowManager.clear(this);
     glfwDestroyWindow(window);
     glfwTerminate();
 }
 
-void WindowManager::onWindowResizedStatic(GLFWwindow *window, int width, int height) {
-    auto *manager = reinterpret_cast<WindowManager *>(glfwGetWindowUserPointer(window));
+void VulkanWindowManager::onWindowResizedStatic(GLFWwindow *window, int width, int height) {
+    auto *manager = reinterpret_cast<VulkanWindowManager *>(glfwGetWindowUserPointer(window));
     manager->onWindowResized(window, width, height);
 }
 
-void WindowManager::onWindowResized(GLFWwindow *window, int width, int height) {
+void VulkanWindowManager::onWindowResized(GLFWwindow *window, int width, int height) {
     windowResizeEvent(vk::Extent2D(static_cast<uint32_t>(width), static_cast<uint32_t>(height)));
 }
 
-vk::Extent2D WindowManager::getWindowExtents() const {
+vk::Extent2D VulkanWindowManager::getWindowExtents() const {
     int width, height;
     glfwGetWindowSize(window, &width, &height);
 
@@ -46,7 +46,7 @@ vk::Extent2D WindowManager::getWindowExtents() const {
     };
     return extent;
 }
-bool WindowManager::poll() {
+bool VulkanWindowManager::poll() {
     if (glfwWindowShouldClose(window))
         return false;
     glfwPollEvents();

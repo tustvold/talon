@@ -1,7 +1,7 @@
 #include <GLFW/glfw3.h>
-#include "InstanceManager.hpp"
-#include "VulkanLoader.hpp"
-#include "RenderServiceTable.hpp"
+#include "VulkanInstanceManager.hpp"
+#include "application/VulkanLoader.hpp"
+#include "rendering/singleton/RenderServiceTable.hpp"
 #include "application/ApplicationInitSettings.hpp"
 
 static bool checkValidationLayerSupport(const talon::ApplicationInitSettings& initSettings) {
@@ -43,7 +43,7 @@ static std::vector<const char *> getRequiredExtensions(const talon::ApplicationI
     return extensions;
 }
 
-talon::InstanceManager::InstanceManager(const ApplicationInitSettings& initSettings) {
+talon::VulkanInstanceManager::VulkanInstanceManager(const ApplicationInitSettings& initSettings) {
     if (initSettings.validationLayersEnabled && !checkValidationLayerSupport(initSettings)) {
         throw std::runtime_error("validation layers requested, but not available!");
     }
@@ -70,7 +70,7 @@ talon::InstanceManager::InstanceManager(const ApplicationInitSettings& initSetti
     RenderServiceTable::instanceManager.set(this);
 }
 
-talon::InstanceManager::~InstanceManager() {
+talon::VulkanInstanceManager::~VulkanInstanceManager() {
     RenderServiceTable::instanceManager.clear(this);
     instance.destroy();
 }

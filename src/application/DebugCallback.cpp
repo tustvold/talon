@@ -1,6 +1,6 @@
 #include "DebugCallback.hpp"
-#include "RenderServiceTable.hpp"
-#include "rendering/singleton/InstanceManager.hpp"
+#include "rendering/singleton/RenderServiceTable.hpp"
+#include "rendering/singleton/impl/VulkanInstanceManager.hpp"
 
 USING_TALON_NS;
 
@@ -42,10 +42,10 @@ DebugCallback::DebugCallback(const Gallant::Delegate1<const VDebugCallbackArgs&>
     createInfo.setPfnCallback(vulkanDebugCallback);
     createInfo.pUserData = this;
 
-    callback = RenderServiceTable::instanceManager->getInstance().createDebugReportCallbackEXT(createInfo);
+    callback = RenderServiceTable::instanceManager->createDebugReportCallbackEXT(createInfo);
 }
 
 DebugCallback::~DebugCallback() {
-    RenderServiceTable::instanceManager->getInstance().destroyDebugReportCallbackEXT(callback);
+    RenderServiceTable::instanceManager->destroyDebugReportCallbackEXT(callback);
 }
 

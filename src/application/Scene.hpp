@@ -11,13 +11,13 @@ class GameLoop;
 
 class Scene {
 public:
-    World &getWorld() {
-        return world;
-    }
-
-    void renderFrame();
-
     virtual ~Scene();
+
+    bool renderFrame(SwapChain* swapChain);
+
+    int getNumRenderPasses() {
+        return numRenderPasses;
+    }
 
 protected:
     explicit Scene(int numRenderPasses);
@@ -26,13 +26,10 @@ protected:
 
     World world;
     std::unique_ptr<GameLoop> gameLoop;
-    std::unique_ptr<SwapChain> swapChain;
 
 private:
 
     void addDefaultSystems();
-    void onWindowResized(vk::Extent2D extent2D);
-    void recreateSwapChain();
 };
 
 TALON_NS_END

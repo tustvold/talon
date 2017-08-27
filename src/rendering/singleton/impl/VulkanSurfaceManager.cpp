@@ -1,13 +1,13 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <rendering/singleton/RenderServiceTable.hpp>
-#include "SurfaceManager.hpp"
-#include "InstanceManager.hpp"
-#include "WindowManager.hpp"
+#include "VulkanSurfaceManager.hpp"
+#include "rendering/singleton/impl/VulkanInstanceManager.hpp"
+#include "VulkanWindowManager.hpp"
 
 USING_TALON_NS;
 
-SurfaceManager::SurfaceManager(InstanceManager *instanceManager, WindowManager *windowManager) {
+VulkanSurfaceManager::VulkanSurfaceManager(VulkanInstanceManager *instanceManager, VulkanWindowManager *windowManager) {
     auto psurf = VkSurfaceKHR();
     if (glfwCreateWindowSurface(instanceManager->getInstance(), windowManager->getWindow(), nullptr, &psurf)
         != VK_SUCCESS) {
@@ -19,6 +19,6 @@ SurfaceManager::SurfaceManager(InstanceManager *instanceManager, WindowManager *
     RenderServiceTable::surfaceManager.set(this);
 }
 
-SurfaceManager::~SurfaceManager() {
+VulkanSurfaceManager::~VulkanSurfaceManager() {
     RenderServiceTable::surfaceManager.clear(this);
 }

@@ -1,25 +1,16 @@
 #pragma once
-#include "TalonConfig.hpp"
+#include <TalonConfig.hpp>
 #include <vulkan/vulkan.hpp>
 
 TALON_NS_BEGIN
 
-struct ApplicationInitSettings;
-
 class InstanceManager {
 public:
-    explicit InstanceManager(const ApplicationInitSettings& initSettings);
-    ~InstanceManager();
+    virtual ~InstanceManager() = default;
 
-    vk::Instance getInstance() const {
-        return instance;
-    }
+    virtual vk::DebugReportCallbackEXT createDebugReportCallbackEXT(const vk::DebugReportCallbackCreateInfoEXT& createInfoEXT) = 0;
 
-private:
-    vk::Instance instance;
+    virtual void destroyDebugReportCallbackEXT(vk::DebugReportCallbackEXT callbackEXT) = 0;
 };
 
 TALON_NS_END
-
-
-

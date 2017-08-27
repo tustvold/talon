@@ -20,7 +20,7 @@ void RenderSystemMeshFilter::update(const RenderSystemArgs &args) {
             //ComponentTransformTree* transform = components[0_c];
             const ComponentMeshFilter *meshFilter = components[1_c];
 
-            args.renderPass->bindMaterial(meshFilter->material, &commandBuffer);
+            args.renderPass->bindMaterial(args.swapChain, meshFilter->material, &commandBuffer);
             meshFilter->mesh->bind(&commandBuffer);
             meshFilter->mesh->draw(&commandBuffer);
         }));

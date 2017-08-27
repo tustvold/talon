@@ -1,27 +1,17 @@
 #pragma once
-#include "TalonConfig.hpp"
+#include <TalonConfig.hpp>
 #include <vulkan/vulkan.hpp>
 
 TALON_NS_BEGIN
 
-class DeviceManager;
-class SurfaceManager;
-
 class CommandPool {
     friend class CommandBuffer;
-public:
-    explicit CommandPool(DeviceManager *deviceManager, SurfaceManager *surfaceManager);
-    ~CommandPool();
-
 private:
-    vk::CommandPool commandPool;
+    virtual void destroyCommandBuffers(const std::vector<vk::CommandBuffer>& commandBuffers) const = 0;
+    virtual std::vector<vk::CommandBuffer> createCommandBuffers(uint32_t count, vk::CommandBufferLevel level) const = 0;
 
-    void destroyCommandBuffers(const std::vector<vk::CommandBuffer>& commandBuffers) const;
-    std::vector<vk::CommandBuffer> createCommandBuffers(uint32_t count, vk::CommandBufferLevel level) const;
-
-    void destroyCommandBuffer(vk::CommandBuffer buffer) const;
-    vk::CommandBuffer createCommandBuffer(vk::CommandBufferLevel level);
-
+    virtual void destroyCommandBuffer(vk::CommandBuffer buffer) const = 0;
+    virtual vk::CommandBuffer createCommandBuffer(vk::CommandBufferLevel level) = 0;
 };
 
 TALON_NS_END

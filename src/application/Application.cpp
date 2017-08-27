@@ -1,43 +1,42 @@
+#include <rendering/singleton/impl/VulkanDeviceManager.hpp>
+#include <rendering/singleton/impl/VulkanMemoryAllocator.hpp>
+#include "rendering/singleton/impl/VulkanInstanceManager.hpp"
+#include "rendering/singleton/impl/VulkanSurfaceManager.hpp"
 #include "Application.hpp"
 #include "GameLoop.hpp"
 #include "Scene.hpp"
 
-#include "rendering/singleton/DeviceManager.hpp"
-#include "rendering/singleton/InstanceManager.hpp"
-#include "rendering/singleton/WindowManager.hpp"
-#include "rendering/singleton/SurfaceManager.hpp"
-#include "rendering/singleton/MemoryAllocator.hpp"
-#include "rendering/singleton/CommandPool.hpp"
+
+#include "rendering/singleton/impl/VulkanWindowManager.hpp"
+#include "rendering/singleton/impl/VulkanCommandPool.hpp"
 
 
 USING_TALON_NS;
-void Application::run(std::unique_ptr<Scene>&& scene) {
-    currentScene = std::move(scene);
-    while (windowManager->poll()) {
-        currentScene->renderFrame();
-    }
 
-    vkDeviceWaitIdle(deviceManager->getDevice());
-}
 
 void Application::vulkanDebugCallback(const VDebugCallbackArgs &args) {
     TLOGERROR("Validation Layer - %s\n", args.pMessage);
 }
 
 Application::Application(const ApplicationInitSettings &initSettings) {
-    windowManager = std::make_unique<WindowManager>(initSettings);
-    instanceManager = std::make_unique<InstanceManager>(initSettings);
+    windowManager = std::make_unique<VulkanWindowManager>(initSettings);
+    instanceManager = std::make_unique<VulkanInstanceManager>(initSettings);
 
     if (initSettings.validationLayersEnabled)
         debugCallback = std::make_unique<DebugCallback>(Gallant::MakeDelegate(this, &Application::vulkanDebugCallback));
 
-    surfaceManager = std::make_unique<SurfaceManager>(instanceManager.get(), windowManager.get());
-    deviceManager = std::make_unique<DeviceManager>(initSettings, instanceManager.get(), surfaceManager.get());
-    memoryAllocator = std::make_unique<MemoryAllocator>(deviceManager.get());
-    commandPool = std::make_unique<CommandPool>(deviceManager.get(), surfaceManager.get());
+    surfaceManager = std::make_unique<VulkanSurfaceManager>(instanceManager.get(), windowManager.get());
+    deviceManager = std::make_unique<VulkanDeviceManager>(initSettings, instanceManager.get(), surfaceManager.get());
+    memoryAllocator = std::make_unique<VulkanMemoryAllocator>(deviceManager.get());
+    commandPool = std::make_unique<VulkanCommandPool>(deviceManager.get(), surfaceManager.get());
+
+    windowManager->getWindowResizeEvent().Connect(this, &Application::onWindowResized);
 }
 
 Application::~Application() {
+    windowManager->getWindowResizeEvent().Disconnect(this, &Application::onWindowResized);
+
+    swapChain.reset();
     currentScene.reset();
     memoryAllocator.reset();
     commandPool.reset();
@@ -48,4 +47,26 @@ Application::~Application() {
     windowManager.reset();
 }
 
+void Application::run(std::unique_ptr<Scene>&& scene) {
+    currentScene = std::move(scene);
+
+    recreateSwapChain();
+    while (windowManager->poll()) {
+        if (!currentScene->renderFrame(swapChain.get())) {
+            recreateSwapChain();
+        }
+    }
+    deviceManager->waitDeviceIdle();
+}
+
+
+void Application::recreateSwapChain() {
+    deviceManager->waitDeviceIdle();
+    swapChain.reset();
+    swapChain = std::make_unique<SwapChain>(deviceManager.get(), surfaceManager.get(), windowManager.get(), currentScene->getNumRenderPasses());
+}
+
+void Application::onWindowResized(vk::Extent2D extent2D) {
+    recreateSwapChain();
+}
 

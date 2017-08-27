@@ -5,5 +5,5 @@
 USING_TALON_NS;
 
 vk::DescriptorSetLayout DescriptorSet::createDescriptorSetInternal(vk::DescriptorSetLayoutCreateInfo& createInfo) {
-    return RenderServiceTable::deviceManager->getDevice().createDescriptorSetLayout(createInfo);
+    return RenderServiceTable::deviceManager->createDescriptorSetLayout(createInfo);
 }

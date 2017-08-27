@@ -1,13 +1,13 @@
 #include <set>
 #include <rendering/singleton/RenderServiceTable.hpp>
-#include "DeviceManager.hpp"
-#include "InstanceManager.hpp"
-#include "SurfaceManager.hpp"
+#include "VulkanDeviceManager.hpp"
+#include "VulkanInstanceManager.hpp"
 #include "application/ApplicationInitSettings.hpp"
+#include "VulkanSurfaceManager.hpp"
 
 USING_TALON_NS;
 
-QueueFamilyIndices DeviceManager::getQueueFamilyIndices(const SurfaceManager *surfaceManager,
+QueueFamilyIndices VulkanDeviceManager::getQueueFamilyIndices(const VulkanSurfaceManager *surfaceManager,
                                                         vk::PhysicalDevice device) {
     QueueFamilyIndices indices;
     auto queueFamilies = device.getQueueFamilyProperties();
@@ -34,7 +34,7 @@ QueueFamilyIndices DeviceManager::getQueueFamilyIndices(const SurfaceManager *su
     return indices;
 }
 
-SwapChainSupportDetails DeviceManager::getSwapChainSupportDetails(const SurfaceManager *surfaceManager,
+SwapChainSupportDetails VulkanDeviceManager::getSwapChainSupportDetails(const VulkanSurfaceManager *surfaceManager,
                                                                   vk::PhysicalDevice device) {
     SwapChainSupportDetails details;
     auto surface = surfaceManager->getSurface();
@@ -46,7 +46,7 @@ SwapChainSupportDetails DeviceManager::getSwapChainSupportDetails(const SurfaceM
     return details;
 }
 
-bool DeviceManager::checkDeviceExtensionSupport(const ApplicationInitSettings &initSettings,
+bool VulkanDeviceManager::checkDeviceExtensionSupport(const ApplicationInitSettings &initSettings,
                                                 vk::PhysicalDevice device) {
     auto availableExtensions = device.enumerateDeviceExtensionProperties();
     std::set<std::string>
@@ -59,21 +59,21 @@ bool DeviceManager::checkDeviceExtensionSupport(const ApplicationInitSettings &i
     return requiredExtensions.empty();
 }
 
-DeviceManager::DeviceManager(const ApplicationInitSettings &initSettings, InstanceManager *instanceManager,
-                             SurfaceManager *surfaceManager) {
+VulkanDeviceManager::VulkanDeviceManager(const ApplicationInitSettings &initSettings, VulkanInstanceManager *instanceManager,
+                                         VulkanSurfaceManager *surfaceManager) {
     pickPhysicalDevice(initSettings, instanceManager, surfaceManager);
     createLogicalDevice(initSettings, surfaceManager);
 
     RenderServiceTable::deviceManager.set(this);
 }
 
-DeviceManager::~DeviceManager() {
+VulkanDeviceManager::~VulkanDeviceManager() {
     RenderServiceTable::deviceManager.clear(this);
     device_.destroy();
 }
 
-bool DeviceManager::isDeviceSuitable(const ApplicationInitSettings &initSettings,
-                                     const SurfaceManager *surfaceManager,
+bool VulkanDeviceManager::isDeviceSuitable(const ApplicationInitSettings &initSettings,
+                                     const VulkanSurfaceManager *surfaceManager,
                                      vk::PhysicalDevice device) {
     QueueFamilyIndices indices = getQueueFamilyIndices(surfaceManager, device);
 
@@ -88,9 +88,9 @@ bool DeviceManager::isDeviceSuitable(const ApplicationInitSettings &initSettings
     return indices.isComplete() && extensionsSupported && swapChainAdequate;
 }
 
-void DeviceManager::pickPhysicalDevice(const ApplicationInitSettings &initSettings,
-                                       InstanceManager *instanceManager,
-                                       SurfaceManager *surfaceManager) {
+void VulkanDeviceManager::pickPhysicalDevice(const ApplicationInitSettings &initSettings,
+                                       VulkanInstanceManager *instanceManager,
+                                             VulkanSurfaceManager *surfaceManager) {
     auto devices = instanceManager->getInstance().enumeratePhysicalDevices();
 
     for (const auto &device : devices) {
@@ -103,8 +103,8 @@ void DeviceManager::pickPhysicalDevice(const ApplicationInitSettings &initSettin
     TASSERT(physicalDevice_);
 }
 
-void DeviceManager::createLogicalDevice(const ApplicationInitSettings &initSettings,
-                                        const SurfaceManager *surfaceManager) {
+void VulkanDeviceManager::createLogicalDevice(const ApplicationInitSettings &initSettings,
+                                        const VulkanSurfaceManager *surfaceManager) {
     auto deviceQueueFamilyIndices_ = getQueueFamilyIndices(surfaceManager, physicalDevice_);
 
     std::vector<vk::DeviceQueueCreateInfo> queueCreateInfos;

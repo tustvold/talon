@@ -14,7 +14,7 @@ class Material;
 class Mesh;
 class DeviceManager;
 class SurfaceManager;
-class WindowManager;
+class VulkanWindowManager;
 
 
 class GameLoop {

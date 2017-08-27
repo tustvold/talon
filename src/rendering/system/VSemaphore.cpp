@@ -6,9 +6,9 @@ USING_TALON_NS;
 
 VSemaphore::VSemaphore() {
     vk::SemaphoreCreateInfo semaphoreInfo = {};
-    semaphore = RenderServiceTable::deviceManager->getDevice().createSemaphore(semaphoreInfo);
+    semaphore = RenderServiceTable::deviceManager->createSemaphore(semaphoreInfo);
 }
 
 VSemaphore::~VSemaphore() {
-    RenderServiceTable::deviceManager->getDevice().destroySemaphore(semaphore);
+    RenderServiceTable::deviceManager->destroySemaphore(semaphore);
 }

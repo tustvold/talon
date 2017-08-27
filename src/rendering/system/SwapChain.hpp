@@ -4,14 +4,14 @@
 
 TALON_NS_BEGIN
 
-class WindowManager;
-class SurfaceManager;
-class DeviceManager;
+class VulkanSurfaceManager;
+class VulkanDeviceManager;
+class VulkanWindowManager;
 class RenderPass;
 
 class SwapChain {
 public:
-    explicit SwapChain(int numRenderPasses);
+    explicit SwapChain(VulkanDeviceManager* deviceManager, VulkanSurfaceManager* surfaceManager, VulkanWindowManager* windowManager, int numRenderPasses);
     ~SwapChain();
 
     const vk::SwapchainKHR &getSwapChain() const {
@@ -44,12 +44,12 @@ private:
     std::vector<vk::ImageView> imageViews;
     std::vector<RenderPass> renderPasses;
 
-    void createSwapChain();
+    void createSwapChain(VulkanDeviceManager* deviceManager, VulkanSurfaceManager* surfaceManager, VulkanWindowManager* windowManager);
     void createImageViews();
 
     static vk::SurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR> &availableFormats);
     static vk::PresentModeKHR chooseSwapPresentMode(const std::vector<vk::PresentModeKHR> &availablePresentModes);
-    static vk::Extent2D chooseSwapExtent(const WindowManager *windowManager, const vk::SurfaceCapabilitiesKHR &capabilities);
+    static vk::Extent2D chooseSwapExtent(const VulkanWindowManager *windowManager, const vk::SurfaceCapabilitiesKHR &capabilities);
 };
 
 TALON_NS_END

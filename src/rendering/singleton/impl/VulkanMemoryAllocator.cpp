@@ -1,20 +1,20 @@
-#include "MemoryAllocator.hpp"
-#include "RenderServiceTable.hpp"
-#include "DeviceManager.hpp"
+#include <rendering/singleton/RenderServiceTable.hpp>
+#include "VulkanMemoryAllocator.hpp"
 
 USING_TALON_NS;
 
-MemoryAllocator::MemoryAllocator(DeviceManager *deviceManager) {
+VulkanMemoryAllocator::VulkanMemoryAllocator(VulkanDeviceManager *deviceManager) {
     VmaAllocatorCreateInfo allocatorInfo = {};
-    allocatorInfo.physicalDevice = deviceManager->getPhysicalDevice();
     allocatorInfo.device = deviceManager->getDevice();
-
+    allocatorInfo.physicalDevice = deviceManager->getPhysicalDevice();
     vmaCreateAllocator(&allocatorInfo, &allocator);
 
     RenderServiceTable::memoryAllocator.set(this);
 }
 
-MemoryAllocator::~MemoryAllocator() {
+VulkanMemoryAllocator::~VulkanMemoryAllocator() {
     RenderServiceTable::memoryAllocator.clear(this);
     vmaDestroyAllocator(allocator);
 }
+
+

@@ -23,16 +23,15 @@ public:
         return framebuffers;
     }
 
-    void bindMaterial(talon::Material *pMaterial, CommandBuffer* buffer);
+    void bindMaterial(SwapChain* swapChain, talon::Material *pMaterial, CommandBuffer* buffer);
 
 private:
-    SwapChain* swapChain;
     vk::RenderPass renderPass;
     MaterialPipelineCache materialPipelineCache;
     std::vector<vk::Framebuffer> framebuffers;
 
-    void createRenderPass();
-    void createFrameBuffers();
+    void createRenderPass(SwapChain* swapChain);
+    void createFrameBuffers(SwapChain* swapChain);
 };
 
 

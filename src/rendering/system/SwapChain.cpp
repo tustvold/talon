@@ -1,8 +1,8 @@
 #include "SwapChain.hpp"
 #include "rendering/singleton/RenderServiceTable.hpp"
-#include "rendering/singleton/WindowManager.hpp"
-#include "rendering/singleton/SurfaceManager.hpp"
-#include "rendering/singleton/DeviceManager.hpp"
+#include "rendering/singleton/impl/VulkanWindowManager.hpp"
+#include "rendering/singleton/impl/VulkanSurfaceManager.hpp"
+#include "rendering/singleton/impl/VulkanDeviceManager.hpp"
 #include "RenderPass.hpp"
 
 USING_TALON_NS;
@@ -36,7 +36,7 @@ vk::PresentModeKHR SwapChain::chooseSwapPresentMode(const std::vector<vk::Presen
     return bestMode;
 }
 
-vk::Extent2D SwapChain::chooseSwapExtent(const WindowManager *windowManager, const vk::SurfaceCapabilitiesKHR &capabilities) {
+vk::Extent2D SwapChain::chooseSwapExtent(const VulkanWindowManager *windowManager, const vk::SurfaceCapabilitiesKHR &capabilities) {
     if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
         return capabilities.currentExtent;
     } else {
@@ -51,9 +51,9 @@ vk::Extent2D SwapChain::chooseSwapExtent(const WindowManager *windowManager, con
     }
 }
 
-SwapChain::SwapChain(int numberRenderPasses)
+SwapChain::SwapChain(VulkanDeviceManager* deviceManager, VulkanSurfaceManager* surfaceManager, VulkanWindowManager* windowManager, int numberRenderPasses)
     : imageFormat(vk::Format::eUndefined) {
-    createSwapChain();
+    createSwapChain(deviceManager, surfaceManager, windowManager);
     createImageViews();
 
     for(int i = 0; i < numberRenderPasses; i++)
@@ -62,16 +62,12 @@ SwapChain::SwapChain(int numberRenderPasses)
 
 SwapChain::~SwapChain() {
     for (auto &imageView : imageViews) {
-        RenderServiceTable::deviceManager->getDevice().destroyImageView(imageView);
+        RenderServiceTable::deviceManager->destroyImageView(imageView);
     }
-    RenderServiceTable::deviceManager->getDevice().destroySwapchainKHR(swapChain);
+    RenderServiceTable::deviceManager->destroySwapchainKHR(swapChain);
 }
 
-void SwapChain::createSwapChain() {
-    auto deviceManager = RenderServiceTable::deviceManager.get();
-    auto surfaceManager = RenderServiceTable::surfaceManager.get();
-    auto windowManager = RenderServiceTable::windowManager.get();
-
+void SwapChain::createSwapChain(VulkanDeviceManager* deviceManager, VulkanSurfaceManager* surfaceManager, VulkanWindowManager* windowManager) {
     SwapChainSupportDetails swapChainSupport = deviceManager->getSwapChainSupportDetails(surfaceManager);
 
     auto surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
@@ -110,9 +106,9 @@ void SwapChain::createSwapChain() {
     createInfo.presentMode = presentMode;
     createInfo.clipped = VK_TRUE;
 
-    swapChain = deviceManager->getDevice().createSwapchainKHR(createInfo);
+    swapChain = deviceManager->createSwapchainKHR(createInfo);
 
-    images = deviceManager->getDevice().getSwapchainImagesKHR(swapChain);
+    images = deviceManager->getSwapchainImagesKHR(swapChain);
     imageFormat = surfaceFormat.format;
     extents = extent;
 }
@@ -136,7 +132,7 @@ void SwapChain::createImageViews() {
         createInfo.subresourceRange.baseArrayLayer = 0;
         createInfo.subresourceRange.layerCount = 1;
 
-        imageViews[i] = RenderServiceTable::deviceManager->getDevice().createImageView(createInfo);
+        imageViews[i] = RenderServiceTable::deviceManager->createImageView(createInfo);
     }
 }
 RenderPass *SwapChain::getRenderPass(size_t index) {

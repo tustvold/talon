@@ -32,7 +32,7 @@ static vk::ShaderModule createShaderModule(std::vector<char> code) {
     createInfo.codeSize = code.size();
     createInfo.pCode = reinterpret_cast<const uint32_t *>(code.data());
 
-    return RenderServiceTable::deviceManager->getDevice().createShaderModule(createInfo);
+    return RenderServiceTable::deviceManager->createShaderModule(createInfo);
 }
 
 MaterialPipeline::MaterialPipeline(Material* material, SwapChain *swapChain, RenderPass *renderPass) {
@@ -125,7 +125,7 @@ MaterialPipeline::MaterialPipeline(Material* material, SwapChain *swapChain, Ren
     pipelineLayoutInfo.setLayoutCount = 0;
     pipelineLayoutInfo.pushConstantRangeCount = 0;
 
-    pipelineLayout = deviceManager->getDevice().createPipelineLayout(pipelineLayoutInfo);
+    pipelineLayout = deviceManager->createPipelineLayout(pipelineLayoutInfo);
 
     vk::GraphicsPipelineCreateInfo pipelineInfo = {};
     pipelineInfo.stageCount = 2;
@@ -141,15 +141,15 @@ MaterialPipeline::MaterialPipeline(Material* material, SwapChain *swapChain, Ren
     pipelineInfo.subpass = 0;
     pipelineInfo.basePipelineHandle = vk::Pipeline();
 
-    pipeline = deviceManager->getDevice().createGraphicsPipeline(vk::PipelineCache(), pipelineInfo);
+    pipeline = deviceManager->createGraphicsPipeline(vk::PipelineCache(), pipelineInfo);
 
-    deviceManager->getDevice().destroyShaderModule(fragShaderModule);
-    deviceManager->getDevice().destroyShaderModule(vertShaderModule);
+    deviceManager->destroyShaderModule(fragShaderModule);
+    deviceManager->destroyShaderModule(vertShaderModule);
 }
 
 MaterialPipeline::~MaterialPipeline() {
-    RenderServiceTable::deviceManager->getDevice().destroyPipeline(pipeline);
-    RenderServiceTable::deviceManager->getDevice().destroyPipelineLayout(pipelineLayout);
+    RenderServiceTable::deviceManager->destroyPipeline(pipeline);
+    RenderServiceTable::deviceManager->destroyPipelineLayout(pipelineLayout);
 }
 
 void MaterialPipeline::bind(CommandBuffer *buffer) {

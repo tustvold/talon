@@ -5,6 +5,7 @@
 
 TALON_NS_BEGIN
 
+
 class DescriptorSet {
 public:
     template<typename... Components>

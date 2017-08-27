@@ -52,7 +52,7 @@ bool GameLoop::doUpdate(World &world, SwapChain* swapChain) {
 
     uint32_t imageIndex;
 
-    vk::Result result = deviceManager->getDevice().acquireNextImageKHR(swapChain->getSwapChain(),
+    vk::Result result = deviceManager->acquireNextImageKHR(swapChain->getSwapChain(),
                                                                        std::numeric_limits<uint64_t>::max(),
                                                                        imageAvailableSemaphore.get(),
                                                                        vk::Fence(),

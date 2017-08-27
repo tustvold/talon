@@ -2,7 +2,7 @@
 #include "ComponentCamera.hpp"
 #include "Eigen/Geometry"
 #include "util/Math.hpp"
-#include "rendering/singleton/WindowManager.hpp"
+#include "rendering/singleton/impl/VulkanWindowManager.hpp"
 
 USING_TALON_NS;
 
