@@ -78,6 +78,12 @@ public:
     virtual void destroyPipeline(vk::Pipeline pipeline) const = 0;
 
     virtual vk::DescriptorSetLayout createDescriptorSetLayout(const vk::DescriptorSetLayoutCreateInfo &info) const = 0;
+
+    virtual void destroyDescriptorSetLayout(vk::DescriptorSetLayout layout) const = 0;
+
+    virtual vk::DescriptorPool createDescriptorPool(const vk::DescriptorPoolCreateInfo& info) const = 0;
+
+    virtual void destroyDescriptorPool(vk::DescriptorPool pool) const = 0;
 };
 
 TALON_NS_END

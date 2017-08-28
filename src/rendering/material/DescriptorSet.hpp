@@ -5,17 +5,35 @@
 
 TALON_NS_BEGIN
 
-namespace detail {
-class DescriptorSetImpl {
+class DescriptorSetBase {
 protected:
-    static vk::DescriptorSetLayout createDescriptorSetInternal(vk::DescriptorSetLayoutCreateInfo& createInfo);
+    static vk::DescriptorSetLayout create(vk::DescriptorSetLayoutCreateInfo &createInfo);
+    static void destroy(vk::DescriptorSetLayout layout);
 };
-}
 
 template<typename... Components>
-class DescriptorSet : detail::DescriptorSetImpl {
+class DescriptorSet : public DescriptorSetBase {
 public:
-    static vk::DescriptorSetLayout createDescriptorSet() {
+    DescriptorSet() {
+        descriptorSetLayout = getDescriptorSet();
+    }
+
+    ~DescriptorSet() {
+        destroy(descriptorSetLayout);
+    }
+
+    template <typename T>
+    static constexpr bool checkComponentsTuple(T t) {
+        return boost::hana::fold_left(boost::hana::tuple_t<Components...>, true, [t](auto acc, auto t){
+            using unwrapped = typename decltype(t)::type;
+            return acc && boost::hana::contains(t, boost::hana::type_c<unwrapped>);
+        });
+    }
+
+private:
+    vk::DescriptorSetLayout descriptorSetLayout;
+
+    static vk::DescriptorSetLayout getDescriptorSet() {
         std::array<vk::DescriptorSetLayoutBinding, sizeof...(Components)> bindings;
         vk::DescriptorSetLayoutCreateInfo createInfo;
 
@@ -28,11 +46,8 @@ public:
         createInfo.bindingCount = static_cast<uint32_t>(bindings.size());
         createInfo.pBindings = bindings.data();
 
-        return detail::DescriptorSetImpl::createDescriptorSetInternal(createInfo);
+        return create(createInfo);
     }
-
-private:
-
 };
 
 TALON_NS_END

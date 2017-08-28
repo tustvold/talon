@@ -26,5 +26,10 @@ MockApplication::MockApplication() {
 }
 
 MockApplication::~MockApplication() {
-
+    RenderServiceTable::commandPool.clear(mockCommandPool.get());
+    RenderServiceTable::deviceManager.clear(mockDeviceManager.get());
+    RenderServiceTable::instanceManager.clear(mockInstanceManager.get());
+    RenderServiceTable::memoryAllocator.clear(mockMemoryAllocator.get());
+    RenderServiceTable::surfaceManager.clear(mockSurfaceManager.get());
+    RenderServiceTable::windowManager.clear(mockWindowManager.get());
 }

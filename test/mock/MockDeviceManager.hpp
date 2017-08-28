@@ -46,6 +46,9 @@ public:
                                         vk::GraphicsPipelineCreateInfo &info));
     MOCK_CONST_METHOD1(destroyPipeline, void(vk::Pipeline pipeline));
     MOCK_CONST_METHOD1(createDescriptorSetLayout, vk::DescriptorSetLayout(const vk::DescriptorSetLayoutCreateInfo &info));
+    MOCK_CONST_METHOD1(destroyDescriptorSetLayout, void(vk::DescriptorSetLayout layout));
+    MOCK_CONST_METHOD1(createDescriptorPool, vk::DescriptorPool(const vk::DescriptorPoolCreateInfo &info));
+    MOCK_CONST_METHOD1(destroyDescriptorPool, void(vk::DescriptorPool pool));
 };
 
 TALON_NS_END

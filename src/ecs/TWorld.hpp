@@ -206,6 +206,13 @@ class TWorld {
     static_assert(DependencyChecker<SystemComponents...>::componentDependenciesSatisfied(), "Unsatisfied component dependencies");
 
 public:
+    static constexpr auto SystemComponentsTuple = boost::hana::tuple_t<SystemComponents...>;
+
+    template <typename T>
+    static constexpr bool HasComponent() {
+        return boost::hana::contains(SystemComponentsTuple, boost::hana::type_c<T>);
+    }
+
     TWorld() = default;
     TWorld(const TWorld &) = delete;
     TWorld(TWorld &&) = delete;

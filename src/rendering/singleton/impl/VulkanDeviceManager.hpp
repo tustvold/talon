@@ -160,12 +160,24 @@ public:
         return device_.createDescriptorSetLayout(info);
     }
 
+    void destroyDescriptorSetLayout(vk::DescriptorSetLayout layout) const final {
+        device_.destroyDescriptorSetLayout(layout);
+    }
+
     vk::Device getDevice() const {
         return device_;
     }
 
     vk::PhysicalDevice getPhysicalDevice() const {
         return physicalDevice_;
+    }
+
+    vk::DescriptorPool createDescriptorPool(const vk::DescriptorPoolCreateInfo &info) const final {
+        return device_.createDescriptorPool(info);
+    }
+
+    void destroyDescriptorPool(vk::DescriptorPool pool) const final {
+        device_.destroyDescriptorPool(pool);
     }
 
 private:

@@ -144,4 +144,3 @@ void VulkanDeviceManager::createLogicalDevice(const ApplicationInitSettings &ini
     presentQueue_ = device_.getQueue(static_cast<uint32_t>(deviceQueueFamilyIndices_.presentFamily), 0);
 }
 
-
