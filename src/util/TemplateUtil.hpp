@@ -29,3 +29,19 @@ static constexpr bool func_name() { \
     static_assert(func_name<type>(), "Type - type doesn't have member: " # member)
 
 #define ASSERT_HAS_MEMBER(member, type) ASSERT_HAS_MEMBER_FUNC_NAME(MAKE_UNIQUE(assert_has_static_member), member, type)
+
+TALON_NS_BEGIN
+
+namespace util {
+    template <typename ToGet, typename... Types>
+    constexpr auto getIndexOf() {
+        constexpr auto
+        index = boost::hana::index_if(boost::hana::tuple_t<Types...>, [](auto t) {
+            return t == boost::hana::type_c<ToGet>;
+        });
+        static_assert(index != boost::hana::nothing, "Could not find requested type in parameter pack");
+        return *index;
+    }
+}
+
+TALON_NS_END

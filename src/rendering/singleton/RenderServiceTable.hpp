@@ -9,6 +9,7 @@ class SurfaceManager;
 class WindowManager;
 class MemoryAllocator;
 class CommandPool;
+class DescriptorManager;
 
 struct RenderServiceTable {
 public:
@@ -21,6 +22,7 @@ public:
     static ServiceProvider<WindowManager, nullptr_t> windowManager;
     static ServiceProvider<MemoryAllocator, nullptr_t> memoryAllocator;
     static ServiceProvider<CommandPool, nullptr_t> commandPool;
+    static ServiceProvider<DescriptorManager, nullptr_t> descriptorManager;
 };
 
 TALON_NS_END

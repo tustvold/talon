@@ -1,5 +1,4 @@
 #pragma once
-#include <WorldConfig.hpp>
 #include "TalonConfig.hpp"
 #include "rendering/system/VSemaphore.hpp"
 #include "rendering/system/CommandBuffer.hpp"
@@ -38,6 +37,7 @@ public:
 
 private:
     PrimaryCommandBuffer commandBuffer;
+    DescriptorPool descriptorPool;
 
     std::vector<std::unique_ptr<RenderSystem>> renderSystems;
     std::vector<std::unique_ptr<GameSystem>> gameSystems;

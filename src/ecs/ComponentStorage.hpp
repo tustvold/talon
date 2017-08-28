@@ -1,6 +1,7 @@
 #pragma once
 #include <TalonConfig.hpp>
 #include <TalonTypes.hpp>
+#include <util/TemplateUtil.hpp>
 #include <boost/hana.hpp>
 using namespace boost::hana::literals;
 
@@ -48,24 +49,14 @@ struct ComponentStorageTuple {
 
     template<typename Component>
     ComponentStorage<Component> &getComponentStorage() {
-        constexpr auto
-        index = boost::hana::index_if(boost::hana::tuple_t<ComponentStorage<SystemComponents>...>, [](auto t) {
-            return t == boost::hana::type_c<ComponentStorage<Component>>;
-        });
-        static_assert(index != boost::hana::nothing, "Could not find requested component in StorageTuple");
-
-        return boost::hana::at(data, *index);
+        constexpr auto index = util::getIndexOf<ComponentStorage<Component>, ComponentStorage<SystemComponents>...>();
+        return boost::hana::at(data, index);
     }
 
     template<typename Component>
     const ComponentStorage<Component> &getComponentStorage() const {
-        constexpr auto
-        index = boost::hana::index_if(boost::hana::tuple_t<ComponentStorage<SystemComponents>...>, [](auto t) {
-            return t == boost::hana::type_c<ComponentStorage<Component>>;
-        });
-        static_assert(index != boost::hana::nothing, "Could not find requested component in StorageTuple");
-
-        return boost::hana::at(data, *index);
+        constexpr auto index = util::getIndexOf<ComponentStorage<Component>, ComponentStorage<SystemComponents>...>();
+        return boost::hana::at(data, index);
     }
 
     boost::hana::tuple<ComponentStorage<SystemComponents>...> data;

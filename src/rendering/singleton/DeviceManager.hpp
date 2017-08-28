@@ -39,15 +39,15 @@ public:
     virtual std::vector<vk::Image> getSwapchainImagesKHR(vk::SwapchainKHR swapchainKHR) const = 0;
 
     virtual vk::ResultValue<uint32_t> acquireNextImageKHR(vk::SwapchainKHR swapchain,
-                                                  uint64_t timeout,
-                                                  vk::Semaphore semaphore,
-                                                  vk::Fence fence) const = 0;
+                                                          uint64_t timeout,
+                                                          vk::Semaphore semaphore,
+                                                          vk::Fence fence) const = 0;
 
     virtual vk::Result acquireNextImageKHR(vk::SwapchainKHR swapchain,
-                                   uint64_t timeout,
-                                   vk::Semaphore semaphore,
-                                   vk::Fence fence,
-                                   uint32_t *pImageIndex) const = 0;
+                                           uint64_t timeout,
+                                           vk::Semaphore semaphore,
+                                           vk::Fence fence,
+                                           uint32_t *pImageIndex) const = 0;
 
     virtual vk::CommandPool createCommandPool(const vk::CommandPoolCreateInfo &info) const = 0;
 
@@ -56,10 +56,11 @@ public:
     virtual std::vector<vk::CommandBuffer> allocateCommandBuffers(const vk::CommandBufferAllocateInfo &info) const = 0;
 
     virtual void freeCommandBuffers(vk::CommandPool commandPool,
-                            uint32_t commandBufferCount,
-                            const vk::CommandBuffer *pCommandBuffers) const = 0;
+                                    uint32_t commandBufferCount,
+                                    const vk::CommandBuffer *pCommandBuffers) const = 0;
 
-    virtual void freeCommandBuffers(vk::CommandPool commandPool, vk::ArrayProxy<const vk::CommandBuffer> commandBuffers) const = 0;
+    virtual void freeCommandBuffers(vk::CommandPool commandPool,
+                                    vk::ArrayProxy<const vk::CommandBuffer> commandBuffers) const = 0;
 
     virtual vk::Semaphore createSemaphore(const vk::SemaphoreCreateInfo &info) const = 0;
 
@@ -73,7 +74,8 @@ public:
 
     virtual void destroyPipelineLayout(vk::PipelineLayout layout) const = 0;
 
-    virtual vk::Pipeline createGraphicsPipeline(vk::PipelineCache cache, const vk::GraphicsPipelineCreateInfo &info) const = 0;
+    virtual vk::Pipeline createGraphicsPipeline(vk::PipelineCache cache,
+                                                const vk::GraphicsPipelineCreateInfo &info) const = 0;
 
     virtual void destroyPipeline(vk::Pipeline pipeline) const = 0;
 
@@ -81,9 +83,15 @@ public:
 
     virtual void destroyDescriptorSetLayout(vk::DescriptorSetLayout layout) const = 0;
 
-    virtual vk::DescriptorPool createDescriptorPool(const vk::DescriptorPoolCreateInfo& info) const = 0;
+    virtual vk::DescriptorPool createDescriptorPool(const vk::DescriptorPoolCreateInfo &info) const = 0;
 
     virtual void destroyDescriptorPool(vk::DescriptorPool pool) const = 0;
+
+    virtual void allocateDescriptorSets(const vk::DescriptorSetAllocateInfo &info, vk::DescriptorSet *sets) const = 0;
+
+    virtual void freeDescriptorSets(vk::DescriptorPool descriptorPool,
+                                    vk::ArrayProxy<const vk::DescriptorSet> descriptorSets) const = 0;
+
 };
 
 TALON_NS_END

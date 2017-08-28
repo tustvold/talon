@@ -2,6 +2,7 @@
 #include <TalonConfig.hpp>
 #include <vulkan/vulkan.hpp>
 #include <boost/hana.hpp>
+#include "DescriptorSet.hpp"
 
 TALON_NS_BEGIN
 
@@ -23,7 +24,19 @@ template<uint32_t maxAllocated, typename... Components>
 class DescriptorSetLayout : public DescriptorSetLayoutBase {
 public:
     DescriptorSetLayout() {
-        descriptorSetLayout = getDescriptorSet();
+        std::array<vk::DescriptorSetLayoutBinding, sizeof...(Components)> bindings;
+        vk::DescriptorSetLayoutCreateInfo createInfo;
+
+        int i = 0;
+        boost::hana::for_each(boost::hana::tuple_t<Components...>, [&i, &bindings](auto t) {
+            using wrapped = typename decltype(t)::type;
+            bindings[i++] = wrapped::getDescriptorBinding();
+        });
+
+        createInfo.bindingCount = static_cast<uint32_t>(bindings.size());
+        createInfo.pBindings = bindings.data();
+
+        descriptorSetLayout =  create(createInfo);
     }
     DescriptorSetLayout(const DescriptorSetLayout&) = delete;
     DescriptorSetLayout(DescriptorSetLayout&&) = delete;
@@ -32,6 +45,9 @@ public:
         destroy(descriptorSetLayout);
     }
 
+    DescriptorSet<Components...> createDescriptorSet() {
+        return DescriptorSet<Components...>(descriptorSetLayout);
+    }
     template <typename T>
     static constexpr bool checkComponentsTuple(T t) {
         return boost::hana::fold_left(boost::hana::tuple_t<Components...>, true, [t](auto acc, auto t){
@@ -55,23 +71,6 @@ public:
 
     static constexpr uint32_t getMaxAllocated() {
         return maxAllocated;
-    }
-
-private:
-    static vk::DescriptorSetLayout getDescriptorSet() {
-        std::array<vk::DescriptorSetLayoutBinding, sizeof...(Components)> bindings;
-        vk::DescriptorSetLayoutCreateInfo createInfo;
-
-        int i = 0;
-        boost::hana::for_each(boost::hana::tuple_t<Components...>, [&i, &bindings](auto t) {
-            using wrapped = typename decltype(t)::type;
-            bindings[i++] = wrapped::getDescriptorBinding();
-        });
-
-        createInfo.bindingCount = static_cast<uint32_t>(bindings.size());
-        createInfo.pBindings = bindings.data();
-
-        return create(createInfo);
     }
 };
 

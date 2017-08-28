@@ -180,6 +180,14 @@ public:
         device_.destroyDescriptorPool(pool);
     }
 
+    void allocateDescriptorSets(const vk::DescriptorSetAllocateInfo& info, vk::DescriptorSet* sets) const final {
+        device_.allocateDescriptorSets(&info, sets);
+    }
+
+    void freeDescriptorSets(vk::DescriptorPool descriptorPool, vk::ArrayProxy<const vk::DescriptorSet> descriptorSets) const final {
+        device_.freeDescriptorSets(descriptorPool, descriptorSets);
+    }
+
 private:
     vk::Device device_;
     vk::PhysicalDevice physicalDevice_;

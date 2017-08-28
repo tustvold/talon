@@ -49,6 +49,9 @@ public:
     MOCK_CONST_METHOD1(destroyDescriptorSetLayout, void(vk::DescriptorSetLayout layout));
     MOCK_CONST_METHOD1(createDescriptorPool, vk::DescriptorPool(const vk::DescriptorPoolCreateInfo &info));
     MOCK_CONST_METHOD1(destroyDescriptorPool, void(vk::DescriptorPool pool));
+    MOCK_CONST_METHOD2(allocateDescriptorSets, void(const vk::DescriptorSetAllocateInfo &info, vk::DescriptorSet *sets));
+    MOCK_CONST_METHOD2(freeDescriptorSets, void(vk::DescriptorPool descriptorPool,
+                                    vk::ArrayProxy<const vk::DescriptorSet> descriptorSets));
 };
 
 TALON_NS_END

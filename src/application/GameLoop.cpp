@@ -132,7 +132,7 @@ void GameLoop::recordCommandBuffer(World &world, SwapChain* swapChain, int index
 
     commandBuffer.beginRenderPass(renderPassInfo, vk::SubpassContents::eSecondaryCommandBuffers);
 
-    RenderSystemArgs args(&world, swapChain, renderPass, &commandBuffer, &inheritanceInfo);
+    RenderSystemArgs args(&world, &descriptorPool, swapChain, renderPass, &commandBuffer, &inheritanceInfo);
 
     for (auto &system : renderSystems) {
         system->update(args);
