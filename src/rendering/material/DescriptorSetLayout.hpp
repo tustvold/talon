@@ -6,7 +6,15 @@
 TALON_NS_BEGIN
 
 class DescriptorSetLayoutBase {
+public:
+    DescriptorSetLayoutBase(const DescriptorSetLayoutBase&) = delete;
+    DescriptorSetLayoutBase(DescriptorSetLayoutBase&&) = delete;
+
 protected:
+    vk::DescriptorSetLayout descriptorSetLayout;
+
+    DescriptorSetLayoutBase() = default;
+    
     static vk::DescriptorSetLayout create(vk::DescriptorSetLayoutCreateInfo &createInfo);
     static void destroy(vk::DescriptorSetLayout layout);
 };
@@ -17,6 +25,8 @@ public:
     DescriptorSetLayout() {
         descriptorSetLayout = getDescriptorSet();
     }
+    DescriptorSetLayout(const DescriptorSetLayout&) = delete;
+    DescriptorSetLayout(DescriptorSetLayout&&) = delete;
 
     ~DescriptorSetLayout() {
         destroy(descriptorSetLayout);
@@ -48,8 +58,6 @@ public:
     }
 
 private:
-    vk::DescriptorSetLayout descriptorSetLayout;
-
     static vk::DescriptorSetLayout getDescriptorSet() {
         std::array<vk::DescriptorSetLayoutBinding, sizeof...(Components)> bindings;
         vk::DescriptorSetLayoutCreateInfo createInfo;

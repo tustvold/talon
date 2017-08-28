@@ -7,6 +7,9 @@ TALON_NS_BEGIN
 class VSemaphore {
 public:
     VSemaphore();
+    VSemaphore(const VSemaphore&) = delete;
+    VSemaphore(VSemaphore&&) = delete;
+
     ~VSemaphore();
 
     vk::Semaphore get() const {

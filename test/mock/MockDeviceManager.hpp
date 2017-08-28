@@ -42,8 +42,8 @@ public:
     MOCK_CONST_METHOD1(destroyShaderModule, void(vk::ShaderModule module));
     MOCK_CONST_METHOD1(createPipelineLayout, vk::PipelineLayout(const vk::PipelineLayoutCreateInfo &info));
     MOCK_CONST_METHOD1(destroyPipelineLayout, void(vk::PipelineLayout layout));
-    MOCK_CONST_METHOD2(createGraphicsPipeline, vk::Pipeline(const vk::PipelineCache &cache,
-                                        vk::GraphicsPipelineCreateInfo &info));
+    MOCK_CONST_METHOD2(createGraphicsPipeline, vk::Pipeline(vk::PipelineCache cache,
+                                        const vk::GraphicsPipelineCreateInfo &info));
     MOCK_CONST_METHOD1(destroyPipeline, void(vk::Pipeline pipeline));
     MOCK_CONST_METHOD1(createDescriptorSetLayout, vk::DescriptorSetLayout(const vk::DescriptorSetLayoutCreateInfo &info));
     MOCK_CONST_METHOD1(destroyDescriptorSetLayout, void(vk::DescriptorSetLayout layout));

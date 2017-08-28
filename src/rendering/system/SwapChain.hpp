@@ -12,6 +12,9 @@ class RenderPass;
 class SwapChain {
 public:
     explicit SwapChain(VulkanDeviceManager* deviceManager, VulkanSurfaceManager* surfaceManager, VulkanWindowManager* windowManager, int numRenderPasses);
+    SwapChain(const SwapChain&) = delete;
+    SwapChain(SwapChain&&) = delete;
+
     ~SwapChain();
 
     const vk::SwapchainKHR &getSwapChain() const {
@@ -42,7 +45,7 @@ private:
     vk::Format imageFormat;
     vk::Extent2D extents;
     std::vector<vk::ImageView> imageViews;
-    std::vector<RenderPass> renderPasses;
+    std::vector<std::unique_ptr<RenderPass>> renderPasses;
 
     void createSwapChain(VulkanDeviceManager* deviceManager, VulkanSurfaceManager* surfaceManager, VulkanWindowManager* windowManager);
     void createImageViews();

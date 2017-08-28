@@ -10,6 +10,8 @@ TALON_NS_BEGIN
 
 class Material;
 class CommandBuffer;
+class SwapChain;
+class RenderPass;
 
 class MaterialPipelineCache {
 public:
@@ -18,7 +20,7 @@ public:
 
     void bindMaterial(Material* material, SwapChain* swapChain, RenderPass* renderPass, CommandBuffer* buffer);
 private:
-    std::unordered_map<MaterialID, MaterialPipeline> cache;
+    std::unordered_map<MaterialID, std::unique_ptr<MaterialPipeline>> cache;
 };
 
 

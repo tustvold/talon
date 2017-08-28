@@ -3,7 +3,7 @@
 #include <ecs/system/RenderSystemMeshFilter.hpp>
 #include "GameLoop.hpp"
 #include "rendering/singleton/RenderServiceTable.hpp"
-#include "rendering/mesh/Vertex.hpp"
+#include "../../example/TestVertex.hpp"
 #include "rendering/mesh/Mesh.hpp"
 #include "rendering/system/SwapChain.hpp"
 #include "rendering/material/Material.hpp"

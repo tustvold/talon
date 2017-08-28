@@ -148,7 +148,7 @@ public:
         device_.destroyPipelineLayout(layout);
     }
 
-    vk::Pipeline createGraphicsPipeline(const vk::PipelineCache &cache, vk::GraphicsPipelineCreateInfo &info) const final {
+    vk::Pipeline createGraphicsPipeline(vk::PipelineCache cache, const vk::GraphicsPipelineCreateInfo &info) const final {
         return device_.createGraphicsPipeline(cache, info);
     }
 

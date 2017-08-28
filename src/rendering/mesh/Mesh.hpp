@@ -41,6 +41,9 @@ public:
         GenericMeshData(meshData.vertices.data(), static_cast<uint32_t>(meshData.vertices.size()), sizeof(Vertex))
     ) {}
 
+    Mesh(const Mesh&) = delete;
+    Mesh(Mesh&&) = delete;
+    
     ~Mesh();
 
     void bind(CommandBuffer* commandBuffer);

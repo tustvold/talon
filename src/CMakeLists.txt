@@ -1,6 +1,6 @@
 
 set(SOURCE_FILES application/Application.hpp
-        application/Application.cpp application/VulkanLoader.cpp application/VulkanLoader.hpp rendering/mesh/Vertex.hpp rendering/singleton/impl/VulkanDeviceManager.cpp
+        application/Application.cpp application/VulkanLoader.cpp application/VulkanLoader.hpp ../example/TestVertex.hpp rendering/singleton/impl/VulkanDeviceManager.cpp
         rendering/singleton/impl/VulkanDeviceManager.hpp rendering/singleton/impl/VulkanInstanceManager.cpp rendering/singleton/impl/VulkanInstanceManager.hpp rendering/singleton/impl/VulkanWindowManager.cpp
         rendering/singleton/impl/VulkanWindowManager.hpp application/ApplicationInitSettings.hpp rendering/system/SwapChain.cpp
         rendering/system/SwapChain.hpp rendering/system/RenderPass.cpp rendering/system/RenderPass.hpp rendering/material/Material.cpp rendering/material/Material.hpp

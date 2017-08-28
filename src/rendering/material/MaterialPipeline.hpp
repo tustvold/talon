@@ -4,23 +4,20 @@
 
 TALON_NS_BEGIN
 
-class SwapChain;
-class RenderPass;
-class Material;
 class CommandBuffer;
 
 class MaterialPipeline {
 public:
-    MaterialPipeline(Material* material, SwapChain* swapChain, RenderPass* renderPass);
+    MaterialPipeline(vk::PipelineLayout pipelineLayout, vk::Pipeline pipeline);
+    MaterialPipeline(const MaterialPipeline& pipeline) = delete;
+    MaterialPipeline(MaterialPipeline&& pipeline) = delete;
     ~MaterialPipeline();
 
-    void bind(CommandBuffer* buffer);
+    void bind(CommandBuffer *buffer);
 
 private:
     vk::PipelineLayout pipelineLayout;
     vk::Pipeline pipeline;
-    vk::PipelineBindPoint bindPoint;
 };
-
 
 TALON_NS_END

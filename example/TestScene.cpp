@@ -1,18 +1,17 @@
 #include "TestScene.hpp"
-#include <rendering/mesh/Vertex.hpp>
-#include "rendering/mesh/Mesh.hpp"
-#include "rendering/material/Material.hpp"
+#include "TestVertex.hpp"
+#include "TestMaterial.hpp"
 
 USING_TALON_NS;
 
-const std::vector<Vertex> test_vertices = {
+const std::vector<TestVertex> test_vertices = {
     {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
     {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
     {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
 };
 
 TestScene::TestScene() : Scene(1) {
-    testMaterial = std::make_unique<Material>();
+    testMaterial = std::make_unique<TestMaterial>();
 
     auto meshData = makeMeshData(test_vertices);
     testMesh = std::make_unique<Mesh>(meshData);

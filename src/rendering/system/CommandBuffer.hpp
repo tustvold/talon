@@ -36,6 +36,9 @@ public:
         commandBuffer.bindPipeline(pipelineBindPoint, pipeline);
     }
 
+    CommandBuffer(const CommandBuffer&) = delete;
+    CommandBuffer(CommandBuffer&&) = delete;
+
 protected:
     explicit CommandBuffer(vk::CommandBufferLevel level);
 

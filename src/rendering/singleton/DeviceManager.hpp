@@ -73,7 +73,7 @@ public:
 
     virtual void destroyPipelineLayout(vk::PipelineLayout layout) const = 0;
 
-    virtual vk::Pipeline createGraphicsPipeline(const vk::PipelineCache &cache, vk::GraphicsPipelineCreateInfo &info) const = 0;
+    virtual vk::Pipeline createGraphicsPipeline(vk::PipelineCache cache, const vk::GraphicsPipelineCreateInfo &info) const = 0;
 
     virtual void destroyPipeline(vk::Pipeline pipeline) const = 0;
 

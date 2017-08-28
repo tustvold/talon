@@ -57,7 +57,7 @@ SwapChain::SwapChain(VulkanDeviceManager* deviceManager, VulkanSurfaceManager* s
     createImageViews();
 
     for(int i = 0; i < numberRenderPasses; i++)
-        renderPasses.emplace_back(this);
+        renderPasses.emplace_back(std::make_unique<RenderPass>(this));
 }
 
 SwapChain::~SwapChain() {
@@ -136,5 +136,5 @@ void SwapChain::createImageViews() {
     }
 }
 RenderPass *SwapChain::getRenderPass(size_t index) {
-    return &renderPasses[index];
+    return renderPasses[index].get();
 }

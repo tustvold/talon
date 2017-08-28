@@ -20,6 +20,9 @@ struct AllocatedDataMapHandle : AllocatedDataMapHandleBase {
         mapMemory(ref->allocation, &ptr);
     }
 
+    AllocatedDataMapHandle(const AllocatedDataMapHandle&) = delete;
+    AllocatedDataMapHandle(AllocatedDataMapHandle&&) = delete;
+
     ~AllocatedDataMapHandle() {
         unmapMemory(ref->allocation);
     }
@@ -47,14 +50,18 @@ struct AllocatedData {
     VmaAllocationInfo allocationInfo;
     size_t requestedSize;
 
+    AllocatedDataMapHandle<T> map() {
+        return AllocatedDataMapHandle<T>(this);
+    }
+
+protected:
+
     explicit AllocatedData(size_t requestedSize)
         : data(nullptr), allocation(nullptr), allocationInfo({}), requestedSize(requestedSize) {}
 
     AllocatedData() : AllocatedData(0) {}
-
-    AllocatedDataMapHandle<T> map() {
-        return AllocatedDataMapHandle<T>(this);
-    }
+    AllocatedData(const AllocatedData&) = delete;
+    AllocatedData(AllocatedData&&) = delete;
 };
 
 

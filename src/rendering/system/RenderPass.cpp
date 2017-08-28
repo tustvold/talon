@@ -2,10 +2,12 @@
 #include "rendering/singleton/RenderServiceTable.hpp"
 #include "rendering/system/SwapChain.hpp"
 #include "rendering/singleton/DeviceManager.hpp"
+#include "rendering/material/MaterialPipelineCache.hpp"
 
 USING_TALON_NS;
 
 RenderPass::RenderPass(SwapChain *swapChain) {
+    materialPipelineCache = std::make_unique<MaterialPipelineCache>();
     createRenderPass(swapChain);
     createFrameBuffers(swapChain);
 }
@@ -83,5 +85,5 @@ void RenderPass::createFrameBuffers(SwapChain* swapChain) {
 }
 
 void RenderPass::bindMaterial(SwapChain* swapChain, talon::Material *material, CommandBuffer* buffer) {
-    materialPipelineCache.bindMaterial(material, swapChain, this, buffer);
+    materialPipelineCache->bindMaterial(material, swapChain, this, buffer);
 }

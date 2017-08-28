@@ -12,6 +12,8 @@ using MappedBufferHandle = AllocatedDataMapHandle<vk::Buffer>;
 struct Buffer : public AllocatedData<vk::Buffer> {
     Buffer(const vk::BufferCreateInfo *pCreateInfo,
            const VmaMemoryRequirements *pMemoryRequirements);
+    Buffer(const Buffer&) = delete;
+    Buffer(Buffer&&) = delete;
 
     ~Buffer();
 };
