@@ -21,6 +21,6 @@ using World = TWorld<ComponentModelMatrix, ComponentTransform, ComponentTransfor
 COMPONENT_STORAGE_DEF_TREE(ComponentTransformTree, ComponentStorageFlatMap);
 COMPONENT_STORAGE_DEF(ComponentMeshFilter, ComponentStorageFlatMap);
 COMPONENT_STORAGE_DEF(ComponentTransform, ComponentStorageFlatMap);
-COMPONENT_STORAGE_DEF(ComponentModelMatrix, ComponentStorageFlatMap);
+COMPONENT_STORAGE_DEF(ComponentModelMatrix, ComponentStorageVector);
 
 TALON_NS_END

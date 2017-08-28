@@ -5,20 +5,20 @@
 
 TALON_NS_BEGIN
 
-class DescriptorSetBase {
+class DescriptorSetLayoutBase {
 protected:
     static vk::DescriptorSetLayout create(vk::DescriptorSetLayoutCreateInfo &createInfo);
     static void destroy(vk::DescriptorSetLayout layout);
 };
 
-template<typename... Components>
-class DescriptorSet : public DescriptorSetBase {
+template<uint32_t maxAllocated, typename... Components>
+class DescriptorSetLayout : public DescriptorSetLayoutBase {
 public:
-    DescriptorSet() {
+    DescriptorSetLayout() {
         descriptorSetLayout = getDescriptorSet();
     }
 
-    ~DescriptorSet() {
+    ~DescriptorSetLayout() {
         destroy(descriptorSetLayout);
     }
 
@@ -28,6 +28,23 @@ public:
             using unwrapped = typename decltype(t)::type;
             return acc && boost::hana::contains(t, boost::hana::type_c<unwrapped>);
         });
+    }
+
+    static constexpr uint32_t countBindings(vk::DescriptorType type) {
+        uint32_t count = 0;
+
+        boost::hana::for_each(boost::hana::tuple_t<Components...>, [&count, type](auto t){
+            using unwrapped = typename decltype(t)::type;
+
+            if (unwrapped::getDescriptorType() == type)
+                count += getMaxAllocated();
+        });
+
+        return count;
+    }
+
+    static constexpr uint32_t getMaxAllocated() {
+        return maxAllocated;
     }
 
 private:

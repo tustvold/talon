@@ -1,12 +1,12 @@
-#include "DescriptorSet.hpp"
+#include "DescriptorSetLayout.hpp"
 #include "rendering/singleton/RenderServiceTable.hpp"
 #include "rendering/singleton/DeviceManager.hpp"
 
 USING_TALON_NS;
 
-vk::DescriptorSetLayout DescriptorSetBase::create(vk::DescriptorSetLayoutCreateInfo &createInfo) {
+vk::DescriptorSetLayout DescriptorSetLayoutBase::create(vk::DescriptorSetLayoutCreateInfo &createInfo) {
     return RenderServiceTable::deviceManager->createDescriptorSetLayout(createInfo);
 }
-void DescriptorSetBase::destroy(vk::DescriptorSetLayout layout) {
+void DescriptorSetLayoutBase::destroy(vk::DescriptorSetLayout layout) {
     RenderServiceTable::deviceManager->destroyDescriptorSetLayout(layout);
 }

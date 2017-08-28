@@ -1,10 +1,8 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <ecs/annotations/AnnotationDependency.hpp>
-#include <ecs/TWorld.hpp>
 #include <vulkan/vulkan.hpp>
-#include <rendering/material/DescriptorSet.hpp>
-#include "ecs/Components.hpp"
+#include <rendering/material/DescriptorSetLayout.hpp>
 #include "mock/MockApplication.hpp"
 #include "mock/MockDeviceManager.hpp"
 #include "rendering/material/TDescriptorPool.hpp"
@@ -53,27 +51,25 @@ struct Binding2 {
     }
 };
 
-TALON_NS_BEGIN
+struct Binding3 {
+    static constexpr vk::DescriptorType getDescriptorType() {
+        return vk::DescriptorType::eSampler;
+    }
 
-COMPONENT_STORAGE_DEF(Binding1, ComponentStorageFlatMap);
-COMPONENT_STORAGE_DEF(Binding2, ComponentStorageFlatMap);
+    static vk::DescriptorSetLayoutBinding getDescriptorBinding() {
+        const int binding = 0;
+        const vk::DescriptorType descriptorType = getDescriptorType();
+        const uint32_t descriptorCount = 1;
+        const vk::ShaderStageFlagBits shaderStageFlags = vk::ShaderStageFlagBits::eFragment;
+        const vk::Sampler *immutableSamplers = nullptr;
 
-TALON_NS_END
-
-static_assert(
-    DescriptorPoolBase::DescriptorPoolCountBindings(boost::hana::tuple_t<Binding1>, vk::DescriptorType::eUniformBuffer)
-        == 1);
-static_assert(
-    DescriptorPoolBase::DescriptorPoolCountBindings(boost::hana::tuple_t<Binding1>, vk::DescriptorType::eSampler) == 0);
-static_assert(
-    DescriptorPoolBase::DescriptorPoolCountBindings(boost::hana::tuple_t<Binding2>, vk::DescriptorType::eSampler) == 1);
-static_assert(
-    DescriptorPoolBase::DescriptorPoolCountBindings(boost::hana::tuple_t<Binding1, Binding2>,
-                                                    vk::DescriptorType::eUniformBuffer)
-        == 1);
-static_assert(
-    DescriptorPoolBase::DescriptorPoolCountBindings(boost::hana::tuple_t<Binding1, Binding2>,
-                                                    vk::DescriptorType::eSampler) == 1);
+        return vk::DescriptorSetLayoutBinding(binding,
+                                              descriptorType,
+                                              descriptorCount,
+                                              shaderStageFlags,
+                                              immutableSamplers);
+    }
+};
 
 TEST(TestDescriptor, TestSingle) {
     MockApplication application;
@@ -88,7 +84,7 @@ TEST(TestDescriptor, TestSingle) {
 
     EXPECT_CALL(*deviceManager, destroyDescriptorSetLayout(testing::_));
 
-    DescriptorSet<Binding1> binding;
+    DescriptorSetLayout<2, Binding1> binding;
 }
 
 TEST(TestDescriptor, TestMultiple) {
@@ -108,35 +104,12 @@ TEST(TestDescriptor, TestMultiple) {
 
     EXPECT_CALL(*deviceManager, destroyDescriptorSetLayout(testing::_));
 
-    DescriptorSet<Binding1, Binding2> binding;
+    DescriptorSetLayout<2, Binding1, Binding2> binding;
 }
-
-TEST(TestDescriptor, TestDescriptorCounts) {
-    constexpr auto array1 = DescriptorPoolBase::getDescriptorCounts(boost::hana::tuple_t<Binding1>);
-    for (int i = VK_DESCRIPTOR_TYPE_BEGIN_RANGE; i < VK_DESCRIPTOR_TYPE_END_RANGE; i++) {
-        if (i == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER)
-            EXPECT_EQ(array1[i - VK_DESCRIPTOR_TYPE_BEGIN_RANGE], 1);
-        else
-            EXPECT_EQ(array1[i - VK_DESCRIPTOR_TYPE_BEGIN_RANGE], 0);
-    }
-
-    constexpr auto array2 = DescriptorPoolBase::getDescriptorCounts(boost::hana::tuple_t<Binding1, Binding2>);
-    for (int i = VK_DESCRIPTOR_TYPE_BEGIN_RANGE; i < VK_DESCRIPTOR_TYPE_END_RANGE; i++) {
-        if (i == VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER || i == VK_DESCRIPTOR_TYPE_SAMPLER)
-            EXPECT_EQ(array2[i - VK_DESCRIPTOR_TYPE_BEGIN_RANGE], 1);
-        else
-            EXPECT_EQ(array2[i - VK_DESCRIPTOR_TYPE_BEGIN_RANGE], 0);
-    }
-}
-
-static_assert(TWorld<Binding1>::HasComponent<Binding1>());
-static_assert(!TWorld<Binding1>::HasComponent<Binding2>());
 
 TEST(TestDescriptor, TestDescriptorPool) {
-    using DescriptorSet1 = DescriptorSet<Binding1>;
-    using DescriptorSet2 = DescriptorSet<Binding1, Binding2>;
-
-    using World = TWorld<Binding1, Binding2>;
+    using DescriptorSet1 = DescriptorSetLayout<4, Binding1>;
+    using DescriptorSet2 = DescriptorSetLayout<3, Binding1, Binding2>;
 
     InSequence seq;
 
@@ -159,13 +132,19 @@ TEST(TestDescriptor, TestDescriptorPool) {
 
 
     EXPECT_CALL(*deviceManager, createDescriptorPool(testing::_)).WillOnce(Invoke([](const vk::DescriptorPoolCreateInfo& info){
-        EXPECT_EQ(info.maxSets, 2);
+        EXPECT_EQ(info.maxSets, 7);
         EXPECT_EQ(info.poolSizeCount, 2);
-        EXPECT_EQ(info.pPoolSizes[0].descriptorCount, 1);
-        EXPECT_EQ(info.pPoolSizes[1].descriptorCount, 1);
-        EXPECT_NE(info.pPoolSizes[0].type == Binding1::getDescriptorType() , info.pPoolSizes[0].type == Binding2::getDescriptorType());
-        EXPECT_NE(info.pPoolSizes[1].type == Binding1::getDescriptorType() , info.pPoolSizes[1].type == Binding2::getDescriptorType());
 
+        for (int i = 0; i < 2; i++) {
+            auto& pool = info.pPoolSizes[0];
+            if (pool.type == vk::DescriptorType::eUniformBuffer) {
+                EXPECT_EQ(pool.descriptorCount, 7);
+            } else if (pool.type == vk::DescriptorType::eSampler) {
+                EXPECT_EQ(pool.descriptorCount, 3);
+            } else {
+                EXPECT_TRUE(false);
+            }
+        }
         return vk::DescriptorPool();
     }));
 
@@ -173,5 +152,61 @@ TEST(TestDescriptor, TestDescriptorPool) {
 
     EXPECT_CALL(*deviceManager, destroyDescriptorSetLayout(testing::_)).Times(2);
 
-    TDescriptorPool<World, DescriptorSet1, DescriptorSet2> pool;
+    TDescriptorPool<DescriptorSet1, DescriptorSet2> pool;
+}
+
+
+TEST(TestDescriptor, TestDescriptorPool3) {
+    using DescriptorSet1 = DescriptorSetLayout<4, Binding1>;
+    using DescriptorSet2 = DescriptorSetLayout<2, Binding1, Binding2>;
+    using DescriptorSet3 = DescriptorSetLayout<5, Binding2, Binding3>;
+
+    InSequence seq;
+
+    MockApplication application;
+    auto deviceManager = application.getDeviceManager();
+
+    EXPECT_CALL(*deviceManager,
+                createDescriptorSetLayout(testing::_))
+        .WillOnce(Invoke([](const vk::DescriptorSetLayoutCreateInfo &in) {
+            EXPECT_EQ(in.bindingCount, 1);
+            EXPECT_EQ(in.pBindings[0], Binding1::getDescriptorBinding());
+            return vk::DescriptorSetLayout();
+        }))
+        .WillOnce(Invoke([](const vk::DescriptorSetLayoutCreateInfo &in) {
+            EXPECT_EQ(in.bindingCount, 2);
+            EXPECT_EQ(in.pBindings[0], Binding1::getDescriptorBinding());
+            EXPECT_EQ(in.pBindings[1], Binding2::getDescriptorBinding());
+            return vk::DescriptorSetLayout();
+        }))
+        .WillOnce(Invoke([](const vk::DescriptorSetLayoutCreateInfo &in) {
+            EXPECT_EQ(in.bindingCount, 2);
+            EXPECT_EQ(in.pBindings[0], Binding2::getDescriptorBinding());
+            EXPECT_EQ(in.pBindings[1], Binding3::getDescriptorBinding());
+            return vk::DescriptorSetLayout();
+        }));
+
+
+    EXPECT_CALL(*deviceManager, createDescriptorPool(testing::_)).WillOnce(Invoke([](const vk::DescriptorPoolCreateInfo& info){
+        EXPECT_EQ(info.maxSets, 11);
+        EXPECT_EQ(info.poolSizeCount, 2);
+
+        for (int i = 0; i < 2; i++) {
+            auto& pool = info.pPoolSizes[0];
+            if (pool.type == vk::DescriptorType::eUniformBuffer) {
+                EXPECT_EQ(pool.descriptorCount, 6);
+            } else if (pool.type == vk::DescriptorType::eSampler) {
+                EXPECT_EQ(pool.descriptorCount, 12);
+            } else {
+                EXPECT_TRUE(false);
+            }
+        }
+        return vk::DescriptorPool();
+    }));
+
+    EXPECT_CALL(*deviceManager, destroyDescriptorPool(testing::_));
+
+    EXPECT_CALL(*deviceManager, destroyDescriptorSetLayout(testing::_)).Times(3);
+
+    TDescriptorPool<DescriptorSet1, DescriptorSet2, DescriptorSet3> pool;
 }

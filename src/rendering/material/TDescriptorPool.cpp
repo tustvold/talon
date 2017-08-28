@@ -5,7 +5,7 @@
 
 USING_TALON_NS;
 
-vk::DescriptorPool DescriptorPoolBase::create(size_t num_descriptorSets, const std::array<int, 11> &array) {
+vk::DescriptorPool DescriptorPoolBase::create(size_t maxSets, const DescriptorPoolCountBindingsArray& array) {
 
 
     std::vector<vk::DescriptorPoolSize> poolSizes;
@@ -18,7 +18,7 @@ vk::DescriptorPool DescriptorPoolBase::create(size_t num_descriptorSets, const s
     }
 
     vk::DescriptorPoolCreateInfo createInfo = {};
-    createInfo.maxSets = static_cast<uint32_t>(num_descriptorSets);
+    createInfo.maxSets = static_cast<uint32_t>(maxSets);
     createInfo.poolSizeCount = static_cast<uint32_t>(poolSizes.size());
     createInfo.pPoolSizes = poolSizes.data();
 
