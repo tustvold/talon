@@ -154,9 +154,9 @@ TEST(TestDescriptor, TestDescriptorPool) {
 }
 
 
-using DescriptorSet1 = DescriptorSetLayout<4, Binding1>;
-using DescriptorSet2 = DescriptorSetLayout<2, Binding1, Binding2>;
-using DescriptorSet3 = DescriptorSetLayout<5, Binding2, Binding3>;
+using DescriptorSetLayout1 = DescriptorSetLayout<4, Binding1>;
+using DescriptorSetLayout2 = DescriptorSetLayout<2, Binding1, Binding2>;
+using DescriptorSetLayout3 = DescriptorSetLayout<5, Binding2, Binding3>;
 
 TEST(TestDescriptor, TestDescriptorPool3) {
 
@@ -206,7 +206,7 @@ TEST(TestDescriptor, TestDescriptorPool3) {
 
     EXPECT_CALL(*deviceManager, destroyDescriptorSetLayout(testing::_)).Times(3);
 
-    TDescriptorPool<DescriptorSet1, DescriptorSet2, DescriptorSet3> pool;
+    TDescriptorPool<DescriptorSetLayout1, DescriptorSetLayout2, DescriptorSetLayout3> pool;
 }
 
 
@@ -256,7 +256,7 @@ TEST(TestDescriptor, TestDescriptorPool4) {
 
     EXPECT_CALL(*deviceManager, destroyDescriptorSetLayout(testing::_)).Times(3);
 
-    TDescriptorPool<DescriptorSet1, DescriptorSet2, DescriptorSet3> pool;
+    TDescriptorPool<DescriptorSetLayout1, DescriptorSetLayout2, DescriptorSetLayout3> pool;
 
     EXPECT_CALL(*deviceManager, allocateDescriptorSets(testing::_, testing::_)).WillOnce(Invoke([](const vk::DescriptorSetAllocateInfo& info, vk::DescriptorSet* _){
         EXPECT_EQ(info.descriptorSetCount, 1);
@@ -264,5 +264,69 @@ TEST(TestDescriptor, TestDescriptorPool4) {
     }));
     EXPECT_CALL(*deviceManager, freeDescriptorSets(testing::_, testing::_));
 
-    auto set = pool.createDescriptorSet<DescriptorSet1>();
+    DescriptorSet<Binding1> set = pool.createDescriptorSet<DescriptorSetLayout1>();
+    auto& binding1 = set.getBinding<Binding1>();
+    EXPECT_EQ(binding1.binding, 0);
+}
+
+
+TEST(TestDescriptor, TestDescriptorPool5) {
+    MockApplication application;
+    auto deviceManager = application.getDeviceManager();
+
+    EXPECT_CALL(*deviceManager,
+                createDescriptorSetLayout(testing::_))
+        .WillOnce(Invoke([](const vk::DescriptorSetLayoutCreateInfo &in) {
+            EXPECT_EQ(in.bindingCount, 1);
+            EXPECT_EQ(in.pBindings[0], Binding1::getDescriptorBinding());
+            return vk::DescriptorSetLayout();
+        }))
+        .WillOnce(Invoke([](const vk::DescriptorSetLayoutCreateInfo &in) {
+            EXPECT_EQ(in.bindingCount, 2);
+            EXPECT_EQ(in.pBindings[0], Binding1::getDescriptorBinding());
+            EXPECT_EQ(in.pBindings[1], Binding2::getDescriptorBinding());
+            return vk::DescriptorSetLayout();
+        }))
+        .WillOnce(Invoke([](const vk::DescriptorSetLayoutCreateInfo &in) {
+            EXPECT_EQ(in.bindingCount, 2);
+            EXPECT_EQ(in.pBindings[0], Binding2::getDescriptorBinding());
+            EXPECT_EQ(in.pBindings[1], Binding3::getDescriptorBinding());
+            return vk::DescriptorSetLayout();
+        }));
+
+
+    EXPECT_CALL(*deviceManager, createDescriptorPool(testing::_)).WillOnce(Invoke([](const vk::DescriptorPoolCreateInfo& info){
+        EXPECT_EQ(info.maxSets, 11);
+        EXPECT_EQ(info.poolSizeCount, 2);
+
+        for (int i = 0; i < 2; i++) {
+            auto& pool = info.pPoolSizes[0];
+            if (pool.type == vk::DescriptorType::eUniformBuffer) {
+                EXPECT_EQ(pool.descriptorCount, 6);
+            } else if (pool.type == vk::DescriptorType::eSampler) {
+                EXPECT_EQ(pool.descriptorCount, 12);
+            } else {
+                EXPECT_TRUE(false);
+            }
+        }
+        return vk::DescriptorPool();
+    }));
+
+    EXPECT_CALL(*deviceManager, destroyDescriptorPool(testing::_));
+
+    EXPECT_CALL(*deviceManager, destroyDescriptorSetLayout(testing::_)).Times(3);
+
+    TDescriptorPool<DescriptorSetLayout1, DescriptorSetLayout2, DescriptorSetLayout3> pool;
+
+    EXPECT_CALL(*deviceManager, allocateDescriptorSets(testing::_, testing::_)).WillOnce(Invoke([](const vk::DescriptorSetAllocateInfo& info, vk::DescriptorSet* _){
+        EXPECT_EQ(info.descriptorSetCount, 1);
+        EXPECT_EQ(info.descriptorPool, vk::DescriptorPool());
+    }));
+    EXPECT_CALL(*deviceManager, freeDescriptorSets(testing::_, testing::_));
+
+    DescriptorSet<Binding1, Binding2> set = pool.createDescriptorSet<DescriptorSetLayout2>();
+    auto& binding1 = set.getBinding<Binding1>();
+    EXPECT_EQ(binding1.binding, 0);
+    auto& binding2 = set.getBinding<Binding2>();
+    EXPECT_EQ(binding2.binding, 1);
 }
