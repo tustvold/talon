@@ -23,7 +23,6 @@ int main() {
         auto app = std::make_unique<Application>(settings);
         app->run(std::make_unique<TestScene>());
     } catch (const std::runtime_error &e) {
-        TLOGERROR("Runtime Error - %s", e.what());
         return EXIT_FAILURE;
     }
 

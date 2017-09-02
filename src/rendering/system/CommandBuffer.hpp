@@ -4,11 +4,46 @@
 
 TALON_NS_BEGIN
 
+struct CommandBufferRecordHandle {
+    explicit CommandBufferRecordHandle(vk::CommandBuffer buffer, const vk::CommandBufferBeginInfo &info)
+        : buffer(buffer) {
+        buffer.begin(info);
+    }
+
+    CommandBufferRecordHandle(const CommandBufferRecordHandle &) = delete;
+    CommandBufferRecordHandle(CommandBufferRecordHandle &&) = delete;
+
+    ~CommandBufferRecordHandle() {
+        buffer.end();
+    }
+
+private:
+    vk::CommandBuffer buffer;
+};
+
+struct RenderPassRecordHandle {
+    explicit RenderPassRecordHandle(vk::CommandBuffer buffer,
+                                    const vk::RenderPassBeginInfo &info,
+                                    vk::SubpassContents contents) : buffer(buffer) {
+        buffer.beginRenderPass(info, contents);
+    }
+
+    RenderPassRecordHandle(const RenderPassRecordHandle &) = delete;
+    RenderPassRecordHandle(RenderPassRecordHandle &&) = delete;
+
+    ~RenderPassRecordHandle() {
+        buffer.endRenderPass();
+    }
+
+private:
+    vk::CommandBuffer buffer;
+};
+
 class CommandBuffer {
 public:
     virtual ~CommandBuffer();
 
-    void reset(const vk::CommandBufferResetFlags& flags) {
+    void reset(const vk::CommandBufferResetFlags &flags) {
         commandBuffer.reset(flags);
     }
 
@@ -16,15 +51,14 @@ public:
         reset({});
     }
 
-    void begin(const vk::CommandBufferBeginInfo& info) {
-        commandBuffer.begin(info);
+    CommandBufferRecordHandle begin(const vk::CommandBufferBeginInfo &info) {
+        return CommandBufferRecordHandle(commandBuffer, info);
     }
 
-    void end() {
-        commandBuffer.end();
-    }
-
-    void bindVertexBuffers(uint32_t firstBinding, uint32_t bindingCount, const vk::Buffer* pBuffers, const vk::DeviceSize* pOffsets) {
+    void bindVertexBuffers(uint32_t firstBinding,
+                           uint32_t bindingCount,
+                           const vk::Buffer *pBuffers,
+                           const vk::DeviceSize *pOffsets) {
         commandBuffer.bindVertexBuffers(firstBinding, bindingCount, pBuffers, pOffsets);
     }
 
@@ -36,8 +70,8 @@ public:
         commandBuffer.bindPipeline(pipelineBindPoint, pipeline);
     }
 
-    CommandBuffer(const CommandBuffer&) = delete;
-    CommandBuffer(CommandBuffer&&) = delete;
+    CommandBuffer(const CommandBuffer &) = delete;
+    CommandBuffer(CommandBuffer &&) = delete;
 
 protected:
     explicit CommandBuffer(vk::CommandBufferLevel level);
@@ -59,23 +93,17 @@ public:
 
     }
 
-    auto& get() {
+    auto &get() {
         return commandBuffer;
     }
 
-    void beginRenderPass(const vk::RenderPassBeginInfo& info, vk::SubpassContents contents) {
-        commandBuffer.beginRenderPass(info, contents);
+    RenderPassRecordHandle beginRenderPass(const vk::RenderPassBeginInfo &info, vk::SubpassContents contents) {
+        return RenderPassRecordHandle(commandBuffer, info, contents);
     }
 
-    void endRenderPass() {
-        commandBuffer.endRenderPass();
-    }
-
-    void executeCommandBuffer(SecondaryCommandBuffer* buffer) {
+    void executeCommandBuffer(SecondaryCommandBuffer *buffer) {
         commandBuffer.executeCommands(1, &buffer->commandBuffer);
     }
 };
-
-
 
 TALON_NS_END

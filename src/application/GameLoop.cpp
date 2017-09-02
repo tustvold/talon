@@ -61,7 +61,7 @@ bool GameLoop::doUpdate(World &world, SwapChain* swapChain) {
     if (result == vk::Result::eErrorOutOfDateKHR) {
         return false;
     } else if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR) {
-        throw std::runtime_error("failed to acquire swap chain image!");
+        TASSERT(false); //Failed to acquire swap chain image
     }
 
     recordCommandBuffer(world, swapChain, imageIndex);
@@ -100,7 +100,7 @@ bool GameLoop::doUpdate(World &world, SwapChain* swapChain) {
     if (result == vk::Result::eErrorOutOfDateKHR || result == vk::Result::eSuboptimalKHR) {
         return false;
     } else if (result != vk::Result::eSuccess) {
-        throw std::runtime_error("failed to present swap chain image!");
+        TLOGFATAL("%s", "Failed to present swap chain image");
     }
     return true;
 }
@@ -111,7 +111,7 @@ void GameLoop::recordCommandBuffer(World &world, SwapChain* swapChain, int index
 
     commandBuffer.reset(vk::CommandBufferResetFlags());
 
-    commandBuffer.begin(beginInfo);
+    auto recordHandle = commandBuffer.begin(beginInfo);
 
     auto renderPass = swapChain->getRenderPass(0);
 
@@ -130,15 +130,12 @@ void GameLoop::recordCommandBuffer(World &world, SwapChain* swapChain, int index
     inheritanceInfo.renderPass = renderPassInfo.renderPass;
     inheritanceInfo.framebuffer = renderPassInfo.framebuffer;
 
-    commandBuffer.beginRenderPass(renderPassInfo, vk::SubpassContents::eSecondaryCommandBuffers);
+    auto renderPassHandle = commandBuffer.beginRenderPass(renderPassInfo, vk::SubpassContents::eSecondaryCommandBuffers);
 
     RenderSystemArgs args(&world, &descriptorPool, swapChain, renderPass, &commandBuffer, &inheritanceInfo);
 
     for (auto &system : renderSystems) {
         system->update(args);
     }
-
-    commandBuffer.endRenderPass();
-    commandBuffer.end();
 }
 

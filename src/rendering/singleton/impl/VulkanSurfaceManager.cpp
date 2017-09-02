@@ -11,7 +11,7 @@ VulkanSurfaceManager::VulkanSurfaceManager(VulkanInstanceManager *instanceManage
     auto psurf = VkSurfaceKHR();
     if (glfwCreateWindowSurface(instanceManager->getInstance(), windowManager->getWindow(), nullptr, &psurf)
         != VK_SUCCESS) {
-        throw std::runtime_error("failed to create window surface!");
+        TLOGFATAL("%s", "Failed to create window surface");
     }
 
     surface = psurf;

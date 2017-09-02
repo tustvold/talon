@@ -34,6 +34,8 @@ Application::Application(const ApplicationInitSettings &initSettings) {
 }
 
 Application::~Application() {
+    deviceManager->waitDeviceIdle();
+
     windowManager->getWindowResizeEvent().Disconnect(this, &Application::onWindowResized);
 
     swapChain.reset();

@@ -13,19 +13,19 @@ void RenderSystemMeshFilter::update(const RenderSystemArgs &args) {
     beginInfo.flags |= vk::CommandBufferUsageFlagBits::eRenderPassContinue;
     beginInfo.setPInheritanceInfo(args.commandBufferInheritanceInfo);
 
-    commandBuffer.begin(beginInfo);
+    {
+        auto recordHandle = commandBuffer.begin(beginInfo);
 
-    args.world->for_each<ComponentModelMatrix, ComponentMeshFilter>(boost::hana::fuse(
-        [this, &args](EntityID id, boost::hana::tuple<const ComponentModelMatrix *, const ComponentMeshFilter *> components) {
-            //ComponentTransformTree* transform = components[0_c];
-            const ComponentMeshFilter *meshFilter = components[1_c];
+        args.world->for_each<ComponentModelMatrix, ComponentMeshFilter>(boost::hana::fuse(
+            [this, &args](EntityID id, boost::hana::tuple<const ComponentModelMatrix *, const ComponentMeshFilter *> components) {
+                //ComponentTransformTree* transform = components[0_c];
+                const ComponentMeshFilter *meshFilter = components[1_c];
 
-            args.renderPass->bindMaterial(args.swapChain, meshFilter->material, &commandBuffer);
-            meshFilter->mesh->bind(&commandBuffer);
-            meshFilter->mesh->draw(&commandBuffer);
-        }));
-
-    commandBuffer.end();
+                args.renderPass->bindMaterial(args.swapChain, meshFilter->material, &commandBuffer);
+                meshFilter->mesh->bind(&commandBuffer);
+                meshFilter->mesh->draw(&commandBuffer);
+            }));
+    }
 
     args.primaryCommandBuffer->executeCommandBuffer(&commandBuffer);
 }

@@ -45,7 +45,7 @@ static std::vector<const char *> getRequiredExtensions(const talon::ApplicationI
 
 talon::VulkanInstanceManager::VulkanInstanceManager(const ApplicationInitSettings& initSettings) {
     if (initSettings.validationLayersEnabled && !checkValidationLayerSupport(initSettings)) {
-        throw std::runtime_error("validation layers requested, but not available!");
+        TLOGFATAL("%s", "Validation layers requested, but not available");
     }
 
     vk::ApplicationInfo applicationInfo

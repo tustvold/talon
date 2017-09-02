@@ -25,6 +25,10 @@
 #define TLOGINFO(msg, ...) printf(ANSI_COLOR_BLUE "INFO: " msg " - " S_LOCATION ANSI_COLOR_RESET "\n", __VA_ARGS__)
 #define TLOGWARN(msg, ...) printf(ANSI_COLOR_YELLOW "WARNING: " msg " - " S_LOCATION ANSI_COLOR_RESET "\n", __VA_ARGS__)
 #define TLOGERROR(msg, ...) printf(ANSI_COLOR_RED "ERROR: " msg " - " S_LOCATION ANSI_COLOR_RESET "\n", __VA_ARGS__)
+#define TLOGFATAL(msg, ...) do { \
+    printf(ANSI_COLOR_RED "FATAL: " msg " - " S_LOCATION ANSI_COLOR_RESET "\n", __VA_ARGS__); \
+    throw std::runtime_error("TLOGFATAL"); \
+} while (false);
 
 // Assertions
 
@@ -34,7 +38,7 @@ TALON_NS_BEGIN
 
 static inline void Assert(bool condition, const std::string& msg) {
     if (__builtin_expect(!condition, 0)) {
-        throw std::runtime_error(msg);
+        TLOGFATAL("%s", msg.c_str());
     }
 }
 
