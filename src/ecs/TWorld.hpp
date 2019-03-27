@@ -289,17 +289,17 @@ public:
 
     template<typename Component>
     auto &getComponentStorage() {
-        return storage.getComponentStorage<Component>();
+        return storage.template getComponentStorage<Component>();
     }
 
     template<typename Component>
     auto &getComponentStorage() const {
-        return storage.getComponentStorage<Component>();
+        return storage.template getComponentStorage<Component>();
     }
 
     template<typename Component, class UnaryFunction>
     void tree_for_each(UnaryFunction f) {
-        storage.getComponentStorage<Component>().tree_for_each(f);
+        storage.template getComponentStorage<Component>().tree_for_each(f);
     }
 
 private:
